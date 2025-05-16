@@ -9,11 +9,22 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import ThemeSwitcher from "@/components/ThemeSwitcher";
+import { subscriptions } from "@/utils/data";
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from "@/components/ui/select";
 
 const Settings = () => {
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [systemAlerts, setSystemAlerts] = useState(true);
   const [subscriptionAlerts, setSubscriptionAlerts] = useState(true);
+  const [selectedSubscription, setSelectedSubscription] = useState("");
+  const [subscriptionPlan, setSubscriptionPlan] = useState("Standard");
+  const [autoRenew, setAutoRenew] = useState(true);
   
   return (
     <div className="flex flex-col h-screen">
@@ -22,47 +33,48 @@ const Settings = () => {
       <div className="flex-1 p-6 bg-gray-50 overflow-auto">
         <div className="space-y-4 max-w-4xl mx-auto">
           <h1 className="text-2xl font-bold">Paramètres</h1>
-          <p className="text-muted-foreground">
-            Gérez les paramètres de votre compte et de l'application.
+          <p className="text-muted-foreground text-base">
+            Gérez les paramètres de votre compte, de l'application et des abonnements.
           </p>
           
           <Tabs defaultValue="general" className="w-full">
             <TabsList className="mb-4">
-              <TabsTrigger value="general">Général</TabsTrigger>
-              <TabsTrigger value="notifications">Notifications</TabsTrigger>
-              <TabsTrigger value="appearance">Apparence</TabsTrigger>
-              <TabsTrigger value="security">Sécurité</TabsTrigger>
+              <TabsTrigger value="general" className="text-base">Général</TabsTrigger>
+              <TabsTrigger value="notifications" className="text-base">Notifications</TabsTrigger>
+              <TabsTrigger value="subscriptions" className="text-base">Abonnements</TabsTrigger>
+              <TabsTrigger value="appearance" className="text-base">Apparence</TabsTrigger>
+              <TabsTrigger value="security" className="text-base">Sécurité</TabsTrigger>
             </TabsList>
             
             <TabsContent value="general" className="space-y-4">
               <Card>
                 <CardHeader>
                   <CardTitle>Informations générales</CardTitle>
-                  <CardDescription>
+                  <CardDescription className="text-base">
                     Mettez à jour vos informations personnelles.
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="firstName">Prénom</Label>
-                      <Input id="firstName" defaultValue="Admin" />
+                      <Label htmlFor="firstName" className="text-base">Prénom</Label>
+                      <Input id="firstName" defaultValue="Admin" className="text-base" />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="lastName">Nom</Label>
-                      <Input id="lastName" defaultValue="User" />
+                      <Label htmlFor="lastName" className="text-base">Nom</Label>
+                      <Input id="lastName" defaultValue="User" className="text-base" />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="email">Email</Label>
-                      <Input id="email" defaultValue="admin@example.com" type="email" />
+                      <Label htmlFor="email" className="text-base">Email</Label>
+                      <Input id="email" defaultValue="admin@example.com" type="email" className="text-base" />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="phone">Téléphone</Label>
-                      <Input id="phone" defaultValue="+33 6 12 34 56 78" />
+                      <Label htmlFor="phone" className="text-base">Téléphone</Label>
+                      <Input id="phone" defaultValue="+33 6 12 34 56 78" className="text-base" />
                     </div>
                   </div>
                   <div className="flex justify-end">
-                    <Button>Enregistrer</Button>
+                    <Button size="lg" className="text-base">Enregistrer</Button>
                   </div>
                 </CardContent>
               </Card>
@@ -72,7 +84,7 @@ const Settings = () => {
               <Card>
                 <CardHeader>
                   <CardTitle>Préférences de notification</CardTitle>
-                  <CardDescription>
+                  <CardDescription className="text-base">
                     Configurez les notifications que vous souhaitez recevoir.
                   </CardDescription>
                 </CardHeader>
@@ -80,7 +92,7 @@ const Settings = () => {
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <h3 className="font-medium">Notifications par email</h3>
+                        <h3 className="font-medium text-base">Notifications par email</h3>
                         <p className="text-sm text-muted-foreground">Recevoir des notifications par email</p>
                       </div>
                       <Switch 
@@ -91,7 +103,7 @@ const Settings = () => {
                     <Separator />
                     <div className="flex items-center justify-between">
                       <div>
-                        <h3 className="font-medium">Alertes système</h3>
+                        <h3 className="font-medium text-base">Alertes système</h3>
                         <p className="text-sm text-muted-foreground">Recevoir des alertes sur les problèmes système</p>
                       </div>
                       <Switch 
@@ -102,7 +114,7 @@ const Settings = () => {
                     <Separator />
                     <div className="flex items-center justify-between">
                       <div>
-                        <h3 className="font-medium">Alertes d'abonnement</h3>
+                        <h3 className="font-medium text-base">Alertes d'abonnement</h3>
                         <p className="text-sm text-muted-foreground">
                           Recevoir des alertes quand les abonnements arrivent à expiration
                         </p>
@@ -117,18 +129,134 @@ const Settings = () => {
               </Card>
             </TabsContent>
             
+            <TabsContent value="subscriptions" className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Gestion des abonnements</CardTitle>
+                  <CardDescription className="text-base">
+                    Mettez à jour les paramètres des abonnements des écoles.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="selected-subscription" className="text-base">Choisir un abonnement</Label>
+                    <Select 
+                      value={selectedSubscription} 
+                      onValueChange={setSelectedSubscription}
+                    >
+                      <SelectTrigger className="w-full text-base">
+                        <SelectValue placeholder="Sélectionner un abonnement" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {subscriptions.map(subscription => (
+                          <SelectItem 
+                            key={subscription.id} 
+                            value={subscription.id}
+                            className="text-base"
+                          >
+                            {subscription.schoolName} - {subscription.plan}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  {selectedSubscription && (
+                    <div className="space-y-4 border p-4 rounded-md">
+                      <h3 className="text-lg font-medium">Détails de l'abonnement</h3>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="subscription-plan" className="text-base">Formule</Label>
+                        <Select 
+                          value={subscriptionPlan} 
+                          onValueChange={setSubscriptionPlan}
+                        >
+                          <SelectTrigger id="subscription-plan" className="w-full text-base">
+                            <SelectValue placeholder="Sélectionner une formule" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Démarrage" className="text-base">Démarrage</SelectItem>
+                            <SelectItem value="Standard" className="text-base">Standard</SelectItem>
+                            <SelectItem value="Premium" className="text-base">Premium</SelectItem>
+                            <SelectItem value="Enterprise" className="text-base">Entreprise</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="start-date" className="text-base">Date de début</Label>
+                          <Input 
+                            id="start-date" 
+                            type="date" 
+                            className="text-base"
+                            defaultValue={subscriptions.find(s => s.id === selectedSubscription)?.startDate}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="end-date" className="text-base">Date d'expiration</Label>
+                          <Input 
+                            id="end-date" 
+                            type="date" 
+                            className="text-base"
+                            defaultValue={subscriptions.find(s => s.id === selectedSubscription)?.expiryDate}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="price" className="text-base">Prix (€)</Label>
+                          <Input 
+                            id="price" 
+                            type="number" 
+                            className="text-base"
+                            defaultValue={subscriptions.find(s => s.id === selectedSubscription)?.price}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="status" className="text-base">Statut</Label>
+                          <Select defaultValue={subscriptions.find(s => s.id === selectedSubscription)?.status || "active"}>
+                            <SelectTrigger id="status" className="w-full text-base">
+                              <SelectValue placeholder="Sélectionner un statut" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="active" className="text-base">Actif</SelectItem>
+                              <SelectItem value="pending" className="text-base">En attente</SelectItem>
+                              <SelectItem value="expired" className="text-base">Expiré</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center space-x-2 mt-4">
+                        <Switch 
+                          id="auto-renew" 
+                          checked={autoRenew} 
+                          onCheckedChange={setAutoRenew}
+                        />
+                        <Label htmlFor="auto-renew" className="text-base">Renouvellement automatique</Label>
+                      </div>
+                      
+                      <div className="flex justify-end space-x-2">
+                        <Button variant="outline" className="text-base">Annuler</Button>
+                        <Button className="text-base">Mettre à jour l'abonnement</Button>
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+            
             <TabsContent value="appearance" className="space-y-4">
               <Card>
                 <CardHeader>
                   <CardTitle>Apparence</CardTitle>
-                  <CardDescription>
+                  <CardDescription className="text-base">
                     Personnalisez l'apparence de l'application.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
                     <div>
-                      <h3 className="font-medium mb-2">Thème</h3>
+                      <h3 className="font-medium text-base mb-2">Thème</h3>
                       <ThemeSwitcher />
                     </div>
                   </div>
@@ -140,27 +268,27 @@ const Settings = () => {
               <Card>
                 <CardHeader>
                   <CardTitle>Sécurité</CardTitle>
-                  <CardDescription>
+                  <CardDescription className="text-base">
                     Modifiez vos informations de sécurité.
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="current-password">Mot de passe actuel</Label>
-                      <Input id="current-password" type="password" />
+                      <Label htmlFor="current-password" className="text-base">Mot de passe actuel</Label>
+                      <Input id="current-password" type="password" className="text-base" />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="new-password">Nouveau mot de passe</Label>
-                      <Input id="new-password" type="password" />
+                      <Label htmlFor="new-password" className="text-base">Nouveau mot de passe</Label>
+                      <Input id="new-password" type="password" className="text-base" />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="confirm-password">Confirmer le mot de passe</Label>
-                      <Input id="confirm-password" type="password" />
+                      <Label htmlFor="confirm-password" className="text-base">Confirmer le mot de passe</Label>
+                      <Input id="confirm-password" type="password" className="text-base" />
                     </div>
                   </div>
                   <div className="flex justify-end">
-                    <Button>Changer le mot de passe</Button>
+                    <Button size="lg" className="text-base">Changer le mot de passe</Button>
                   </div>
                 </CardContent>
               </Card>

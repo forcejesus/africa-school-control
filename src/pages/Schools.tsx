@@ -11,7 +11,7 @@ const Schools = () => {
       <div className="flex-1 p-6 bg-gray-50 overflow-auto">
         <div className="space-y-4">
           <h1 className="text-2xl font-bold">Gestion des écoles</h1>
-          <p className="text-muted-foreground">
+          <p className="text-base text-muted-foreground">
             Consultez et gérez toutes les écoles enregistrées sur la plateforme.
           </p>
           

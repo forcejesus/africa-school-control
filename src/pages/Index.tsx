@@ -1,8 +1,7 @@
 
-import { BarChart, School, Users, BookOpen, Activity } from "lucide-react";
+import { School, Users, BookOpen } from "lucide-react";
 import Header from "@/components/Header";
 import StatsCard from "@/components/StatsCard";
-import ActivityChart from "@/components/ActivityChart";
 import SubscriptionCard from "@/components/SubscriptionCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -16,7 +15,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { 
-  getActivityChartData, 
   getExpiringSubscriptions,
   getRecentActivities,
   getTotalActiveSchools,
@@ -29,7 +27,6 @@ import {
 } from "@/utils/data";
 
 const Dashboard = () => {
-  const activityData = getActivityChartData();
   const expiringSubscriptions = getExpiringSubscriptions();
   
   return (
@@ -65,12 +62,25 @@ const Dashboard = () => {
             />
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            <ActivityChart data={activityData} />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <Card className="col-span-1">
+              <CardHeader>
+                <CardTitle className="text-lg">Abonnements en cours</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {subscriptions
+                  .filter(sub => sub.status === 'active')
+                  .slice(0, 3)
+                  .map(subscription => (
+                    <SubscriptionCard key={subscription.id} subscription={subscription} />
+                  ))
+                }
+              </CardContent>
+            </Card>
             
             <Card className="col-span-1">
               <CardHeader>
-                <CardTitle className="text-lg">Expiring Subscriptions</CardTitle>
+                <CardTitle className="text-lg">Abonnements expirant bientôt</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 {expiringSubscriptions.length > 0 ? (
@@ -87,23 +97,53 @@ const Dashboard = () => {
                             <AvatarFallback>{school?.name.substring(0, 2).toUpperCase()}</AvatarFallback>
                           </Avatar>
                           <div>
-                            <p className="font-medium">{school?.name}</p>
-                            <p className="text-xs text-muted-foreground">
-                              Expires: {new Date(sub.endDate).toLocaleDateString()}
+                            <p className="font-medium text-base">{school?.name}</p>
+                            <p className="text-sm text-muted-foreground">
+                              Expire : {new Date(sub.endDate || sub.expiryDate).toLocaleDateString()}
                             </p>
                           </div>
                         </div>
-                        <Badge variant="outline" className="bg-yellow-100">
-                          {sub.plan.toUpperCase()}
+                        <Badge variant="outline" className="bg-yellow-100 text-base">
+                          {sub.plan}
                         </Badge>
                       </div>
                     );
                   })
                 ) : (
-                  <p className="text-center text-sm text-muted-foreground py-4">
-                    No subscriptions expiring soon
+                  <p className="text-center text-base text-muted-foreground py-4">
+                    Aucun abonnement n'expire bientôt
                   </p>
                 )}
+              </CardContent>
+            </Card>
+            
+            <Card className="col-span-1">
+              <CardHeader>
+                <CardTitle className="text-lg">Statistiques des abonnements</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-base text-muted-foreground">Total des abonnements</span>
+                  <span className="font-medium text-base">{subscriptions.length}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-base text-muted-foreground">Abonnements actifs</span>
+                  <span className="font-medium text-base">
+                    {subscriptions.filter(sub => sub.status === 'active').length}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-base text-muted-foreground">Abonnements expirés</span>
+                  <span className="font-medium text-base">
+                    {subscriptions.filter(sub => sub.status === 'expired').length}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-base text-muted-foreground">En attente</span>
+                  <span className="font-medium text-base">
+                    {subscriptions.filter(sub => sub.status === 'pending').length}
+                  </span>
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -111,16 +151,16 @@ const Dashboard = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <Card className="col-span-2">
               <CardHeader>
-                <CardTitle className="text-lg">Recent Activity</CardTitle>
+                <CardTitle className="text-lg">Activité récente</CardTitle>
               </CardHeader>
               <CardContent>
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Date</TableHead>
-                      <TableHead>School</TableHead>
-                      <TableHead>Games Played</TableHead>
-                      <TableHead>Active Users</TableHead>
+                      <TableHead className="text-base">Date</TableHead>
+                      <TableHead className="text-base">École</TableHead>
+                      <TableHead className="text-base">Jeux joués</TableHead>
+                      <TableHead className="text-base">Utilisateurs actifs</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -128,10 +168,10 @@ const Dashboard = () => {
                       const school = schools.find(s => s.id === activity.schoolId);
                       return (
                         <TableRow key={activity.id}>
-                          <TableCell>{new Date(activity.date).toLocaleDateString()}</TableCell>
-                          <TableCell className="font-medium">{school?.name}</TableCell>
-                          <TableCell>{activity.gamesPlayed}</TableCell>
-                          <TableCell>{activity.activeUsers}</TableCell>
+                          <TableCell className="text-base">{new Date(activity.date).toLocaleDateString()}</TableCell>
+                          <TableCell className="font-medium text-base">{school?.name}</TableCell>
+                          <TableCell className="text-base">{activity.gamesPlayed}</TableCell>
+                          <TableCell className="text-base">{activity.activeUsers}</TableCell>
                         </TableRow>
                       );
                     })}
@@ -142,34 +182,34 @@ const Dashboard = () => {
             
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Platform Statistics</CardTitle>
+                <CardTitle className="text-lg">Statistiques de la plateforme</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Total Games Played</span>
-                  <span className="font-medium">{getTotalGamesPlayed()}</span>
+                  <span className="text-base text-muted-foreground">Total des jeux joués</span>
+                  <span className="font-medium text-base">{getTotalGamesPlayed()}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Average Students per School</span>
-                  <span className="font-medium">
+                  <span className="text-base text-muted-foreground">Moyenne d'étudiants par école</span>
+                  <span className="font-medium text-base">
                     {Math.round(getTotalStudents() / getTotalSchools())}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Average Teachers per School</span>
-                  <span className="font-medium">
+                  <span className="text-base text-muted-foreground">Moyenne d'enseignants par école</span>
+                  <span className="font-medium text-base">
                     {Math.round(getTotalTeachers() / getTotalSchools())}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Student-Teacher Ratio</span>
-                  <span className="font-medium">
+                  <span className="text-base text-muted-foreground">Ratio étudiant-enseignant</span>
+                  <span className="font-medium text-base">
                     {Math.round(getTotalStudents() / getTotalTeachers())}:1
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">School Activation Rate</span>
-                  <span className="font-medium">
+                  <span className="text-base text-muted-foreground">Taux d'activation des écoles</span>
+                  <span className="font-medium text-base">
                     {Math.round((getTotalActiveSchools() / getTotalSchools()) * 100)}%
                   </span>
                 </div>
