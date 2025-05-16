@@ -6,6 +6,10 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Dashboard from "./pages/Index";
 import Schools from "./pages/Schools";
+import Subscriptions from "./pages/Subscriptions";
+import Analytics from "./pages/Analytics";
+import Users from "./pages/Users";
+import Settings from "./pages/Settings";
 import SchoolDetail from "./pages/SchoolDetail";
 import NotFound from "./pages/NotFound";
 import SchoolForm from "./components/SchoolForm";
@@ -30,7 +34,7 @@ const App = () => (
               <Route path="/schools/add" element={
                 <div className="flex flex-col h-screen">
                   <div className="p-6 bg-gray-50 flex-1 overflow-auto">
-                    <h1 className="text-2xl font-bold mb-6">Add New School</h1>
+                    <h1 className="text-2xl font-bold mb-6">Ajouter une nouvelle école</h1>
                     <SchoolForm />
                   </div>
                 </div>
@@ -38,7 +42,7 @@ const App = () => (
               <Route path="/schools/edit/:id" element={
                 <div className="flex flex-col h-screen">
                   <div className="p-6 bg-gray-50 flex-1 overflow-auto">
-                    <h1 className="text-2xl font-bold mb-6">Edit School</h1>
+                    <h1 className="text-2xl font-bold mb-6">Modifier l'école</h1>
                     <SchoolForm 
                       school={schools.find(s => s.id === window.location.pathname.split('/').pop())} 
                       isEditing 
@@ -46,7 +50,10 @@ const App = () => (
                   </div>
                 </div>
               } />
-              {/* More routes will be added for other sections */}
+              <Route path="/subscriptions" element={<Subscriptions />} />
+              <Route path="/analytics" element={<Analytics />} />
+              <Route path="/users" element={<Users />} />
+              <Route path="/settings" element={<Settings />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </div>

@@ -1,7 +1,6 @@
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { School } from "@/utils/dummyData";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { 
@@ -26,22 +25,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Search, MoreVertical, Edit, Trash, Eye } from "lucide-react";
+import { Search, MoreVertical, CreditCard, History, AlertCircle } from "lucide-react";
+import { subscriptions } from "@/utils/dummyData";
 
-interface SchoolsListProps {
-  schools: School[];
-}
-
-export function SchoolsList({ schools }: SchoolsListProps) {
+export function SubscriptionsList() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   
-  // Filter schools based on search term and status
-  const filteredSchools = schools.filter(school => {
-    const matchesSearch = school.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                           school.country.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = statusFilter === "all" || school.status === statusFilter;
+  // Filter subscriptions based on search term and status
+  const filteredSubscriptions = subscriptions.filter(subscription => {
+    const matchesSearch = subscription.schoolName.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus = statusFilter === "all" || subscription.status === statusFilter;
     
     return matchesSearch && matchesStatus;
   });
@@ -51,8 +45,8 @@ export function SchoolsList({ schools }: SchoolsListProps) {
     switch (status) {
       case 'active':
         return <Badge className="badge-success">Actif</Badge>;
-      case 'inactive':
-        return <Badge variant="default">Inactif</Badge>;
+      case 'expired':
+        return <Badge variant="destructive">Expiré</Badge>;
       case 'pending':
         return <Badge className="badge-warning">En attente</Badge>;
       default:
@@ -68,7 +62,7 @@ export function SchoolsList({ schools }: SchoolsListProps) {
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
-              placeholder="Rechercher des écoles..."
+              placeholder="Rechercher des abonnements..."
               className="w-full pl-8"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -82,55 +76,43 @@ export function SchoolsList({ schools }: SchoolsListProps) {
             <SelectContent>
               <SelectItem value="all">Tous les statuts</SelectItem>
               <SelectItem value="active">Actif</SelectItem>
-              <SelectItem value="inactive">Inactif</SelectItem>
+              <SelectItem value="expired">Expiré</SelectItem>
               <SelectItem value="pending">En attente</SelectItem>
             </SelectContent>
           </Select>
         </div>
-        
-        <Link to="/schools/add">
-          <Button>Ajouter une école</Button>
-        </Link>
       </div>
       
       <div className="border rounded-md">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Nom</TableHead>
-              <TableHead>Pays</TableHead>
+              <TableHead>École</TableHead>
+              <TableHead>Formule</TableHead>
+              <TableHead>Date de début</TableHead>
+              <TableHead>Date d'expiration</TableHead>
               <TableHead>Statut</TableHead>
-              <TableHead>Date d'enregistrement</TableHead>
-              <TableHead>Enseignants</TableHead>
-              <TableHead>Étudiants</TableHead>
+              <TableHead>Prix</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           
           <TableBody>
-            {filteredSchools.length === 0 ? (
+            {filteredSubscriptions.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={7} className="text-center py-6 text-muted-foreground">
-                  Aucune école trouvée
+                  Aucun abonnement trouvé
                 </TableCell>
               </TableRow>
             ) : (
-              filteredSchools.map((school) => (
-                <TableRow key={school.id}>
-                  <TableCell>
-                    <div className="flex items-center gap-3">
-                      <Avatar>
-                        <AvatarImage src={school.logo} alt={school.name} />
-                        <AvatarFallback>{school.name.substring(0, 2).toUpperCase()}</AvatarFallback>
-                      </Avatar>
-                      <div className="font-medium">{school.name}</div>
-                    </div>
-                  </TableCell>
-                  <TableCell>{school.country}</TableCell>
-                  <TableCell>{getStatusBadge(school.status)}</TableCell>
-                  <TableCell>{new Date(school.registrationDate).toLocaleDateString()}</TableCell>
-                  <TableCell>{school.teachersCount}</TableCell>
-                  <TableCell>{school.studentsCount}</TableCell>
+              filteredSubscriptions.map((subscription) => (
+                <TableRow key={subscription.id}>
+                  <TableCell>{subscription.schoolName}</TableCell>
+                  <TableCell>{subscription.plan}</TableCell>
+                  <TableCell>{new Date(subscription.startDate).toLocaleDateString()}</TableCell>
+                  <TableCell>{new Date(subscription.expiryDate).toLocaleDateString()}</TableCell>
+                  <TableCell>{getStatusBadge(subscription.status)}</TableCell>
+                  <TableCell>{subscription.price} €</TableCell>
                   <TableCell className="text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -140,21 +122,17 @@ export function SchoolsList({ schools }: SchoolsListProps) {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem asChild>
-                          <Link to={`/schools/${school.id}`} className="flex items-center cursor-pointer">
-                            <Eye className="mr-2 h-4 w-4" />
-                            <span>Voir détails</span>
-                          </Link>
+                        <DropdownMenuItem className="flex items-center cursor-pointer">
+                          <CreditCard className="mr-2 h-4 w-4" />
+                          <span>Renouveler</span>
                         </DropdownMenuItem>
-                        <DropdownMenuItem asChild>
-                          <Link to={`/schools/edit/${school.id}`} className="flex items-center cursor-pointer">
-                            <Edit className="mr-2 h-4 w-4" />
-                            <span>Modifier</span>
-                          </Link>
+                        <DropdownMenuItem className="flex items-center cursor-pointer">
+                          <History className="mr-2 h-4 w-4" />
+                          <span>Historique de paiement</span>
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="text-destructive flex items-center cursor-pointer">
-                          <Trash className="mr-2 h-4 w-4" />
-                          <span>Supprimer</span>
+                        <DropdownMenuItem className="flex items-center cursor-pointer text-amber-500">
+                          <AlertCircle className="mr-2 h-4 w-4" />
+                          <span>Notifier l'école</span>
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -169,4 +147,4 @@ export function SchoolsList({ schools }: SchoolsListProps) {
   );
 }
 
-export default SchoolsList;
+export default SubscriptionsList;

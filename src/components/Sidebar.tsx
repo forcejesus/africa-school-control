@@ -14,32 +14,32 @@ import {
 
 const navItems = [
   {
-    title: "Dashboard",
+    title: "Tableau de bord",
     href: "/",
     icon: LayoutDashboard,
   },
   {
-    title: "Schools",
+    title: "Écoles",
     href: "/schools",
     icon: School,
   },
   {
-    title: "Subscriptions",
+    title: "Abonnements",
     href: "/subscriptions",
     icon: FileText,
   },
   {
-    title: "Analytics",
+    title: "Analytique",
     href: "/analytics",
     icon: BarChart,
   },
   {
-    title: "Users",
+    title: "Utilisateurs",
     href: "/users",
     icon: Users,
   },
   {
-    title: "Settings",
+    title: "Paramètres",
     href: "/settings",
     icon: Settings,
   },
@@ -59,7 +59,7 @@ export function Sidebar() {
       <div className="p-4 flex items-center justify-between border-b">
         {!collapsed && (
           <div className="text-lg font-semibold text-primary">
-            Admin Portal
+            Portail Admin
           </div>
         )}
         <button
@@ -101,7 +101,7 @@ export function Sidebar() {
       <div className="p-4 border-t">
         {!collapsed && (
           <div className="text-xs text-muted-foreground">
-            Admin Portal v1.0
+            Portail Admin v1.0
           </div>
         )}
       </div>

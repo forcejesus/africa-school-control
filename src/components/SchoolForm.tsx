@@ -57,10 +57,10 @@ export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
     
     // Show success message
     toast({
-      title: isEditing ? "School updated" : "School created",
+      title: isEditing ? "École mise à jour" : "École créée",
       description: isEditing 
-        ? `Successfully updated ${formData.name}`
-        : `Successfully created ${formData.name}`,
+        ? `${formData.name} a été mise à jour avec succès`
+        : `${formData.name} a été créée avec succès`,
     });
     
     // Navigate back to schools list
@@ -71,18 +71,18 @@ export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
     <form onSubmit={handleSubmit}>
       <Card>
         <CardHeader>
-          <CardTitle>{isEditing ? "Edit School" : "Add New School"}</CardTitle>
+          <CardTitle>{isEditing ? "Modifier l'école" : "Ajouter une nouvelle école"}</CardTitle>
           <CardDescription>
             {isEditing 
-              ? "Update the school's information below." 
-              : "Fill in the details to add a new school to the platform."}
+              ? "Mettez à jour les informations de l'école ci-dessous." 
+              : "Remplissez les détails pour ajouter une nouvelle école à la plateforme."}
           </CardDescription>
         </CardHeader>
         
         <CardContent className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <Label htmlFor="name">School Name</Label>
+              <Label htmlFor="name">Nom de l'école</Label>
               <Input
                 id="name"
                 name="name"
@@ -93,7 +93,7 @@ export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="country">Country</Label>
+              <Label htmlFor="country">Pays</Label>
               <Input
                 id="country"
                 name="country"
@@ -104,24 +104,24 @@ export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="status">Status</Label>
+              <Label htmlFor="status">Statut</Label>
               <Select 
                 value={formData.status} 
                 onValueChange={(value) => handleSelectChange("status", value)}
               >
                 <SelectTrigger id="status">
-                  <SelectValue placeholder="Select status" />
+                  <SelectValue placeholder="Sélectionner un statut" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="inactive">Inactive</SelectItem>
-                  <SelectItem value="pending">Pending</SelectItem>
+                  <SelectItem value="active">Actif</SelectItem>
+                  <SelectItem value="inactive">Inactif</SelectItem>
+                  <SelectItem value="pending">En attente</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="contactEmail">Contact Email</Label>
+              <Label htmlFor="contactEmail">Email de contact</Label>
               <Input
                 id="contactEmail"
                 name="contactEmail"
@@ -133,7 +133,7 @@ export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="contactPhone">Contact Phone</Label>
+              <Label htmlFor="contactPhone">Téléphone de contact</Label>
               <Input
                 id="contactPhone"
                 name="contactPhone"
@@ -143,7 +143,7 @@ export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="adminName">Admin Name</Label>
+              <Label htmlFor="adminName">Nom de l'administrateur</Label>
               <Input
                 id="adminName"
                 name="adminName"
@@ -157,10 +157,10 @@ export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
         
         <CardFooter className="flex justify-between">
           <Button variant="outline" type="button" onClick={() => navigate("/schools")}>
-            Cancel
+            Annuler
           </Button>
           <Button type="submit">
-            {isEditing ? "Update School" : "Add School"}
+            {isEditing ? "Mettre à jour l'école" : "Ajouter l'école"}
           </Button>
         </CardFooter>
       </Card>

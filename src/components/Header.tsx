@@ -16,14 +16,14 @@ export function Header() {
   return (
     <header className="border-b px-6 py-3 sticky top-0 bg-background z-10">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">School Administration Platform</h1>
+        <h1 className="text-xl font-semibold">Plateforme d'Administration Scolaire</h1>
         
         <div className="flex items-center space-x-4">
           <div className="relative w-64">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
-              placeholder="Search..."
+              placeholder="Rechercher..."
               className="w-full pl-8"
             />
           </div>
@@ -37,21 +37,21 @@ export function Header() {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="relative h-9 w-9 rounded-full">
                 <Avatar className="h-9 w-9">
-                  <AvatarImage src="" alt="Admin User" />
+                  <AvatarImage src="" alt="Utilisateur Admin" />
                   <AvatarFallback>AU</AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56" align="end">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuLabel>Mon compte</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem>
                 <User className="mr-2 h-4 w-4" />
-                <span>Profile</span>
+                <span>Profil</span>
               </DropdownMenuItem>
-              <DropdownMenuItem>Settings</DropdownMenuItem>
+              <DropdownMenuItem>Paramètres</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Log out</DropdownMenuItem>
+              <DropdownMenuItem>Déconnexion</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
