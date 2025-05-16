@@ -44,13 +44,13 @@ export function SubscriptionsList() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'active':
-        return <Badge className="badge-success">Actif</Badge>;
+        return <Badge className="badge-success text-sm">Actif</Badge>; // Augmentation du texte du badge
       case 'expired':
-        return <Badge variant="destructive">Expiré</Badge>;
+        return <Badge variant="destructive" className="text-sm">Expiré</Badge>;
       case 'pending':
-        return <Badge className="badge-warning">En attente</Badge>;
+        return <Badge className="badge-warning text-sm">En attente</Badge>;
       default:
-        return <Badge>{status}</Badge>;
+        return <Badge className="text-sm">{status}</Badge>;
     }
   };
 
@@ -59,25 +59,25 @@ export function SubscriptionsList() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3 flex-1">
           <div className="relative max-w-xs">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute left-2.5 top-3 h-5 w-5 text-muted-foreground" /> {/* Icône agrandie et repositionnée */}
             <Input
               type="search"
               placeholder="Rechercher des abonnements..."
-              className="w-full pl-8"
+              className="w-full pl-9 py-2.5 text-base" /* Input légèrement plus grand avec texte plus grand */
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
           
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-[160px]">
+            <SelectTrigger className="w-[180px] text-base"> {/* Augmentation de la largeur et taille du texte */}
               <SelectValue placeholder="Filtrer par statut" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Tous les statuts</SelectItem>
-              <SelectItem value="active">Actif</SelectItem>
-              <SelectItem value="expired">Expiré</SelectItem>
-              <SelectItem value="pending">En attente</SelectItem>
+              <SelectItem value="all" className="text-base">Tous les statuts</SelectItem>
+              <SelectItem value="active" className="text-base">Actif</SelectItem>
+              <SelectItem value="expired" className="text-base">Expiré</SelectItem>
+              <SelectItem value="pending" className="text-base">En attente</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -87,51 +87,51 @@ export function SubscriptionsList() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>École</TableHead>
-              <TableHead>Formule</TableHead>
-              <TableHead>Date de début</TableHead>
-              <TableHead>Date d'expiration</TableHead>
-              <TableHead>Statut</TableHead>
-              <TableHead>Prix</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead className="text-base">École</TableHead> {/* Augmentation de la taille du texte */}
+              <TableHead className="text-base">Formule</TableHead>
+              <TableHead className="text-base">Date de début</TableHead>
+              <TableHead className="text-base">Date d'expiration</TableHead>
+              <TableHead className="text-base">Statut</TableHead>
+              <TableHead className="text-base">Prix</TableHead>
+              <TableHead className="text-right text-base">Actions</TableHead>
             </TableRow>
           </TableHeader>
           
           <TableBody>
             {filteredSubscriptions.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="text-center py-6 text-muted-foreground">
+                <TableCell colSpan={7} className="text-center py-6 text-muted-foreground text-base">
                   Aucun abonnement trouvé
                 </TableCell>
               </TableRow>
             ) : (
               filteredSubscriptions.map((subscription) => (
                 <TableRow key={subscription.id}>
-                  <TableCell>{subscription.schoolName}</TableCell>
-                  <TableCell>{subscription.plan}</TableCell>
-                  <TableCell>{new Date(subscription.startDate).toLocaleDateString()}</TableCell>
-                  <TableCell>{new Date(subscription.expiryDate).toLocaleDateString()}</TableCell>
+                  <TableCell className="text-base">{subscription.schoolName}</TableCell>
+                  <TableCell className="text-base">{subscription.plan}</TableCell>
+                  <TableCell className="text-base">{new Date(subscription.startDate).toLocaleDateString()}</TableCell>
+                  <TableCell className="text-base">{new Date(subscription.expiryDate).toLocaleDateString()}</TableCell>
                   <TableCell>{getStatusBadge(subscription.status)}</TableCell>
-                  <TableCell>{subscription.price} €</TableCell>
+                  <TableCell className="text-base">{subscription.price} €</TableCell>
                   <TableCell className="text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon">
-                          <MoreVertical className="h-4 w-4" />
+                          <MoreVertical className="h-5 w-5" /> {/* Icône agrandie */}
                           <span className="sr-only">Ouvrir menu</span>
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem className="flex items-center cursor-pointer">
-                          <CreditCard className="mr-2 h-4 w-4" />
+                        <DropdownMenuItem className="flex items-center cursor-pointer text-base">
+                          <CreditCard className="mr-2 h-5 w-5" /> {/* Icône agrandie */}
                           <span>Renouveler</span>
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="flex items-center cursor-pointer">
-                          <History className="mr-2 h-4 w-4" />
+                        <DropdownMenuItem className="flex items-center cursor-pointer text-base">
+                          <History className="mr-2 h-5 w-5" /> {/* Icône agrandie */}
                           <span>Historique de paiement</span>
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="flex items-center cursor-pointer text-amber-500">
-                          <AlertCircle className="mr-2 h-4 w-4" />
+                        <DropdownMenuItem className="flex items-center cursor-pointer text-amber-500 text-base">
+                          <AlertCircle className="mr-2 h-5 w-5" /> {/* Icône agrandie */}
                           <span>Notifier l'école</span>
                         </DropdownMenuItem>
                       </DropdownMenuContent>

@@ -47,11 +47,11 @@ export function SubscriptionCard({ subscription }: SubscriptionCardProps) {
     <Card>
       <CardHeader className="pb-2 flex flex-row justify-between items-center">
         <CardTitle className="text-lg">
-          <span className={`px-2 py-1 rounded-md text-xs font-medium ${getPlanColor()}`}>
+          <span className={`px-2 py-1 rounded-md text-sm font-medium ${getPlanColor()}`}>
             {plan.charAt(0).toUpperCase() + plan.slice(1)}
           </span>
         </CardTitle>
-        <Badge variant={getBadgeVariant() as any}>
+        <Badge variant={getBadgeVariant() as any} className="text-sm">
           {status.charAt(0).toUpperCase() + status.slice(1)}
         </Badge>
       </CardHeader>
@@ -59,25 +59,25 @@ export function SubscriptionCard({ subscription }: SubscriptionCardProps) {
       <CardContent>
         <div className="space-y-3">
           <div className="flex justify-between">
-            <span className="text-sm text-muted-foreground">Prix</span>
-            <span className="font-medium">{price} {currency}</span>
+            <span className="text-base text-muted-foreground">Prix</span>
+            <span className="font-medium text-base">{price} {currency}</span>
           </div>
 
           <div className="flex justify-between items-center">
-            <span className="text-sm text-muted-foreground">Période</span>
+            <span className="text-base text-muted-foreground">Période</span>
             <div className="flex items-center gap-1">
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger>
-                    <Calendar className="h-4 w-4 text-muted-foreground" />
+                    <Calendar className="h-5 w-5 text-muted-foreground" /> {/* Icône agrandie */}
                   </TooltipTrigger>
-                  <TooltipContent>
+                  <TooltipContent className="text-base">
                     <p>Début: {new Date(startDate).toLocaleDateString()}</p>
                     <p>Fin: {new Date(expiryDate).toLocaleDateString()}</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
-              <span className="text-sm">
+              <span className="text-base">
                 {status === 'expired' ? 'Expiré' : 
                   status === 'pending' ? 'En attente d\'activation' : 
                   `${daysRemaining} jours restants`}
@@ -86,8 +86,8 @@ export function SubscriptionCard({ subscription }: SubscriptionCardProps) {
           </div>
 
           <div className="flex justify-between">
-            <span className="text-sm text-muted-foreground">Renouvellement auto</span>
-            <span className={autoRenew ? 'text-green-500' : 'text-muted-foreground'}>
+            <span className="text-base text-muted-foreground">Renouvellement auto</span>
+            <span className={`text-base ${autoRenew ? 'text-green-500' : 'text-muted-foreground'}`}>
               {autoRenew ? 'Activé' : 'Désactivé'}
             </span>
           </div>

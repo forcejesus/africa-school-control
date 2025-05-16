@@ -20,38 +20,37 @@ export function Header() {
         
         <div className="flex items-center space-x-4">
           <div className="relative w-64">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute left-2.5 top-3 h-5 w-5 text-muted-foreground" /> {/* Icône agrandie et repositionnée */}
             <Input
               type="search"
               placeholder="Rechercher..."
-              className="w-full pl-8"
+              className="w-full pl-9 py-2.5 text-base" /* Input légèrement plus grand avec texte plus grand */
             />
           </div>
           
           <Button variant="ghost" size="icon" className="relative">
-            <Bell className="h-5 w-5" />
+            <Bell className="h-6 w-6" /> {/* Icône agrandie */}
             <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
           </Button>
           
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-9 w-9 rounded-full">
-                <Avatar className="h-9 w-9">
+              <Button variant="ghost" className="relative h-10 w-10 rounded-full"> {/* Avatar agrandi */}
+                <Avatar className="h-10 w-10"> {/* Avatar agrandi */}
                   <AvatarImage src="" alt="Utilisateur Admin" />
                   <AvatarFallback>AU</AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56" align="end">
-              <DropdownMenuLabel>Mon compte</DropdownMenuLabel>
+              <DropdownMenuLabel className="text-base">Mon compte</DropdownMenuLabel> {/* Texte agrandi */}
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <User className="mr-2 h-4 w-4" />
+              <DropdownMenuItem className="text-base">
+                <User className="mr-2 h-5 w-5" /> {/* Icône agrandie */}
                 <span>Profil</span>
               </DropdownMenuItem>
-              <DropdownMenuItem>Paramètres</DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>Déconnexion</DropdownMenuItem>
+              <DropdownMenuItem className="text-base">Paramètres</DropdownMenuItem> {/* Texte agrandi */}
+              <DropdownMenuItem className="text-base">Déconnexion</DropdownMenuItem> {/* Texte agrandi */}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

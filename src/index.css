@@ -111,6 +111,18 @@
 
   body {
     @apply bg-background text-foreground;
+    /* Augmentation légère de la taille de base du texte */
+    font-size: 1.05rem;
+  }
+
+  h1 {
+    @apply text-2xl font-bold;
+    font-size: 1.75rem;
+  }
+  
+  h2 {
+    @apply text-xl font-semibold;
+    font-size: 1.35rem;
   }
 }
 
@@ -129,3 +141,10 @@
   background-color: hsl(var(--info));
   color: hsl(var(--info-foreground));
 }
+
+/* Classe pour les icônes légèrement agrandies */
+.icon-larger {
+  width: 1.25em;
+  height: 1.25em;
+}
+

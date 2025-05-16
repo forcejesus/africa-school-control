@@ -68,7 +68,7 @@ export function Sidebar() {
         >
           <ChevronLeft
             className={cn(
-              "h-5 w-5 text-muted-foreground transition-transform",
+              "h-6 w-6 text-muted-foreground transition-transform", // Icône agrandie
               collapsed && "rotate-180"
             )}
           />
@@ -84,14 +84,14 @@ export function Sidebar() {
                 key={item.href}
                 to={item.href}
                 className={cn(
-                  "flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
+                  "flex items-center gap-3 px-3 py-2.5 rounded-md text-sm transition-colors", // Augmentation de padding vertical
                   isActive
                     ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
                     : "text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground"
                 )}
               >
                 <item.icon className={cn("h-5 w-5", collapsed ? "mx-auto" : "")} />
-                {!collapsed && <span>{item.title}</span>}
+                {!collapsed && <span className="text-base">{item.title}</span>}
               </Link>
             );
           })}
@@ -100,7 +100,7 @@ export function Sidebar() {
 
       <div className="p-4 border-t">
         {!collapsed && (
-          <div className="text-xs text-muted-foreground">
+          <div className="text-sm text-muted-foreground"> {/* Augmentation de la taille du texte */}
             Portail Admin v1.0
           </div>
         )}
