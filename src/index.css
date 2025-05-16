@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -49,6 +50,16 @@
     --sidebar-border: 220 13% 91%;
 
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Custom badge variants */
+    --success: 142.1 76.2% 36.3%;
+    --success-foreground: 355.7 100% 97.3%;
+    
+    --warning: 38 92% 50%;
+    --warning-foreground: 355.7 100% 97.3%;
+    
+    --info: 221.2 83.2% 53.3%;
+    --info-foreground: 210 40% 98%;
   }
 
   .dark {
@@ -87,6 +98,16 @@
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Custom badge variants in dark mode */
+    --success: 142.1 70.6% 45.3%;
+    --success-foreground: 144.9 80.4% 10%;
+    
+    --warning: 38 92% 50%;
+    --warning-foreground: 26 83.3% 14.1%;
+    
+    --info: 217.2 91.2% 59.8%;
+    --info-foreground: 222.2 47.4% 11.2%;
   }
 }
 
@@ -98,4 +119,20 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Custom badge variants */
+.badge-success {
+  background-color: hsl(var(--success));
+  color: hsl(var(--success-foreground));
+}
+
+.badge-warning {
+  background-color: hsl(var(--warning));
+  color: hsl(var(--warning-foreground));
+}
+
+.badge-info {
+  background-color: hsl(var(--info));
+  color: hsl(var(--info-foreground));
 }
