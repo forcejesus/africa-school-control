@@ -1,5 +1,5 @@
 
-import { schools } from "@/utils/dummyData";
+import { schools } from "@/utils/data";
 import Header from "@/components/Header";
 import SchoolsList from "@/components/SchoolsList";
 

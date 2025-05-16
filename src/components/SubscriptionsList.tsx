@@ -26,7 +26,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Search, MoreVertical, CreditCard, History, AlertCircle } from "lucide-react";
-import { subscriptions } from "@/utils/dummyData";
+import { subscriptions } from "@/utils/data";
 
 export function SubscriptionsList() {
   const [searchTerm, setSearchTerm] = useState("");

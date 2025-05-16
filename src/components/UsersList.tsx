@@ -19,7 +19,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Search, MoreVertical, Edit, Trash, Lock } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { users } from "@/utils/dummyData";
+import { users } from "@/utils/data";
 
 export function UsersList() {
   const [searchTerm, setSearchTerm] = useState("");

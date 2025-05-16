@@ -1,7 +1,7 @@
 
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Edit, ArrowLeft, Users, BookOpen, Mail, Phone } from "lucide-react";
-import { schools, subscriptions, activities } from "@/utils/dummyData";
+import { schools, subscriptions, activities } from "@/utils/data";
 import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";

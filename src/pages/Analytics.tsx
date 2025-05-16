@@ -10,7 +10,13 @@ import {
   BookOpen
 } from "lucide-react";
 import ActivityChart from "@/components/ActivityChart";
-import { getActivityChartData, getTotalActiveSchools, getTotalGamesPlayed, getTotalStudents, getTotalTeachers } from "@/utils/dummyData";
+import { 
+  getActivityChartData, 
+  getTotalActiveSchools, 
+  getTotalGamesPlayed, 
+  getTotalStudents, 
+  getTotalTeachers 
+} from "@/utils/data";
 
 const Analytics = () => {
   const activityData = getActivityChartData();

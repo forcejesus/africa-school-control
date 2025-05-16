@@ -26,7 +26,7 @@ import {
   getTotalTeachers,
   schools,
   subscriptions
-} from "@/utils/dummyData";
+} from "@/utils/data";
 
 const Dashboard = () => {
   const activityData = getActivityChartData();

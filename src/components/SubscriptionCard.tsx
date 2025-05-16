@@ -7,7 +7,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Subscription } from "@/utils/dummyData";
+import { Subscription } from "@/utils/data/types";
 import { Calendar } from "lucide-react";
 
 interface SubscriptionCardProps {
