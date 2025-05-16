@@ -1,4 +1,3 @@
-
 export interface School {
   id: string;
   name: string;
@@ -23,6 +22,9 @@ export interface Subscription {
   expiryDate: string;
   price: number;
   autoRenew: boolean;
+  // Adding these to fix the SubscriptionCard component errors
+  currency?: string;
+  endDate?: string;
 }
 
 export interface User {
@@ -33,6 +35,22 @@ export interface User {
   role: string;
   createdAt: string;
   lastLogin: string;
+}
+
+export interface Activity {
+  id: string;
+  schoolId: string;
+  date: string;
+  gamesPlayed: number;
+  activeUsers: number;
+  gamesCreated: number;
+}
+
+export interface ActivityDataPoint {
+  date: string;
+  gamesCreated: number;
+  gamesPlayed: number;
+  activeUsers: number;
 }
 
 export const schools: School[] = [
@@ -112,7 +130,9 @@ export const subscriptions: Subscription[] = [
     status: "active",
     startDate: "2023-01-15",
     expiryDate: "2024-01-15",
+    endDate: "2024-01-15", // Adding for compatibility
     price: 2499,
+    currency: "EUR", // Adding for compatibility
     autoRenew: true
   },
   {
@@ -123,7 +143,9 @@ export const subscriptions: Subscription[] = [
     status: "active",
     startDate: "2023-02-10",
     expiryDate: "2024-02-10",
+    endDate: "2024-02-10",
     price: 1499,
+    currency: "EUR",
     autoRenew: true
   },
   {
@@ -134,7 +156,9 @@ export const subscriptions: Subscription[] = [
     status: "pending",
     startDate: "2023-03-05",
     expiryDate: "2024-03-05",
+    endDate: "2024-03-05",
     price: 999,
+    currency: "EUR",
     autoRenew: false
   },
   {
@@ -145,7 +169,9 @@ export const subscriptions: Subscription[] = [
     status: "expired",
     startDate: "2022-11-20",
     expiryDate: "2023-11-20",
+    endDate: "2023-11-20",
     price: 2499,
+    currency: "EUR",
     autoRenew: false
   },
   {
@@ -156,7 +182,9 @@ export const subscriptions: Subscription[] = [
     status: "active",
     startDate: "2023-01-30",
     expiryDate: "2024-01-30",
+    endDate: "2024-01-30",
     price: 1499,
+    currency: "EUR",
     autoRenew: true
   }
 ];
@@ -208,3 +236,109 @@ export const users: User[] = [
     lastLogin: "2023-05-15"
   }
 ];
+
+// Adding activities data
+export const activities: Activity[] = [
+  {
+    id: "act001",
+    schoolId: "sch001",
+    date: "2023-05-12",
+    gamesPlayed: 45,
+    activeUsers: 120,
+    gamesCreated: 8
+  },
+  {
+    id: "act002",
+    schoolId: "sch002",
+    date: "2023-05-11",
+    gamesPlayed: 32,
+    activeUsers: 95,
+    gamesCreated: 5
+  },
+  {
+    id: "act003",
+    schoolId: "sch003",
+    date: "2023-05-10",
+    gamesPlayed: 18,
+    activeUsers: 60,
+    gamesCreated: 3
+  },
+  {
+    id: "act004",
+    schoolId: "sch004",
+    date: "2023-05-09",
+    gamesPlayed: 0,
+    activeUsers: 0,
+    gamesCreated: 0
+  },
+  {
+    id: "act005",
+    schoolId: "sch005",
+    date: "2023-05-08",
+    gamesPlayed: 28,
+    activeUsers: 78,
+    gamesCreated: 4
+  }
+];
+
+// Adding the required utility functions
+export const getTotalSchools = (): number => {
+  return schools.length;
+};
+
+export const getTotalActiveSchools = (): number => {
+  return schools.filter(school => school.status === 'active').length;
+};
+
+export const getTotalStudents = (): number => {
+  return schools.reduce((total, school) => total + school.studentsCount, 0);
+};
+
+export const getTotalTeachers = (): number => {
+  return schools.reduce((total, school) => total + school.teachersCount, 0);
+};
+
+export const getTotalGamesPlayed = (): number => {
+  return activities.reduce((total, activity) => total + activity.gamesPlayed, 0);
+};
+
+export const getActivityChartData = (): ActivityDataPoint[] => {
+  const today = new Date();
+  const data: ActivityDataPoint[] = [];
+  
+  // Generate activity data for the past 7 days
+  for (let i = 6; i >= 0; i--) {
+    const date = new Date(today);
+    date.setDate(date.getDate() - i);
+    const dateString = date.toISOString().split('T')[0];
+    
+    // Random data for demonstration
+    data.push({
+      date: dateString,
+      gamesCreated: Math.floor(Math.random() * 10) + 1,
+      gamesPlayed: Math.floor(Math.random() * 50) + 10,
+      activeUsers: Math.floor(Math.random() * 100) + 30
+    });
+  }
+  
+  return data;
+};
+
+export const getExpiringSubscriptions = () => {
+  const today = new Date();
+  const thirtyDaysFromNow = new Date(today);
+  thirtyDaysFromNow.setDate(today.getDate() + 30);
+  
+  return subscriptions
+    .filter(sub => {
+      const expiryDate = new Date(sub.expiryDate);
+      return expiryDate > today && expiryDate <= thirtyDaysFromNow && sub.status === 'active';
+    })
+    .slice(0, 3); // Return only the first 3
+};
+
+export const getRecentActivities = () => {
+  return activities.sort((a, b) => {
+    return new Date(b.date).getTime() - new Date(a.date).getTime();
+  }).slice(0, 5); // Return only the 5 most recent activities
+};

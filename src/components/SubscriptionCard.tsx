@@ -15,11 +15,11 @@ interface SubscriptionCardProps {
 }
 
 export function SubscriptionCard({ subscription }: SubscriptionCardProps) {
-  const { plan, startDate, endDate, status, price, currency, autoRenew } = subscription;
+  const { plan, startDate, expiryDate, status, price, currency = "EUR", autoRenew } = subscription;
 
   // Calculate days remaining
   const today = new Date();
-  const end = new Date(endDate);
+  const end = new Date(expiryDate);
   const daysRemaining = Math.ceil((end.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
   
   // Determine badge styles based on status
@@ -33,11 +33,13 @@ export function SubscriptionCard({ subscription }: SubscriptionCardProps) {
 
   // Determine plan badge colors
   const getPlanColor = () => {
-    switch (plan) {
+    switch (plan.toLowerCase()) {
       case 'basic': return 'bg-blue-100 text-blue-800';
       case 'premium': return 'bg-violet-100 text-violet-800';
       case 'enterprise': return 'bg-amber-100 text-amber-800';
-      default: return '';
+      case 'standard': return 'bg-green-100 text-green-800';
+      case 'démarrage': return 'bg-blue-100 text-blue-800';
+      default: return 'bg-gray-100 text-gray-800';
     }
   };
 
@@ -57,12 +59,12 @@ export function SubscriptionCard({ subscription }: SubscriptionCardProps) {
       <CardContent>
         <div className="space-y-3">
           <div className="flex justify-between">
-            <span className="text-sm text-muted-foreground">Price</span>
+            <span className="text-sm text-muted-foreground">Prix</span>
             <span className="font-medium">{price} {currency}</span>
           </div>
 
           <div className="flex justify-between items-center">
-            <span className="text-sm text-muted-foreground">Period</span>
+            <span className="text-sm text-muted-foreground">Période</span>
             <div className="flex items-center gap-1">
               <TooltipProvider>
                 <Tooltip>
@@ -70,23 +72,23 @@ export function SubscriptionCard({ subscription }: SubscriptionCardProps) {
                     <Calendar className="h-4 w-4 text-muted-foreground" />
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>Start: {new Date(startDate).toLocaleDateString()}</p>
-                    <p>End: {new Date(endDate).toLocaleDateString()}</p>
+                    <p>Début: {new Date(startDate).toLocaleDateString()}</p>
+                    <p>Fin: {new Date(expiryDate).toLocaleDateString()}</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
               <span className="text-sm">
-                {status === 'expired' ? 'Expired' : 
-                  status === 'pending' ? 'Pending activation' : 
-                  `${daysRemaining} days left`}
+                {status === 'expired' ? 'Expiré' : 
+                  status === 'pending' ? 'En attente d\'activation' : 
+                  `${daysRemaining} jours restants`}
               </span>
             </div>
           </div>
 
           <div className="flex justify-between">
-            <span className="text-sm text-muted-foreground">Auto-renewal</span>
+            <span className="text-sm text-muted-foreground">Renouvellement auto</span>
             <span className={autoRenew ? 'text-green-500' : 'text-muted-foreground'}>
-              {autoRenew ? 'Enabled' : 'Disabled'}
+              {autoRenew ? 'Activé' : 'Désactivé'}
             </span>
           </div>
         </div>
