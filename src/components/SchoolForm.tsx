@@ -19,7 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { School } from "@/utils/dummyData";
+import { School } from "@/utils/data/types";
 import { useToast } from "@/hooks/use-toast";
 
 interface SchoolFormProps {

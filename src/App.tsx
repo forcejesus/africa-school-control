@@ -14,7 +14,7 @@ import SchoolDetail from "./pages/SchoolDetail";
 import NotFound from "./pages/NotFound";
 import SchoolForm from "./components/SchoolForm";
 import Sidebar from "./components/Sidebar";
-import { schools } from "./utils/dummyData";
+import { schools } from "./utils/data";
 
 const queryClient = new QueryClient();
 
