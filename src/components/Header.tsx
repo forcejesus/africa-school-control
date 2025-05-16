@@ -1,7 +1,8 @@
 
-import { Bell, Search, User } from "lucide-react";
+import { Bell, Search, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import ThemeSwitcher from "@/components/ThemeSwitcher";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,43 +15,51 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export function Header() {
   return (
-    <header className="border-b px-6 py-3 sticky top-0 bg-background z-10">
+    <header className="border-b px-6 py-3 sticky top-0 bg-background/95 backdrop-blur-sm z-10 shadow-sm transition-all duration-300">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">Plateforme d'Administration Scolaire</h1>
+        <h1 className="text-xl font-bold bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent animate-pulse">
+          Plateforme d'Administration Gaming
+        </h1>
         
         <div className="flex items-center space-x-4">
           <div className="relative w-64">
-            <Search className="absolute left-2.5 top-3 h-5 w-5 text-muted-foreground" /> {/* Icône agrandie et repositionnée */}
+            <Search className="absolute left-2.5 top-3 h-5 w-5 text-muted-foreground" />
             <Input
               type="search"
               placeholder="Rechercher..."
-              className="w-full pl-9 py-2.5 text-base" /* Input légèrement plus grand avec texte plus grand */
+              className="w-full pl-9 py-2.5 text-base transition-all border-purple-200 focus-visible:ring-purple-400" 
             />
           </div>
           
+          <ThemeSwitcher />
+          
           <Button variant="ghost" size="icon" className="relative">
-            <Bell className="h-6 w-6" /> {/* Icône agrandie */}
+            <Bell className="h-6 w-6" />
+            <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full animate-ping" />
             <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
           </Button>
           
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-10 w-10 rounded-full"> {/* Avatar agrandi */}
-                <Avatar className="h-10 w-10"> {/* Avatar agrandi */}
+              <Button variant="ghost" className="relative h-10 w-10 rounded-full border-2 border-purple-200 hover:border-purple-400 transition-all duration-300">
+                <Avatar className="h-10 w-10">
                   <AvatarImage src="" alt="Utilisateur Admin" />
-                  <AvatarFallback>AU</AvatarFallback>
+                  <AvatarFallback className="bg-gradient-to-br from-indigo-600 to-purple-700 text-white">AU</AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56" align="end">
-              <DropdownMenuLabel className="text-base">Mon compte</DropdownMenuLabel> {/* Texte agrandi */}
+              <DropdownMenuLabel className="text-base">Mon compte</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem className="text-base">
-                <User className="mr-2 h-5 w-5" /> {/* Icône agrandie */}
+                <User className="mr-2 h-5 w-5" />
                 <span>Profil</span>
               </DropdownMenuItem>
-              <DropdownMenuItem className="text-base">Paramètres</DropdownMenuItem> {/* Texte agrandi */}
-              <DropdownMenuItem className="text-base">Déconnexion</DropdownMenuItem> {/* Texte agrandi */}
+              <DropdownMenuItem className="text-base">Paramètres</DropdownMenuItem>
+              <DropdownMenuItem className="text-base text-red-500">
+                <LogOut className="mr-2 h-5 w-5" />
+                <span>Déconnexion</span>
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

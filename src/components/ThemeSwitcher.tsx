@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { Moon, Sun } from "lucide-react";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { Button } from "@/components/ui/button";
 
 const ThemeSwitcher = () => {
   const [theme, setTheme] = useState(() => {
@@ -21,25 +21,24 @@ const ThemeSwitcher = () => {
     localStorage.setItem("theme", theme);
   }, [theme]);
 
-  const handleThemeChange = (value: string) => {
-    if (value) {
-      setTheme(value);
-    }
+  const toggleTheme = () => {
+    setTheme(prevTheme => prevTheme === "light" ? "dark" : "light");
   };
 
   return (
-    <div className="flex items-center space-x-2">
-      <ToggleGroup type="single" value={theme} onValueChange={handleThemeChange}>
-        <ToggleGroupItem value="light" aria-label="Mode clair">
-          <Sun className="h-4 w-4 mr-2" />
-          Clair
-        </ToggleGroupItem>
-        <ToggleGroupItem value="dark" aria-label="Mode sombre">
-          <Moon className="h-4 w-4 mr-2" />
-          Sombre
-        </ToggleGroupItem>
-      </ToggleGroup>
-    </div>
+    <Button 
+      variant="ghost" 
+      size="icon" 
+      onClick={toggleTheme}
+      className="relative transition-all duration-500 hover:bg-purple-100 dark:hover:bg-purple-900"
+      aria-label="Changer le thème"
+    >
+      {theme === 'dark' ? (
+        <Moon className="h-6 w-6 transition-all duration-300 rotate-0 scale-100" />
+      ) : (
+        <Sun className="h-6 w-6 transition-all duration-300 rotate-90 scale-100" />
+      )}
+    </Button>
   );
 };
 
