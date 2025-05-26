@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import Header from "@/components/Header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,6 +16,8 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { Plus, Edit, Trash2 } from "lucide-react";
 
 const Settings = () => {
   const [emailNotifications, setEmailNotifications] = useState(true);
@@ -25,6 +26,13 @@ const Settings = () => {
   const [selectedSubscription, setSelectedSubscription] = useState("");
   const [subscriptionPlan, setSubscriptionPlan] = useState("Standard");
   const [autoRenew, setAutoRenew] = useState(true);
+  
+  // FAQ state
+  const [faqs, setFaqs] = useState([
+    { id: 1, question: "Comment réinitialiser mon mot de passe ?", answer: "Allez dans les paramètres de sécurité..." },
+    { id: 2, question: "Comment ajouter une nouvelle école ?", answer: "Cliquez sur le bouton Ajouter dans la section Écoles..." },
+  ]);
+  const [newFaq, setNewFaq] = useState({ question: "", answer: "" });
   
   return (
     <div className="flex flex-col h-screen">
@@ -44,6 +52,7 @@ const Settings = () => {
               <TabsTrigger value="subscriptions" className="text-base">Abonnements</TabsTrigger>
               <TabsTrigger value="appearance" className="text-base">Apparence</TabsTrigger>
               <TabsTrigger value="security" className="text-base">Sécurité</TabsTrigger>
+              <TabsTrigger value="faq" className="text-base">FAQ</TabsTrigger>
             </TabsList>
             
             <TabsContent value="general" className="space-y-4">
@@ -55,6 +64,7 @@ const Settings = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
+                  
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="firstName" className="text-base">Prénom</Label>
@@ -89,6 +99,7 @@ const Settings = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
+                  
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <div>
@@ -134,12 +145,41 @@ const Settings = () => {
                 <CardHeader>
                   <CardTitle>Gestion des abonnements</CardTitle>
                   <CardDescription className="text-base">
-                    Mettez à jour les paramètres des abonnements des écoles.
+                    Consultez et mettez à jour les abonnements des écoles.
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold">Liste des abonnements existants</h3>
+                    <div className="grid gap-4">
+                      {subscriptions.map((subscription) => (
+                        <div key={subscription.id} className="border rounded-lg p-4 space-y-2">
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <h4 className="font-medium">{subscription.schoolName}</h4>
+                              <p className="text-sm text-muted-foreground">Plan: {subscription.plan}</p>
+                              <p className="text-sm text-muted-foreground">Statut: {subscription.status}</p>
+                              <p className="text-sm text-muted-foreground">Prix: {subscription.price}€</p>
+                            </div>
+                            <div className="flex space-x-2">
+                              <Button variant="outline" size="sm">
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                              <Button variant="destructive" size="sm">
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <Separator />
+                  
                   <div className="space-y-2">
-                    <Label htmlFor="selected-subscription" className="text-base">Choisir un abonnement</Label>
+                    <Label htmlFor="selected-subscription" className="text-base">Modifier un abonnement</Label>
+                    
                     <Select 
                       value={selectedSubscription} 
                       onValueChange={setSelectedSubscription}
@@ -163,6 +203,7 @@ const Settings = () => {
                   
                   {selectedSubscription && (
                     <div className="space-y-4 border p-4 rounded-md">
+                      
                       <h3 className="text-lg font-medium">Détails de l'abonnement</h3>
                       
                       <div className="space-y-2">
@@ -273,6 +314,7 @@ const Settings = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
+                  
                   <div className="space-y-4">
                     <div className="space-y-2">
                       <Label htmlFor="current-password" className="text-base">Mot de passe actuel</Label>
@@ -289,6 +331,76 @@ const Settings = () => {
                   </div>
                   <div className="flex justify-end">
                     <Button size="lg" className="text-base">Changer le mot de passe</Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="faq" className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Gestion des FAQ</CardTitle>
+                  <CardDescription className="text-base">
+                    Gérez les questions fréquemment posées pour les écoles.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold">FAQ existantes</h3>
+                    <div className="space-y-4">
+                      {faqs.map((faq) => (
+                        <div key={faq.id} className="border rounded-lg p-4 space-y-2">
+                          <div className="flex justify-between items-start">
+                            <div className="flex-1">
+                              <h4 className="font-medium">{faq.question}</h4>
+                              <p className="text-sm text-muted-foreground mt-1">{faq.answer}</p>
+                            </div>
+                            <div className="flex space-x-2 ml-4">
+                              <Button variant="outline" size="sm">
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                              <Button variant="destructive" size="sm">
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <Separator />
+                  
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold">Ajouter une nouvelle FAQ</h3>
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="new-question" className="text-base">Question</Label>
+                        <Input 
+                          id="new-question" 
+                          placeholder="Entrez la question..."
+                          value={newFaq.question}
+                          onChange={(e) => setNewFaq({...newFaq, question: e.target.value})}
+                          className="text-base"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="new-answer" className="text-base">Réponse</Label>
+                        <Textarea 
+                          id="new-answer" 
+                          placeholder="Entrez la réponse..."
+                          value={newFaq.answer}
+                          onChange={(e) => setNewFaq({...newFaq, answer: e.target.value})}
+                          className="text-base min-h-[100px]"
+                        />
+                      </div>
+                      <div className="flex justify-end">
+                        <Button className="text-base">
+                          <Plus className="h-4 w-4 mr-2" />
+                          Ajouter la FAQ
+                        </Button>
+                      </div>
+                    </div>
                   </div>
                 </CardContent>
               </Card>

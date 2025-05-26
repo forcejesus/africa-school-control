@@ -1,5 +1,5 @@
 
-import { Bell, Search, User, LogOut } from "lucide-react";
+import { Bell, Search, User, LogOut, FileText, HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import ThemeSwitcher from "@/components/ThemeSwitcher";
@@ -12,13 +12,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Link } from "react-router-dom";
 
 export function Header() {
   return (
     <header className="border-b px-6 py-3 sticky top-0 bg-background/95 backdrop-blur-sm z-10 shadow-sm transition-all duration-300">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent animate-pulse">
-          Plateforme d'Administration Gaming
+        <h1 className="text-xl font-bold bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent">
+          Admin Akili
         </h1>
         
         <div className="flex items-center space-x-4">
@@ -31,13 +32,20 @@ export function Header() {
             />
           </div>
           
-          <ThemeSwitcher />
+          <Link to="/notifications">
+            <Button variant="ghost" size="icon" className="relative">
+              <Bell className="h-6 w-6" />
+              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
+            </Button>
+          </Link>
           
-          <Button variant="ghost" size="icon" className="relative">
-            <Bell className="h-6 w-6" />
-            <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full animate-ping" />
-            <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
-          </Button>
+          <Link to="/subscriptions">
+            <Button variant="ghost" size="icon">
+              <FileText className="h-6 w-6" />
+            </Button>
+          </Link>
+          
+          <ThemeSwitcher />
           
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -55,7 +63,9 @@ export function Header() {
                 <User className="mr-2 h-5 w-5" />
                 <span>Profil</span>
               </DropdownMenuItem>
-              <DropdownMenuItem className="text-base">Paramètres</DropdownMenuItem>
+              <Link to="/settings">
+                <DropdownMenuItem className="text-base">Paramètres</DropdownMenuItem>
+              </Link>
               <DropdownMenuItem className="text-base text-red-500">
                 <LogOut className="mr-2 h-5 w-5" />
                 <span>Déconnexion</span>

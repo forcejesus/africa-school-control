@@ -80,7 +80,7 @@ export function Sidebar() {
           className="text-lg font-semibold text-primary bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent flex items-center"
         >
           <Gamepad2 className="h-6 w-6 mr-2 text-purple-500" />
-          Gaming Admin
+          Admin Akili
         </motion.div>
         <button
           onClick={() => setCollapsed(!collapsed)}
@@ -144,7 +144,7 @@ export function Sidebar() {
           variants={textVariants}
           className="text-sm text-muted-foreground bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent"
         >
-          Gaming Admin v1.0
+          Admin Akili v1.0
         </motion.div>
       </div>
     </motion.div>

@@ -16,6 +16,7 @@ const Subscriptions = lazy(() => import("./pages/Subscriptions"));
 const Analytics = lazy(() => import("./pages/Analytics"));
 const Users = lazy(() => import("./pages/Users"));
 const Settings = lazy(() => import("./pages/Settings"));
+const Notifications = lazy(() => import("./pages/Notifications"));
 const SchoolDetail = lazy(() => import("./pages/SchoolDetail"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const SchoolForm = lazy(() => import("./components/SchoolForm"));
@@ -74,6 +75,7 @@ const App = () => (
                 <Route path="/analytics" element={<Analytics />} />
                 <Route path="/users" element={<Users />} />
                 <Route path="/settings" element={<Settings />} />
+                <Route path="/notifications" element={<Notifications />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>
