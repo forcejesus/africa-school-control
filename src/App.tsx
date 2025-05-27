@@ -42,8 +42,52 @@ const PageLoader = () => (
 
 const queryClient = new QueryClient();
 
-const App = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+function AuthenticatedApp() {
+  const { alerts, dismissAlert } = useAlert();
+
+  return (
+    <div className="flex h-screen w-full">
+      <AlertSystem alerts={alerts} onDismiss={dismissAlert} />
+      <Sidebar />
+      <div className="flex-1 overflow-auto">
+        <Suspense fallback={<PageLoader />}>
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/schools" element={<Schools />} />
+            <Route path="/schools/:id" element={<SchoolDetail />} />
+            <Route path="/schools/add" element={
+              <div className="flex flex-col h-screen">
+                <div className="p-6 bg-gradient-to-b from-background to-accent/20 flex-1 overflow-auto">
+                  <h1 className="text-2xl font-bold mb-6">Ajouter une nouvelle école</h1>
+                  <SchoolForm />
+                </div>
+              </div>
+            } />
+            <Route path="/schools/edit/:id" element={
+              <div className="flex flex-col h-screen">
+                <div className="p-6 bg-gradient-to-b from-background to-accent/20 flex-1 overflow-auto">
+                  <h1 className="text-2xl font-bold mb-6">Modifier l'école</h1>
+                  <SchoolForm 
+                    school={schools.find(s => s.id === window.location.pathname.split('/').pop())} 
+                    isEditing 
+                  />
+                </div>
+              </div>
+            } />
+            <Route path="/subscriptions" element={<Subscriptions />} />
+            <Route path="/analytics" element={<Analytics />} />
+            <Route path="/users" element={<Users />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/notifications" element={<Notifications />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
+      </div>
+    </div>
+  );
+}
+
+function LoginApp() {
   const [isLoading, setIsLoading] = useState(false);
   const { alerts, dismissAlert, showSuccess } = useAlert();
 
@@ -51,78 +95,35 @@ const App = () => {
   const handleLogin = () => {
     setIsLoading(true);
     setTimeout(() => {
-      setIsAuthenticated(true);
       setIsLoading(false);
       showSuccess("Connexion réussie", "Bienvenue dans Admin Akili");
+      // This would normally set authentication state
     }, 2000);
   };
 
-  if (!isAuthenticated) {
-    return (
-      <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <LoadingProgress isLoading={isLoading} message="Connexion en cours..." />
-            <AlertSystem alerts={alerts} onDismiss={dismissAlert} />
-            <div className="min-h-screen">
-              <Suspense fallback={<PageLoader />}>
-                <Routes>
-                  <Route path="*" element={<Login />} />
-                </Routes>
-              </Suspense>
-            </div>
-          </BrowserRouter>
-        </TooltipProvider>
-      </QueryClientProvider>
-    );
-  }
+  return (
+    <div className="min-h-screen">
+      <LoadingProgress isLoading={isLoading} message="Connexion en cours..." />
+      <AlertSystem alerts={alerts} onDismiss={dismissAlert} />
+      <Suspense fallback={<PageLoader />}>
+        <Routes>
+          <Route path="*" element={<Login />} />
+        </Routes>
+      </Suspense>
+    </div>
+  );
+}
+
+const App = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
         <Sonner />
-        <AlertSystem alerts={alerts} onDismiss={dismissAlert} />
         <BrowserRouter>
-          <div className="flex h-screen w-full">
-            <Sidebar />
-            <div className="flex-1 overflow-auto">
-              <Suspense fallback={<PageLoader />}>
-                <Routes>
-                  <Route path="/" element={<Dashboard />} />
-                  <Route path="/schools" element={<Schools />} />
-                  <Route path="/schools/:id" element={<SchoolDetail />} />
-                  <Route path="/schools/add" element={
-                    <div className="flex flex-col h-screen">
-                      <div className="p-6 bg-gradient-to-b from-background to-accent/20 flex-1 overflow-auto">
-                        <h1 className="text-2xl font-bold mb-6">Ajouter une nouvelle école</h1>
-                        <SchoolForm />
-                      </div>
-                    </div>
-                  } />
-                  <Route path="/schools/edit/:id" element={
-                    <div className="flex flex-col h-screen">
-                      <div className="p-6 bg-gradient-to-b from-background to-accent/20 flex-1 overflow-auto">
-                        <h1 className="text-2xl font-bold mb-6">Modifier l'école</h1>
-                        <SchoolForm 
-                          school={schools.find(s => s.id === window.location.pathname.split('/').pop())} 
-                          isEditing 
-                        />
-                      </div>
-                    </div>
-                  } />
-                  <Route path="/subscriptions" element={<Subscriptions />} />
-                  <Route path="/analytics" element={<Analytics />} />
-                  <Route path="/users" element={<Users />} />
-                  <Route path="/settings" element={<Settings />} />
-                  <Route path="/notifications" element={<Notifications />} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </Suspense>
-            </div>
-          </div>
+          {isAuthenticated ? <AuthenticatedApp /> : <LoginApp />}
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>
