@@ -1,0 +1,141 @@
+
+import { TranslationKeys } from '@/types/i18n';
+
+export const fr: TranslationKeys = {
+  nav: {
+    dashboard: 'Tableau de bord',
+    schools: 'Écoles',
+    subscriptions: 'Abonnements',
+    analytics: 'Analytique',
+    users: 'Utilisateurs',
+    settings: 'Paramètres',
+    notifications: 'Notifications',
+  },
+  
+  auth: {
+    title: 'Admin Akili',
+    subtitle: 'Connectez-vous à votre tableau de bord',
+    email: 'Email',
+    password: 'Mot de passe',
+    rememberMe: 'Se souvenir de moi',
+    forgotPassword: 'Mot de passe oublié ?',
+    signIn: 'Se connecter',
+    signingIn: 'Connexion...',
+    connectionInProgress: 'Connexion en cours...',
+    loginSuccess: 'Connexion réussie',
+    welcomeMessage: 'Bienvenue dans Admin Akili',
+    loginError: 'Erreur de connexion',
+    checkCredentials: 'Veuillez vérifier vos identifiants',
+    logout: 'Déconnexion',
+  },
+  
+  common: {
+    loading: 'Chargement...',
+    search: 'Rechercher...',
+    add: 'Ajouter',
+    edit: 'Modifier',
+    delete: 'Supprimer',
+    save: 'Enregistrer',
+    cancel: 'Annuler',
+    confirm: 'Confirmer',
+    yes: 'Oui',
+    no: 'Non',
+    close: 'Fermer',
+    back: 'Retour',
+    next: 'Suivant',
+    previous: 'Précédent',
+    completed: 'terminé',
+  },
+  
+  dashboard: {
+    title: 'Tableau de bord',
+    welcome: 'Bienvenue',
+    overview: 'Vue d\'ensemble',
+  },
+  
+  schools: {
+    title: 'Gestion des écoles',
+    description: 'Consultez et gérez toutes les écoles enregistrées sur la plateforme.',
+    addNew: 'Ajouter une nouvelle école',
+    editSchool: 'Modifier l\'école',
+    management: 'Gestion',
+  },
+  
+  subscriptions: {
+    title: 'Gestion des abonnements',
+    description: 'Suivez et gérez tous les abonnements des écoles sur la plateforme.',
+    management: 'Gestion des abonnements',
+    plan: 'Plan',
+    status: 'Statut',
+    price: 'Prix',
+    active: 'Actif',
+    pending: 'En attente',
+    expired: 'Expiré',
+    autoRenew: 'Renouvellement automatique',
+    startDate: 'Date de début',
+    endDate: 'Date de fin',
+    expiryDate: 'Date d\'expiration',
+    update: 'Mettre à jour l\'abonnement',
+  },
+  
+  users: {
+    title: 'Gestion des utilisateurs',
+    description: 'Consultez et gérez tous les utilisateurs administrateurs du système.',
+    management: 'Gestion',
+  },
+  
+  settings: {
+    title: 'Paramètres',
+    description: 'Gérez les paramètres de votre compte, de l\'application et des abonnements.',
+    general: 'Général',
+    notifications: 'Notifications',
+    subscriptions: 'Abonnements',
+    appearance: 'Apparence',
+    security: 'Sécurité',
+    faq: 'FAQ',
+    language: 'Langue',
+    
+    generalInfo: 'Informations générales',
+    personalInfo: 'Mettez à jour vos informations personnelles.',
+    firstName: 'Prénom',
+    lastName: 'Nom',
+    email: 'Email',
+    phone: 'Téléphone',
+    
+    notificationPrefs: 'Préférences de notification',
+    emailNotifications: 'Notifications par email',
+    emailNotificationsDesc: 'Recevoir des notifications par email',
+    systemAlerts: 'Alertes système',
+    systemAlertsDesc: 'Recevoir des alertes sur les problèmes système',
+    subscriptionAlerts: 'Alertes d\'abonnement',
+    subscriptionAlertsDesc: 'Recevoir des alertes quand les abonnements arrivent à expiration',
+    
+    appearanceSettings: 'Apparence',
+    theme: 'Thème',
+    customizeAppearance: 'Personnalisez l\'apparence de l\'application.',
+    
+    securitySettings: 'Sécurité',
+    updateSecurity: 'Modifiez vos informations de sécurité.',
+    currentPassword: 'Mot de passe actuel',
+    newPassword: 'Nouveau mot de passe',
+    confirmPassword: 'Confirmer le mot de passe',
+    changePassword: 'Changer le mot de passe',
+    
+    faqManagement: 'Gestion des FAQ',
+    faqDescription: 'Gérez les questions fréquemment posées pour les écoles.',
+    existingFAQs: 'FAQ existantes',
+    addNewFAQ: 'Ajouter une nouvelle FAQ',
+    question: 'Question',
+    answer: 'Réponse',
+    enterQuestion: 'Entrez la question...',
+    enterAnswer: 'Entrez la réponse...',
+    addFAQ: 'Ajouter la FAQ',
+  },
+  
+  alerts: {
+    success: 'Succès',
+    error: 'Erreur',
+    warning: 'Attention',
+    info: 'Information',
+  },
+};

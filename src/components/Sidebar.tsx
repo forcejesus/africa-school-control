@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -13,43 +12,45 @@ import {
   Users,
   Gamepad2
 } from "lucide-react";
-
-const navItems = [
-  {
-    title: "Tableau de bord",
-    href: "/",
-    icon: LayoutDashboard,
-  },
-  {
-    title: "Écoles",
-    href: "/schools",
-    icon: School,
-  },
-  {
-    title: "Abonnements",
-    href: "/subscriptions",
-    icon: FileText,
-  },
-  {
-    title: "Analytique",
-    href: "/analytics",
-    icon: BarChart,
-  },
-  {
-    title: "Utilisateurs",
-    href: "/users",
-    icon: Users,
-  },
-  {
-    title: "Paramètres",
-    href: "/settings",
-    icon: Settings,
-  },
-];
+import { useI18n } from "@/contexts/I18nContext";
 
 export function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
+  const { t } = useI18n();
+
+  const navItems = [
+    {
+      title: t('nav.dashboard'),
+      href: "/",
+      icon: LayoutDashboard,
+    },
+    {
+      title: t('nav.schools'),
+      href: "/schools",
+      icon: School,
+    },
+    {
+      title: t('nav.subscriptions'),
+      href: "/subscriptions",
+      icon: FileText,
+    },
+    {
+      title: t('nav.analytics'),
+      href: "/analytics",
+      icon: BarChart,
+    },
+    {
+      title: t('nav.users'),
+      href: "/users",
+      icon: Users,
+    },
+    {
+      title: t('nav.settings'),
+      href: "/settings",
+      icon: Settings,
+    },
+  ];
 
   const sidebarVariants = {
     expanded: { width: "16rem" },
@@ -80,7 +81,7 @@ export function Sidebar() {
           className="text-lg font-semibold text-primary bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent flex items-center"
         >
           <Gamepad2 className="h-6 w-6 mr-2 text-purple-500" />
-          Admin Akili
+          {t('auth.title')}
         </motion.div>
         <button
           onClick={() => setCollapsed(!collapsed)}
@@ -97,7 +98,7 @@ export function Sidebar() {
 
       <div className="flex-1 py-6 overflow-auto">
         <nav className="px-2 space-y-1">
-          {navItems.map((item, index) => {
+          {navItems.map((item) => {
             const isActive = location.pathname === item.href;
             return (
               <Link
@@ -144,7 +145,7 @@ export function Sidebar() {
           variants={textVariants}
           className="text-sm text-muted-foreground bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent"
         >
-          Admin Akili v1.0
+          {t('auth.title')} v1.0
         </motion.div>
       </div>
     </motion.div>

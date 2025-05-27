@@ -3,6 +3,7 @@ import { Bell, Search, User, LogOut, FileText, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import ThemeSwitcher from "@/components/ThemeSwitcher";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,8 +16,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useI18n } from "@/contexts/I18nContext";
 
 export function Header() {
+  const { t } = useI18n();
+
   return (
     <motion.header 
       initial={{ y: -100 }}
@@ -35,7 +39,7 @@ export function Header() {
           </Button>
           
           <h1 className="text-xl font-bold">
-            Admin Akili
+            {t('auth.title')}
           </h1>
         </div>
         
@@ -44,7 +48,7 @@ export function Header() {
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               type="search"
-              placeholder="Rechercher..."
+              placeholder={t('common.search')}
               className="w-64 pl-9 bg-muted/50" 
             />
           </div>
@@ -71,6 +75,7 @@ export function Header() {
             </Link>
           </motion.div>
           
+          <LanguageSwitcher />
           <ThemeSwitcher />
           
           <DropdownMenu>
@@ -102,13 +107,13 @@ export function Header() {
               </DropdownMenuItem>
               <Link to="/settings">
                 <DropdownMenuItem>
-                  <span>Paramètres</span>
+                  <span>{t('nav.settings')}</span>
                 </DropdownMenuItem>
               </Link>
               <DropdownMenuSeparator />
               <DropdownMenuItem className="text-red-600">
                 <LogOut className="mr-2 h-4 w-4" />
-                <span>Déconnexion</span>
+                <span>{t('auth.logout')}</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

@@ -1,4 +1,3 @@
-
 import React, { Suspense, lazy, useState } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -11,6 +10,7 @@ import Sidebar from "./components/Sidebar";
 import { AlertSystem } from "./components/alerts/AlertSystem";
 import { useAlert } from "./hooks/useAlert";
 import { LoadingProgress } from "./components/LoadingProgress";
+import { I18nProvider } from "./contexts/I18nContext";
 
 // Lazy load components for better performance
 const Dashboard = lazy(() => import("./pages/Index"));
@@ -144,15 +144,17 @@ const App = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <AuthContext.Provider value={authValue}>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            {isAuthenticated ? <AuthenticatedApp /> : <LoginApp onLogin={login} />}
-          </BrowserRouter>
-        </AuthContext.Provider>
-      </TooltipProvider>
+      <I18nProvider>
+        <TooltipProvider>
+          <AuthContext.Provider value={authValue}>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              {isAuthenticated ? <AuthenticatedApp /> : <LoginApp onLogin={login} />}
+            </BrowserRouter>
+          </AuthContext.Provider>
+        </TooltipProvider>
+      </I18nProvider>
     </QueryClientProvider>
   );
 };

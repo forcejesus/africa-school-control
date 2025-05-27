@@ -4,9 +4,11 @@ import { schools } from "@/utils/data";
 import Header from "@/components/Header";
 import SchoolsList from "@/components/SchoolsList";
 import { motion } from "framer-motion";
+import { useI18n } from "@/contexts/I18nContext";
 
 const Schools = () => {
   const [loading, setLoading] = useState(true);
+  const { t } = useI18n();
   
   useEffect(() => {
     // Simuler un chargement
@@ -31,10 +33,10 @@ const Schools = () => {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                Gestion des écoles
+                {t('schools.title')}
               </h1>
               <p className="text-base text-muted-foreground">
-                Consultez et gérez toutes les écoles enregistrées sur la plateforme.
+                {t('schools.description')}
               </p>
             </div>
           </div>

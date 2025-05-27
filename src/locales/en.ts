@@ -1,0 +1,141 @@
+
+import { TranslationKeys } from '@/types/i18n';
+
+export const en: TranslationKeys = {
+  nav: {
+    dashboard: 'Dashboard',
+    schools: 'Schools',
+    subscriptions: 'Subscriptions',
+    analytics: 'Analytics',
+    users: 'Users',
+    settings: 'Settings',
+    notifications: 'Notifications',
+  },
+  
+  auth: {
+    title: 'Admin Akili',
+    subtitle: 'Sign in to your dashboard',
+    email: 'Email',
+    password: 'Password',
+    rememberMe: 'Remember me',
+    forgotPassword: 'Forgot password?',
+    signIn: 'Sign in',
+    signingIn: 'Signing in...',
+    connectionInProgress: 'Connection in progress...',
+    loginSuccess: 'Login successful',
+    welcomeMessage: 'Welcome to Admin Akili',
+    loginError: 'Login error',
+    checkCredentials: 'Please check your credentials',
+    logout: 'Logout',
+  },
+  
+  common: {
+    loading: 'Loading...',
+    search: 'Search...',
+    add: 'Add',
+    edit: 'Edit',
+    delete: 'Delete',
+    save: 'Save',
+    cancel: 'Cancel',
+    confirm: 'Confirm',
+    yes: 'Yes',
+    no: 'No',
+    close: 'Close',
+    back: 'Back',
+    next: 'Next',
+    previous: 'Previous',
+    completed: 'completed',
+  },
+  
+  dashboard: {
+    title: 'Dashboard',
+    welcome: 'Welcome',
+    overview: 'Overview',
+  },
+  
+  schools: {
+    title: 'Schools Management',
+    description: 'View and manage all schools registered on the platform.',
+    addNew: 'Add new school',
+    editSchool: 'Edit school',
+    management: 'Management',
+  },
+  
+  subscriptions: {
+    title: 'Subscriptions Management',
+    description: 'Track and manage all school subscriptions on the platform.',
+    management: 'Subscriptions Management',
+    plan: 'Plan',
+    status: 'Status',
+    price: 'Price',
+    active: 'Active',
+    pending: 'Pending',
+    expired: 'Expired',
+    autoRenew: 'Auto-renewal',
+    startDate: 'Start date',
+    endDate: 'End date',
+    expiryDate: 'Expiry date',
+    update: 'Update subscription',
+  },
+  
+  users: {
+    title: 'User Management',
+    description: 'View and manage all system administrator users.',
+    management: 'Management',
+  },
+  
+  settings: {
+    title: 'Settings',
+    description: 'Manage your account, application and subscription settings.',
+    general: 'General',
+    notifications: 'Notifications',
+    subscriptions: 'Subscriptions',
+    appearance: 'Appearance',
+    security: 'Security',
+    faq: 'FAQ',
+    language: 'Language',
+    
+    generalInfo: 'General information',
+    personalInfo: 'Update your personal information.',
+    firstName: 'First name',
+    lastName: 'Last name',
+    email: 'Email',
+    phone: 'Phone',
+    
+    notificationPrefs: 'Notification preferences',
+    emailNotifications: 'Email notifications',
+    emailNotificationsDesc: 'Receive email notifications',
+    systemAlerts: 'System alerts',
+    systemAlertsDesc: 'Receive alerts about system issues',
+    subscriptionAlerts: 'Subscription alerts',
+    subscriptionAlertsDesc: 'Receive alerts when subscriptions are about to expire',
+    
+    appearanceSettings: 'Appearance',
+    theme: 'Theme',
+    customizeAppearance: 'Customize the application appearance.',
+    
+    securitySettings: 'Security',
+    updateSecurity: 'Update your security information.',
+    currentPassword: 'Current password',
+    newPassword: 'New password',
+    confirmPassword: 'Confirm password',
+    changePassword: 'Change password',
+    
+    faqManagement: 'FAQ Management',
+    faqDescription: 'Manage frequently asked questions for schools.',
+    existingFAQs: 'Existing FAQs',
+    addNewFAQ: 'Add new FAQ',
+    question: 'Question',
+    answer: 'Answer',
+    enterQuestion: 'Enter the question...',
+    enterAnswer: 'Enter the answer...',
+    addFAQ: 'Add FAQ',
+  },
+  
+  alerts: {
+    success: 'Success',
+    error: 'Error',
+    warning: 'Warning',
+    info: 'Information',
+  },
+};

@@ -9,6 +9,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { LoadingProgress } from "@/components/LoadingProgress";
+import { useI18n } from "@/contexts/I18nContext";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 interface LoginFormProps {
   onLogin: () => void;
@@ -23,6 +25,7 @@ export function LoginForm({ onLogin }: LoginFormProps) {
     rememberMe: false
   });
   const { toast } = useToast();
+  const { t } = useI18n();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,8 +36,8 @@ export function LoginForm({ onLogin }: LoginFormProps) {
     
     if (formData.email && formData.password) {
       toast({
-        title: "Connexion réussie",
-        description: "Bienvenue dans Admin Akili",
+        title: t('auth.loginSuccess'),
+        description: t('auth.welcomeMessage'),
       });
       
       // Call the login handler after a brief delay
@@ -44,8 +47,8 @@ export function LoginForm({ onLogin }: LoginFormProps) {
       }, 1000);
     } else {
       toast({
-        title: "Erreur de connexion",
-        description: "Veuillez vérifier vos identifiants",
+        title: t('auth.loginError'),
+        description: t('auth.checkCredentials'),
         variant: "destructive"
       });
       setIsLoading(false);
@@ -58,9 +61,13 @@ export function LoginForm({ onLogin }: LoginFormProps) {
 
   return (
     <>
-      <LoadingProgress isLoading={isLoading} message="Connexion en cours..." />
+      <LoadingProgress isLoading={isLoading} message={t('auth.connectionInProgress')} />
       
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500/20 via-purple-500/20 to-pink-500/20 p-4">
+        <div className="absolute top-4 right-4">
+          <LanguageSwitcher />
+        </div>
+        
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -79,9 +86,9 @@ export function LoginForm({ onLogin }: LoginFormProps) {
               </motion.div>
               
               <div>
-                <CardTitle className="text-2xl font-bold">Admin Akili</CardTitle>
+                <CardTitle className="text-2xl font-bold">{t('auth.title')}</CardTitle>
                 <CardDescription className="text-base mt-2">
-                  Connectez-vous à votre tableau de bord
+                  {t('auth.subtitle')}
                 </CardDescription>
               </div>
             </CardHeader>
@@ -90,7 +97,7 @@ export function LoginForm({ onLogin }: LoginFormProps) {
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
+                    <Label htmlFor="email">{t('auth.email')}</Label>
                     <div className="relative">
                       <Mail className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
                       <Input
@@ -106,7 +113,7 @@ export function LoginForm({ onLogin }: LoginFormProps) {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="password">Mot de passe</Label>
+                    <Label htmlFor="password">{t('auth.password')}</Label>
                     <div className="relative">
                       <Lock className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
                       <Input
@@ -145,12 +152,12 @@ export function LoginForm({ onLogin }: LoginFormProps) {
                       }
                     />
                     <Label htmlFor="remember" className="text-sm">
-                      Se souvenir de moi
+                      {t('auth.rememberMe')}
                     </Label>
                   </div>
                   
                   <Button variant="link" className="px-0 text-sm">
-                    Mot de passe oublié ?
+                    {t('auth.forgotPassword')}
                   </Button>
                 </div>
 
@@ -159,7 +166,7 @@ export function LoginForm({ onLogin }: LoginFormProps) {
                   className="w-full h-12 text-base bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700"
                   disabled={isLoading}
                 >
-                  {isLoading ? "Connexion..." : "Se connecter"}
+                  {isLoading ? t('auth.signingIn') : t('auth.signIn')}
                 </Button>
               </form>
             </CardContent>
