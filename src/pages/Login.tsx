@@ -1,6 +1,10 @@
 
 import { LoginForm } from "@/components/auth/LoginForm";
 
-export default function Login() {
-  return <LoginForm />;
+interface LoginProps {
+  onLogin: () => void;
+}
+
+export default function Login({ onLogin }: LoginProps) {
+  return <LoginForm onLogin={onLogin} />;
 }

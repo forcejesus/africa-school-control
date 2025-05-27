@@ -10,7 +10,11 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { LoadingProgress } from "@/components/LoadingProgress";
 
-export function LoginForm() {
+interface LoginFormProps {
+  onLogin: () => void;
+}
+
+export function LoginForm({ onLogin }: LoginFormProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -32,15 +36,20 @@ export function LoginForm() {
         title: "Connexion réussie",
         description: "Bienvenue dans Admin Akili",
       });
+      
+      // Call the login handler after a brief delay
+      setTimeout(() => {
+        setIsLoading(false);
+        onLogin();
+      }, 1000);
     } else {
       toast({
         title: "Erreur de connexion",
         description: "Veuillez vérifier vos identifiants",
         variant: "destructive"
       });
+      setIsLoading(false);
     }
-    
-    setIsLoading(false);
   };
 
   const handleInputChange = (field: string, value: string | boolean) => {
