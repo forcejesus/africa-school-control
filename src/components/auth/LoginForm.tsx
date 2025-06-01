@@ -1,12 +1,11 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Eye, EyeOff, Lock, Mail, Gamepad2 } from "lucide-react";
+import { Eye, EyeOff, Lock, Mail, Monitor } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { LoadingProgress } from "@/components/LoadingProgress";
 import { useI18n } from "@/contexts/I18nContext";
@@ -21,8 +20,7 @@ export function LoginForm({ onLogin }: LoginFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
-    password: "",
-    rememberMe: false
+    password: ""
   });
   const { toast } = useToast();
   const { t } = useI18n();
@@ -55,7 +53,7 @@ export function LoginForm({ onLogin }: LoginFormProps) {
     }
   };
 
-  const handleInputChange = (field: string, value: string | boolean) => {
+  const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
@@ -63,7 +61,7 @@ export function LoginForm({ onLogin }: LoginFormProps) {
     <>
       <LoadingProgress isLoading={isLoading} message={t('auth.connectionInProgress')} />
       
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500/20 via-purple-500/20 to-pink-500/20 p-4">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 p-4">
         <div className="absolute top-4 right-4">
           <LanguageSwitcher />
         </div>
@@ -74,37 +72,39 @@ export function LoginForm({ onLogin }: LoginFormProps) {
           transition={{ duration: 0.5 }}
           className="w-full max-w-md"
         >
-          <Card className="border-0 shadow-2xl bg-card/95 backdrop-blur-sm">
-            <CardHeader className="text-center space-y-4">
+          <Card className="border-0 shadow-xl bg-white">
+            <CardHeader className="text-center space-y-4 pb-8">
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-                className="mx-auto w-16 h-16 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center"
+                className="mx-auto w-16 h-16 bg-slate-900 rounded-xl flex items-center justify-center"
               >
-                <Gamepad2 className="w-8 h-8 text-white" />
+                <Monitor className="w-8 h-8 text-white" />
               </motion.div>
               
               <div>
-                <CardTitle className="text-2xl font-bold">{t('auth.title')}</CardTitle>
-                <CardDescription className="text-base mt-2">
+                <CardTitle className="text-2xl font-bold text-slate-900">
+                  {t('auth.title')}
+                </CardTitle>
+                <CardDescription className="text-base mt-2 text-slate-600">
                   {t('auth.subtitle')}
                 </CardDescription>
               </div>
             </CardHeader>
 
-            <CardContent>
+            <CardContent className="pb-8">
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="email">{t('auth.email')}</Label>
+                    <Label htmlFor="email" className="text-slate-700">{t('auth.email')}</Label>
                     <div className="relative">
-                      <Mail className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
+                      <Mail className="absolute left-3 top-3 h-5 w-5 text-slate-400" />
                       <Input
                         id="email"
                         type="email"
                         placeholder="admin@akili.com"
-                        className="pl-10 h-12"
+                        className="pl-10 h-12 border-slate-200 focus:border-slate-400"
                         value={formData.email}
                         onChange={(e) => handleInputChange("email", e.target.value)}
                         required
@@ -113,14 +113,14 @@ export function LoginForm({ onLogin }: LoginFormProps) {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="password">{t('auth.password')}</Label>
+                    <Label htmlFor="password" className="text-slate-700">{t('auth.password')}</Label>
                     <div className="relative">
-                      <Lock className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
+                      <Lock className="absolute left-3 top-3 h-5 w-5 text-slate-400" />
                       <Input
                         id="password"
                         type={showPassword ? "text" : "password"}
                         placeholder="••••••••"
-                        className="pl-10 pr-10 h-12"
+                        className="pl-10 pr-10 h-12 border-slate-200 focus:border-slate-400"
                         value={formData.password}
                         onChange={(e) => handleInputChange("password", e.target.value)}
                         required
@@ -142,28 +142,9 @@ export function LoginForm({ onLogin }: LoginFormProps) {
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="remember"
-                      checked={formData.rememberMe}
-                      onCheckedChange={(checked) => 
-                        handleInputChange("rememberMe", checked as boolean)
-                      }
-                    />
-                    <Label htmlFor="remember" className="text-sm">
-                      {t('auth.rememberMe')}
-                    </Label>
-                  </div>
-                  
-                  <Button variant="link" className="px-0 text-sm">
-                    {t('auth.forgotPassword')}
-                  </Button>
-                </div>
-
                 <Button 
                   type="submit" 
-                  className="w-full h-12 text-base bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700"
+                  className="w-full h-12 text-base bg-slate-900 hover:bg-slate-800 text-white"
                   disabled={isLoading}
                 >
                   {isLoading ? t('auth.signingIn') : t('auth.signIn')}

@@ -53,6 +53,27 @@ export interface TranslationKeys {
     title: string;
     welcome: string;
     overview: string;
+    activeSubscriptions: string;
+    totalSchools: string;
+    totalGameSessions: string;
+    totalGamesCreated: string;
+    quickActions: string;
+    manageSchools: string;
+    addSchool: string;
+    schoolsList: string;
+    gamesCreatedBySchool: string;
+    planificationsCreated: string;
+    school: string;
+    game: string;
+    activeSessions: string;
+    totalSessions: string;
+    planification: string;
+    status: string;
+    active: string;
+    completed: string;
+    pending: string;
+    nonExpiredSessions: string;
+    totalPlanifications: string;
   };
   
   // Schools
