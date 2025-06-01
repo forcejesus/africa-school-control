@@ -6,6 +6,7 @@ interface StatsCardProps {
   title: string;
   value: string | number;
   icon: React.ReactNode;
+  subtitle?: string;
   trend?: {
     value: number;
     isPositive: boolean;
@@ -13,27 +14,33 @@ interface StatsCardProps {
   className?: string;
 }
 
-export function StatsCard({ title, value, icon, trend, className }: StatsCardProps) {
+export function StatsCard({ title, value, icon, subtitle, trend, className }: StatsCardProps) {
   return (
-    <Card className={cn("overflow-hidden", className)}>
+    <Card className={cn("overflow-hidden border border-gray-200 bg-white shadow-sm", className)}>
       <CardContent className="p-6">
         <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm font-medium text-muted-foreground">{title}</p>
-            <h3 className="text-2xl font-bold mt-1">{value}</h3>
+          <div className="flex-1">
+            <p className="text-sm font-medium text-gray-600 mb-1">{title}</p>
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">{value}</h3>
+            
+            {subtitle && (
+              <p className="text-sm text-gray-500 mb-2">
+                {subtitle}
+              </p>
+            )}
             
             {trend && (
               <p className={cn(
-                "text-xs font-medium mt-1 flex items-center",
-                trend.isPositive ? "text-green-500" : "text-red-500"
+                "text-xs font-medium flex items-center",
+                trend.isPositive ? "text-green-600" : "text-red-600"
               )}>
                 {trend.isPositive ? "↑" : "↓"} {Math.abs(trend.value)}%
-                <span className="text-muted-foreground ml-1">vs last month</span>
+                <span className="text-gray-500 ml-1">vs last month</span>
               </p>
             )}
           </div>
           
-          <div className="p-2 bg-primary/10 rounded-full">
+          <div className="p-3 bg-gray-50 rounded-lg">
             {icon}
           </div>
         </div>

@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -10,7 +11,7 @@ import {
   BarChart, 
   Settings, 
   Users,
-  Gamepad2
+  Monitor
 } from "lucide-react";
 import { useI18n } from "@/contexts/I18nContext";
 
@@ -78,9 +79,9 @@ export function Sidebar() {
       <div className="p-4 flex items-center justify-between border-b border-sidebar-border">
         <motion.div
           variants={textVariants}
-          className="text-lg font-semibold text-primary bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent flex items-center"
+          className="text-lg font-semibold text-primary bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent flex items-center"
         >
-          <Gamepad2 className="h-6 w-6 mr-2 text-purple-500" />
+          <Monitor className="h-6 w-6 mr-2 text-blue-600" />
           {t('auth.title')}
         </motion.div>
         <button
@@ -107,13 +108,13 @@ export function Sidebar() {
                 className={cn(
                   "flex items-center gap-3 px-3 py-2.5 rounded-md text-base transition-all duration-300 relative",
                   isActive
-                    ? "bg-gradient-to-r from-indigo-500/30 to-purple-500/30 text-sidebar-accent-foreground font-medium"
+                    ? "bg-gradient-to-r from-blue-500/20 to-blue-600/20 text-sidebar-accent-foreground font-medium"
                     : "text-sidebar-foreground hover:bg-sidebar-accent/30"
                 )}
               >
                 {isActive && (
                   <motion.span
-                    className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-indigo-500 to-purple-600 rounded-r-md"
+                    className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-500 to-blue-600 rounded-r-md"
                     layoutId="activeIndicator"
                     transition={{ type: "spring", stiffness: 300, damping: 30 }}
                   />
@@ -121,7 +122,7 @@ export function Sidebar() {
                 
                 <motion.div
                   initial={{ scale: 1 }}
-                  whileHover={{ scale: 1.2 }}
+                  whileHover={{ scale: 1.1 }}
                   transition={{ duration: 0.2 }}
                   className={cn(collapsed ? "mx-auto" : "")}
                 >
@@ -143,7 +144,7 @@ export function Sidebar() {
       <div className="p-4 border-t border-sidebar-border">
         <motion.div 
           variants={textVariants}
-          className="text-sm text-muted-foreground bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent"
+          className="text-sm text-muted-foreground bg-gradient-to-r from-blue-500 to-blue-600 bg-clip-text text-transparent"
         >
           {t('auth.title')} v1.0
         </motion.div>
