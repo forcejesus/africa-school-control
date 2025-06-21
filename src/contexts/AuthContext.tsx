@@ -69,10 +69,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         });
         return false;
       }
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Erreur de connexion",
-        description: "Impossible de se connecter au serveur",
+        description: error.message || "Impossible de se connecter au serveur",
         variant: "destructive"
       });
       return false;

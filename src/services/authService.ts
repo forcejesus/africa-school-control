@@ -46,11 +46,16 @@ export class AuthService {
       const data: LoginResponse = await response.json();
       
       if (data.statut === 200 && data.token) {
+        // Vérifier le rôle avant de stocker
+        const userPayload = this.decodeToken(data.token);
+        if (userPayload && userPayload.role !== 'super_admin') {
+          throw new Error('Accès refusé : seuls les super administrateurs peuvent accéder à cette interface');
+        }
+        
         // Stocker le token
         localStorage.setItem(this.TOKEN_KEY, data.token);
         
-        // Décoder et stocker les informations utilisateur
-        const userPayload = this.decodeToken(data.token);
+        // Stocker les informations utilisateur
         if (userPayload) {
           localStorage.setItem(this.USER_KEY, JSON.stringify(userPayload));
         }
@@ -103,6 +108,12 @@ export class AuthService {
     const user = this.getUser();
     
     if (!token || !user) {
+      return false;
+    }
+
+    // Vérifier le rôle super_admin
+    if (user.role !== 'super_admin') {
+      this.logout(); // Nettoyer les données invalides
       return false;
     }
 
