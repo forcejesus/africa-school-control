@@ -1,4 +1,3 @@
-
 import { School, Users, BookOpen, Plus, List } from "lucide-react";
 import Header from "@/components/Header";
 import StatsCard from "@/components/StatsCard";
@@ -20,6 +19,7 @@ import {
   getTotalSchools,
 } from "@/utils/data";
 import { useI18n } from "@/contexts/I18nContext";
+import { cn } from "@/lib/utils";
 
 // Mock data for games and planifications
 const gamesData = [
