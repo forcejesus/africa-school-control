@@ -14,7 +14,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 222.2 47.4% 11.2%;
+    --primary: 220 70% 50%;
     --primary-foreground: 210 40% 98%;
 
     --secondary: 210 40% 96.1%;
@@ -31,9 +31,9 @@
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --ring: 220 70% 50%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
     --sidebar-background: 252 83% 98%;
     --sidebar-foreground: 245 5.3% 26.1%;
@@ -44,7 +44,7 @@
     --sidebar-border: 252 83% 94%;
     --sidebar-ring: 220 70% 50%;
 
-    /* Custom badge variants */
+    /* Custom professional colors */
     --success: 142.1 76.2% 36.3%;
     --success-foreground: 355.7 100% 97.3%;
     
@@ -65,7 +65,7 @@
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 210 40% 98%;
+    --primary: 220 70% 60%;
     --primary-foreground: 222.2 47.4% 11.2%;
 
     --secondary: 217.2 32.6% 17.5%;
@@ -82,7 +82,7 @@
 
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --ring: 220 70% 60%;
     
     --sidebar-background: 240 10% 12%;
     --sidebar-foreground: 240 4.8% 95.9%;
@@ -93,7 +93,7 @@
     --sidebar-border: 240 10% 25%;
     --sidebar-ring: 220 70% 60%;
 
-    /* Custom badge variants in dark mode */
+    /* Dark mode professional colors */
     --success: 142.1 70.6% 45.3%;
     --success-foreground: 144.9 80.4% 10%;
     
@@ -111,71 +111,126 @@
   }
 
   body {
-    @apply bg-background text-foreground;
-    font-size: 1.05rem;
+    @apply bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20 text-foreground;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-size: 1rem;
+    line-height: 1.6;
+    min-height: 100vh;
   }
 
   h1 {
-    @apply text-2xl font-bold;
-    font-size: 1.85rem;
+    @apply text-3xl font-bold tracking-tight;
+    font-size: 2rem;
+    line-height: 1.2;
   }
   
   h2 {
+    @apply text-2xl font-semibold tracking-tight;
+    font-size: 1.5rem;
+    line-height: 1.3;
+  }
+
+  h3 {
     @apply text-xl font-semibold;
-    font-size: 1.45rem;
+    font-size: 1.25rem;
   }
 }
 
 @layer components {
-  .card-professional {
-    @apply border rounded-lg overflow-hidden bg-card shadow-sm transition-all duration-200;
+  .professional-card {
+    @apply bg-white/80 backdrop-blur-sm border border-slate-200/60 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 hover:border-blue-200/80;
   }
   
-  .card-professional:hover {
-    @apply shadow-md;
+  .professional-card:hover {
+    @apply transform hover:-translate-y-1;
   }
   
-  .professional-gradient-text {
-    @apply bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent;
+  .professional-gradient-bg {
+    @apply bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-700;
   }
   
-  .card-header-professional {
-    @apply p-4 border-b bg-gradient-to-r from-blue-50/50 to-gray-50/50 dark:from-blue-900/20 dark:to-gray-900/20;
+  .professional-text-gradient {
+    @apply bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 bg-clip-text text-transparent;
+  }
+  
+  .professional-button {
+    @apply bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium rounded-lg transition-all duration-200 shadow-sm hover:shadow-md;
+  }
+  
+  .professional-input {
+    @apply border-slate-300 focus:border-blue-500 focus:ring-blue-500/20 rounded-lg transition-colors duration-200;
+  }
+
+  .table-professional {
+    @apply bg-white/90 backdrop-blur-sm border border-slate-200/60 rounded-xl overflow-hidden shadow-sm;
+  }
+
+  .table-header-professional {
+    @apply bg-gradient-to-r from-slate-50 to-blue-50/50 border-b border-slate-200/80;
+  }
+
+  .stats-card-icon {
+    @apply p-3 rounded-xl shadow-sm;
   }
 }
 
-/* Custom badge variants */
+/* Professional badge variants */
 .badge-success {
-  background-color: hsl(var(--success));
-  color: hsl(var(--success-foreground));
+  @apply bg-emerald-100 text-emerald-700 border-emerald-200;
 }
 
 .badge-warning {
-  background-color: hsl(var(--warning));
-  color: hsl(var(--warning-foreground));
+  @apply bg-amber-100 text-amber-700 border-amber-200;
 }
 
 .badge-info {
-  background-color: hsl(var(--info));
-  color: hsl(var(--info-foreground));
+  @apply bg-blue-100 text-blue-700 border-blue-200;
 }
 
-/* Classe pour les icônes légèrement agrandies */
-.icon-larger {
-  width: 1.3em;
-  height: 1.3em;
+.badge-neutral {
+  @apply bg-slate-100 text-slate-700 border-slate-200;
 }
 
-/* Professional interface styling */
-.professional-border {
-  @apply border-2 border-blue-200/50 dark:border-blue-700/50 rounded-lg;
+/* Enhanced animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-5px); }
 }
 
-.professional-panel {
-  @apply bg-gradient-to-br from-gray-50/80 to-white/80 dark:from-gray-900/80 dark:to-gray-800/80 backdrop-blur-sm rounded-lg;
+.animate-float {
+  animation: float 3s ease-in-out infinite;
 }
 
-/* Clean professional effect */
-.professional-clean {
-  @apply bg-white/95 dark:bg-black/95 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50;
+/* Improved scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-slate-100 rounded-full;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-300 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-slate-400;
+}
+
+/* Dark mode styles */
+.dark .professional-card {
+  @apply bg-slate-800/80 border-slate-700/60 hover:border-slate-600/80;
+}
+
+.dark .table-professional {
+  @apply bg-slate-800/90 border-slate-700/60;
+}
+
+.dark .table-header-professional {
+  @apply bg-gradient-to-r from-slate-800 to-slate-700/50 border-b border-slate-700/80;
+}
+
+.dark body {
+  @apply bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900;
 }

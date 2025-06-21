@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { 
   ChevronLeft, 
@@ -57,55 +57,47 @@ export function Sidebar() {
   ];
 
   const handleLogout = () => {
-    // Here you would implement your logout logic
     console.log("Logout clicked");
     navigate("/login");
   };
 
-  const sidebarVariants = {
-    expanded: { width: "16rem" },
-    collapsed: { width: "4rem" }
-  };
-
-  const chevronVariants = {
-    expanded: { rotate: 0 },
-    collapsed: { rotate: 180 }
-  };
-
-  const textVariants = {
-    expanded: { opacity: 1, display: "block" },
-    collapsed: { opacity: 0, display: "none" }
-  };
-
   return (
     <motion.div
-      className="bg-white border-r border-gray-200 flex flex-col h-screen sticky top-0 left-0 shadow-lg"
-      initial="expanded"
-      animate={collapsed ? "collapsed" : "expanded"}
-      variants={sidebarVariants}
+      className="bg-white/90 backdrop-blur-sm border-r border-slate-200/60 flex flex-col h-screen sticky top-0 left-0 shadow-lg"
+      initial={{ width: "16rem" }}
+      animate={{ width: collapsed ? "4rem" : "16rem" }}
       transition={{ duration: 0.3, ease: "easeInOut" }}
     >
-      <div className="p-4 flex items-center justify-between border-b border-gray-200">
-        <motion.div
-          variants={textVariants}
-          className="text-lg font-bold text-gray-800 flex items-center"
-        >
-          <Monitor className="h-6 w-6 mr-2 text-blue-600" />
-          <span className="bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-            {t('auth.title')}
-          </span>
-        </motion.div>
-        <button
+      <div className="p-4 flex items-center justify-between border-b border-slate-200/60">
+        <AnimatePresence mode="wait">
+          {!collapsed && (
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="text-lg font-bold text-slate-800 flex items-center"
+            >
+              <Monitor className="h-6 w-6 mr-2 text-blue-600" />
+              <span className="professional-text-gradient font-bold">
+                {t('auth.title')}
+              </span>
+            </motion.div>
+          )}
+        </AnimatePresence>
+        <Button
           onClick={() => setCollapsed(!collapsed)}
-          className="p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200"
+          variant="ghost"
+          size="icon"
+          className="p-2 rounded-lg hover:bg-slate-100 transition-colors duration-200"
         >
           <motion.div
-            variants={chevronVariants}
-            className="h-5 w-5 text-gray-600"
+            animate={{ rotate: collapsed ? 180 : 0 }}
+            transition={{ duration: 0.3 }}
+            className="h-5 w-5 text-slate-600"
           >
             <ChevronLeft />
           </motion.div>
-        </button>
+        </Button>
       </div>
 
       <div className="flex-1 py-6 overflow-auto">
@@ -117,14 +109,13 @@ export function Sidebar() {
                 key={item.href}
                 to={item.href}
                 className={cn(
-                  "flex items-center gap-3 px-3 py-3 rounded-lg text-base transition-all duration-200 relative group",
+                  "flex items-center gap-3 px-3 py-3 rounded-xl text-base transition-all duration-200 relative group",
                   isActive
-                    ? "bg-gradient-to-r from-blue-500/10 to-blue-600/10 text-blue-700 font-semibold border-l-4 border-blue-600"
-                    : "text-gray-700 hover:bg-gray-50 hover:text-blue-600"
+                    ? "bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 font-semibold shadow-sm border-l-4 border-blue-600"
+                    : "text-slate-700 hover:bg-slate-50 hover:text-blue-600"
                 )}
               >
                 <motion.div
-                  initial={{ scale: 1 }}
                   whileHover={{ scale: 1.1 }}
                   transition={{ duration: 0.2 }}
                   className={cn(collapsed ? "mx-auto" : "")}
@@ -132,42 +123,60 @@ export function Sidebar() {
                   <item.icon className="h-5 w-5" />
                 </motion.div>
 
-                <motion.span 
-                  variants={textVariants}
-                  className="text-base"
-                >
-                  {item.title}
-                </motion.span>
+                <AnimatePresence mode="wait">
+                  {!collapsed && (
+                    <motion.span 
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -10 }}
+                      className="text-base font-medium"
+                    >
+                      {item.title}
+                    </motion.span>
+                  )}
+                </AnimatePresence>
               </Link>
             );
           })}
         </nav>
       </div>
 
-      <div className="p-4 border-t border-gray-200">
+      <div className="p-4 border-t border-slate-200/60">
         <Button
           onClick={handleLogout}
           variant="ghost"
           className={cn(
-            "w-full flex items-center gap-3 px-3 py-3 text-red-600 hover:bg-red-50 hover:text-red-700 transition-all duration-200",
+            "w-full flex items-center gap-3 px-3 py-3 text-red-600 hover:bg-red-50 hover:text-red-700 transition-all duration-200 rounded-xl",
             collapsed ? "justify-center" : "justify-start"
           )}
         >
           <LogOut className="h-5 w-5" />
-          <motion.span 
-            variants={textVariants}
-            className="text-base font-medium"
-          >
-            {t('auth.logout')}
-          </motion.span>
+          <AnimatePresence mode="wait">
+            {!collapsed && (
+              <motion.span 
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -10 }}
+                className="text-base font-medium"
+              >
+                {t('auth.logout')}
+              </motion.span>
+            )}
+          </AnimatePresence>
         </Button>
         
-        <motion.div 
-          variants={textVariants}
-          className="text-xs text-gray-500 mt-3 text-center"
-        >
-          {t('auth.title')} v1.0
-        </motion.div>
+        <AnimatePresence mode="wait">
+          {!collapsed && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="text-xs text-slate-500 mt-3 text-center"
+            >
+              {t('auth.title')} v1.0
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </motion.div>
   );
