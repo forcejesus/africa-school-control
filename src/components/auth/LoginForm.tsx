@@ -11,11 +11,7 @@ import { useI18n } from "@/contexts/I18nContext";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useAuth } from "@/contexts/AuthContext";
 
-interface LoginFormProps {
-  onLogin: () => void;
-}
-
-export function LoginForm({ onLogin }: LoginFormProps) {
+export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: "nous@gmail.com", // Valeur par défaut pour les tests
@@ -26,13 +22,7 @@ export function LoginForm({ onLogin }: LoginFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    const success = await login(formData);
-    if (success) {
-      setTimeout(() => {
-        onLogin();
-      }, 1000);
-    }
+    await login(formData);
   };
 
   const handleInputChange = (field: string, value: string) => {

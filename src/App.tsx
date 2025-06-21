@@ -93,10 +93,10 @@ function LoginApp() {
 
   return (
     <div className="min-h-screen">
-      <AlertSystem alerts={alerts}  />
+      <AlertSystem alerts={alerts} onDismiss={dismissAlert} />
       <Suspense fallback={<PageLoader />}>
         <Routes>
-          <Route path="*" element={<Login onLogin={() => {}} />} />
+          <Route path="*" element={<Login />} />
         </Routes>
       </Suspense>
     </div>
