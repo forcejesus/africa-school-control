@@ -1,4 +1,5 @@
-import React, { Suspense, lazy, useState } from "react";
+
+import React, { Suspense, lazy } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -9,8 +10,8 @@ import { schools } from "./utils/data";
 import Sidebar from "./components/Sidebar";
 import { AlertSystem } from "./components/alerts/AlertSystem";
 import { useAlert } from "./hooks/useAlert";
-import { LoadingProgress } from "./components/LoadingProgress";
 import { I18nProvider } from "./contexts/I18nContext";
+import { AuthProvider, useAuth } from "./contexts/AuthContext";
 
 // Lazy load components for better performance
 const Dashboard = lazy(() => import("./pages/Index"));
@@ -41,14 +42,6 @@ const PageLoader = () => (
 );
 
 const queryClient = new QueryClient();
-
-interface AuthContextType {
-  isAuthenticated: boolean;
-  login: () => void;
-  logout: () => void;
-}
-
-export const AuthContext = React.createContext<AuthContextType | undefined>(undefined);
 
 function AuthenticatedApp() {
   const { alerts, dismissAlert } = useAlert();
@@ -95,64 +88,43 @@ function AuthenticatedApp() {
   );
 }
 
-function LoginApp({ onLogin }: { onLogin: () => void }) {
-  const [isLoading, setIsLoading] = useState(false);
-  const { alerts, dismissAlert, showSuccess } = useAlert();
-
-  // Handle authentication
-  const handleLogin = () => {
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      showSuccess("Connexion réussie", "Bienvenue dans Admin Akili");
-      // Redirect to dashboard after successful login
-      setTimeout(() => {
-        onLogin();
-      }, 1000);
-    }, 2000);
-  };
+function LoginApp() {
+  const { alerts, dismissAlert } = useAlert();
 
   return (
     <div className="min-h-screen">
-      <LoadingProgress isLoading={isLoading} message="Connexion en cours..." />
-      <AlertSystem alerts={alerts} onDismiss={dismissAlert} />
+      <AlertSystem alerts={alerts}  />
       <Suspense fallback={<PageLoader />}>
         <Routes>
-          <Route path="*" element={<Login onLogin={handleLogin} />} />
+          <Route path="*" element={<Login onLogin={() => {}} />} />
         </Routes>
       </Suspense>
     </div>
   );
 }
 
+function AppContent() {
+  const { isAuthenticated, loading } = useAuth();
+
+  if (loading) {
+    return <PageLoader />;
+  }
+
+  return isAuthenticated ? <AuthenticatedApp /> : <LoginApp />;
+}
+
 const App = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  const login = () => {
-    setIsAuthenticated(true);
-  };
-
-  const logout = () => {
-    setIsAuthenticated(false);
-  };
-
-  const authValue = {
-    isAuthenticated,
-    login,
-    logout
-  };
-
   return (
     <QueryClientProvider client={queryClient}>
       <I18nProvider>
         <TooltipProvider>
-          <AuthContext.Provider value={authValue}>
+          <AuthProvider>
             <Toaster />
             <Sonner />
             <BrowserRouter>
-              {isAuthenticated ? <AuthenticatedApp /> : <LoginApp onLogin={login} />}
+              <AppContent />
             </BrowserRouter>
-          </AuthContext.Provider>
+          </AuthProvider>
         </TooltipProvider>
       </I18nProvider>
     </QueryClientProvider>

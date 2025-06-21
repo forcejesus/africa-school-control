@@ -6,10 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { useToast } from "@/hooks/use-toast";
 import { LoadingProgress } from "@/components/LoadingProgress";
 import { useI18n } from "@/contexts/I18nContext";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface LoginFormProps {
   onLogin: () => void;
@@ -17,39 +17,21 @@ interface LoginFormProps {
 
 export function LoginForm({ onLogin }: LoginFormProps) {
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
-    email: "",
-    password: ""
+    email: "nous@gmail.com", // Valeur par défaut pour les tests
+    password: "1234" // Valeur par défaut pour les tests
   });
-  const { toast } = useToast();
   const { t } = useI18n();
+  const { login, loading } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-
-    // Simulation de connexion
-    await new Promise(resolve => setTimeout(resolve, 2000));
     
-    if (formData.email && formData.password) {
-      toast({
-        title: t('auth.loginSuccess'),
-        description: t('auth.welcomeMessage'),
-      });
-      
-      // Call the login handler after a brief delay
+    const success = await login(formData);
+    if (success) {
       setTimeout(() => {
-        setIsLoading(false);
         onLogin();
       }, 1000);
-    } else {
-      toast({
-        title: t('auth.loginError'),
-        description: t('auth.checkCredentials'),
-        variant: "destructive"
-      });
-      setIsLoading(false);
     }
   };
 
@@ -59,7 +41,7 @@ export function LoginForm({ onLogin }: LoginFormProps) {
 
   return (
     <>
-      <LoadingProgress isLoading={isLoading} message={t('auth.connectionInProgress')} />
+      <LoadingProgress isLoading={loading} message={t('auth.connectionInProgress')} />
       
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 p-4">
         <div className="absolute top-4 right-4">
@@ -103,7 +85,7 @@ export function LoginForm({ onLogin }: LoginFormProps) {
                       <Input
                         id="email"
                         type="email"
-                        placeholder="admin@akili.com"
+                        placeholder="nous@gmail.com"
                         className="pl-10 h-12 border-slate-200 focus:border-slate-400"
                         value={formData.email}
                         onChange={(e) => handleInputChange("email", e.target.value)}
@@ -145,9 +127,9 @@ export function LoginForm({ onLogin }: LoginFormProps) {
                 <Button 
                   type="submit" 
                   className="w-full h-12 text-base bg-slate-900 hover:bg-slate-800 text-white"
-                  disabled={isLoading}
+                  disabled={loading}
                 >
-                  {isLoading ? t('auth.signingIn') : t('auth.signIn')}
+                  {loading ? t('auth.signingIn') : t('auth.signIn')}
                 </Button>
               </form>
             </CardContent>

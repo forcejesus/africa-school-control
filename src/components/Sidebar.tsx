@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { 
@@ -16,12 +16,13 @@ import {
 } from "lucide-react";
 import { useI18n } from "@/contexts/I18nContext";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
 
 export function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
-  const navigate = useNavigate();
   const { t } = useI18n();
+  const { logout } = useAuth();
 
   const navItems = [
     {
@@ -57,8 +58,7 @@ export function Sidebar() {
   ];
 
   const handleLogout = () => {
-    console.log("Logout clicked");
-    navigate("/login");
+    logout();
   };
 
   return (

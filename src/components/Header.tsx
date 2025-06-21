@@ -17,9 +17,23 @@ import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useI18n } from "@/contexts/I18nContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 export function Header() {
   const { t } = useI18n();
+  const { user, logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+  };
+
+  // Générer les initiales à partir du prénom et nom
+  const getInitials = () => {
+    if (user?.prenom && user?.nom) {
+      return `${user.prenom.charAt(0)}${user.nom.charAt(0)}`.toUpperCase();
+    }
+    return "AD";
+  };
 
   return (
     <motion.header 
@@ -83,9 +97,9 @@ export function Header() {
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Button variant="ghost" className="relative h-9 w-9 rounded-full">
                   <Avatar className="h-9 w-9">
-                    <AvatarImage src="" alt="Admin" />
+                    <AvatarImage src="" alt={user?.prenom || "Admin"} />
                     <AvatarFallback className="professional-gradient-bg text-white font-semibold">
-                      AD
+                      {getInitials()}
                     </AvatarFallback>
                   </Avatar>
                 </Button>
@@ -94,9 +108,14 @@ export function Header() {
             <DropdownMenuContent className="w-56 bg-white/95 backdrop-blur-sm border-slate-200/60" align="end" forceMount>
               <DropdownMenuLabel className="font-normal">
                 <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-medium leading-none">Admin</p>
+                  <p className="text-sm font-medium leading-none">
+                    {user?.prenom} {user?.nom}
+                  </p>
                   <p className="text-xs leading-none text-slate-500">
-                    admin@akili.com
+                    {user?.email}
+                  </p>
+                  <p className="text-xs leading-none text-slate-400">
+                    {user?.role}
                   </p>
                 </div>
               </DropdownMenuLabel>
@@ -111,7 +130,10 @@ export function Header() {
                 </DropdownMenuItem>
               </Link>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-red-600 hover:bg-red-50">
+              <DropdownMenuItem 
+                className="text-red-600 hover:bg-red-50"
+                onClick={handleLogout}
+              >
                 <LogOut className="mr-2 h-4 w-4" />
                 <span>{t('auth.logout')}</span>
               </DropdownMenuItem>
