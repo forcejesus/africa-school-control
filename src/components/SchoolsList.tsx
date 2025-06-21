@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { School } from "@/utils/data/types";
+import { ApiSchool, SchoolService } from "@/services/schoolService";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { 
@@ -17,7 +17,7 @@ import SchoolCard from "./SchoolCard";
 import SkeletonCard from "./SkeletonCard";
 
 interface SchoolsListProps {
-  schools: School[];
+  schools: ApiSchool[];
   isLoading?: boolean;
 }
 
@@ -27,9 +27,12 @@ export function SchoolsList({ schools, isLoading = false }: SchoolsListProps) {
   
   // Filter schools based on search term and status
   const filteredSchools = schools.filter(school => {
-    const matchesSearch = school.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                           school.country.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = statusFilter === "all" || school.status === statusFilter;
+    const matchesSearch = school.libelle.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                           school.pays.libelle.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           school.ville.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    // Pour le moment, on considère toutes les écoles comme actives
+    const matchesStatus = statusFilter === "all" || statusFilter === "active";
     
     return matchesSearch && matchesStatus;
   });
@@ -125,8 +128,8 @@ export function SchoolsList({ schools, isLoading = false }: SchoolsListProps) {
           animate="show"
         >
           {filteredSchools.map((school) => (
-            <motion.div key={school.id} variants={item}>
-              <SchoolCard school={school} />
+            <motion.div key={school._id} variants={item}>
+              <SchoolCard school={SchoolService.transformApiSchoolToLocal(school)} />
             </motion.div>
           ))}
         </motion.div>

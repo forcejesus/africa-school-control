@@ -1,23 +1,47 @@
 
 import { useState, useEffect } from "react";
-import { schools } from "@/utils/data";
 import Header from "@/components/Header";
 import SchoolsList from "@/components/SchoolsList";
 import { motion } from "framer-motion";
 import { useI18n } from "@/contexts/I18nContext";
+import { SchoolService, ApiSchool } from "@/services/schoolService";
+import { useToast } from "@/hooks/use-toast";
 
 const Schools = () => {
+  const [schools, setSchools] = useState<ApiSchool[]>([]);
   const [loading, setLoading] = useState(true);
   const { t } = useI18n();
+  const { toast } = useToast();
   
   useEffect(() => {
-    // Simuler un chargement
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-    
-    return () => clearTimeout(timer);
-  }, []);
+    const fetchSchools = async () => {
+      try {
+        setLoading(true);
+        const response = await SchoolService.getSchools();
+        
+        if (response.success) {
+          setSchools(response.data);
+        } else {
+          toast({
+            title: "Erreur",
+            description: response.message || "Impossible de récupérer les écoles",
+            variant: "destructive"
+          });
+        }
+      } catch (error: any) {
+        console.error('Erreur lors du chargement des écoles:', error);
+        toast({
+          title: "Erreur de connexion",
+          description: "Impossible de récupérer les écoles depuis le serveur",
+          variant: "destructive"
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSchools();
+  }, [toast]);
 
   return (
     <div className="flex flex-col h-screen">
