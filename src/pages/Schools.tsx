@@ -47,7 +47,7 @@ const Schools = () => {
     <div className="flex flex-col h-screen">
       <Header />
       
-      <div className="flex-1 p-6 bg-gradient-to-b from-background to-accent/20 overflow-auto">
+      <div className="flex-1 p-6 bg-gradient-to-br from-indigo-50 via-purple-50/30 to-pink-50/20 overflow-auto">
         <motion.div 
           className="space-y-4"
           initial={{ opacity: 0, y: 20 }}

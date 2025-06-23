@@ -1,3 +1,4 @@
+
 import { School, Users, BookOpen, Plus, List } from "lucide-react";
 import Header from "@/components/Header";
 import StatsCard from "@/components/StatsCard";
@@ -60,7 +61,7 @@ const Dashboard = () => {
   };
   
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/40 to-purple-50/30">
       <Header />
       
       <div className="flex-1 p-8">
@@ -96,7 +97,7 @@ const Dashboard = () => {
               subtitle={`${totalPlanifications} ${t('dashboard.totalPlanifications')}`}
               iconColor="from-purple-500 to-purple-600"
             />
-            <Card className="professional-card overflow-hidden">
+            <Card className="professional-card overflow-hidden bg-white/70 backdrop-blur-sm shadow-lg">
               <CardContent className="p-6">
                 <div className="space-y-4">
                   <div>
@@ -108,13 +109,13 @@ const Dashboard = () => {
                     </p>
                   </div>
                   <div className="flex flex-col gap-3">
-                    <Button asChild size="sm" className="professional-button">
+                    <Button asChild size="sm" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg">
                       <Link to="/schools/add">
                         <Plus className="h-4 w-4 mr-2" />
                         {t('dashboard.addSchool')}
                       </Link>
                     </Button>
-                    <Button asChild variant="outline" size="sm" className="border-slate-300 text-slate-700 hover:bg-slate-50">
+                    <Button asChild variant="outline" size="sm" className="border-slate-300 text-slate-700 hover:bg-slate-50 bg-white/50">
                       <Link to="/schools">
                         <List className="h-4 w-4 mr-2" />
                         {t('dashboard.schoolsList')}
@@ -129,8 +130,8 @@ const Dashboard = () => {
           {/* Tables Section */}
           <motion.div className="space-y-8" variants={itemVariants}>
             {/* Games Created by School */}
-            <Card className="table-professional">
-              <CardHeader className="table-header-professional">
+            <Card className="bg-white/80 backdrop-blur-sm border border-slate-200/60 rounded-xl shadow-lg overflow-hidden">
+              <CardHeader className="bg-gradient-to-r from-blue-50/80 to-purple-50/80 border-b border-slate-200/80">
                 <CardTitle className="text-2xl font-bold text-slate-900 dark:text-white flex items-center">
                   <BookOpen className="h-6 w-6 mr-3 text-blue-600" />
                   {t('dashboard.gamesCreatedBySchool')}
@@ -184,8 +185,8 @@ const Dashboard = () => {
             </Card>
 
             {/* Planifications Created */}
-            <Card className="table-professional">
-              <CardHeader className="table-header-professional">
+            <Card className="bg-white/80 backdrop-blur-sm border border-slate-200/60 rounded-xl shadow-lg overflow-hidden">
+              <CardHeader className="bg-gradient-to-r from-purple-50/80 to-pink-50/80 border-b border-slate-200/80">
                 <CardTitle className="text-2xl font-bold text-slate-900 dark:text-white flex items-center">
                   <Users className="h-6 w-6 mr-3 text-purple-600" />
                   {t('dashboard.planificationsCreated')}

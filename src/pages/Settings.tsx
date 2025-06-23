@@ -16,15 +16,15 @@ const Settings = () => {
     <div className="flex flex-col h-screen">
       <Header />
       
-      <div className="flex-1 p-6 bg-gray-50 overflow-auto">
+      <div className="flex-1 p-6 bg-gradient-to-br from-violet-50 via-purple-50/30 to-fuchsia-50/20 overflow-auto">
         <div className="space-y-4 max-w-4xl mx-auto">
-          <h1 className="text-2xl font-bold">{t('settings.title')}</h1>
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">{t('settings.title')}</h1>
           <p className="text-muted-foreground text-base">
             {t('settings.description')}
           </p>
           
           <Tabs defaultValue="general" className="w-full">
-            <TabsList className="mb-4">
+            <TabsList className="mb-4 bg-white/70 backdrop-blur-sm">
               <TabsTrigger value="general" className="text-base">{t('settings.general')}</TabsTrigger>
               <TabsTrigger value="notifications" className="text-base">{t('settings.notifications')}</TabsTrigger>
               <TabsTrigger value="subscriptions" className="text-base">{t('settings.subscriptions')}</TabsTrigger>
