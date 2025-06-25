@@ -1,3 +1,4 @@
+
 // Configuration globale des environnements et endpoints API
 
 export type Environment = 'development' | 'production';
@@ -22,9 +23,9 @@ export const getCurrentConfig = () => HOSTS[CURRENT_ENVIRONMENT];
 
 // Endpoints API pré-configurés
 export const API_ENDPOINTS = {
-  // Authentication
+  // Authentication - correspond exactement à votre spécification
   auth: {
-    login: '/api/login-admin',
+    login: '/api/login-admin', // Endpoint confirmé : HOST + /api/login-admin
     logout: '/api/logout',
     refresh: '/api/refresh-token'
   },
