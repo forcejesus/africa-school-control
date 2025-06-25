@@ -1,4 +1,3 @@
-
 import { TranslationKeys } from '@/types/i18n';
 
 export const en: TranslationKeys = {
@@ -80,6 +79,13 @@ export const en: TranslationKeys = {
     addNew: 'Add new school',
     editSchool: 'Edit school',
     management: 'Management',
+    createSchool: 'Create school',
+    schoolInfo: 'School information',
+    adminInfo: 'Administrator information',
+    confirmation: 'Confirmation',
+    schoolDetails: 'School details',
+    adminAccount: 'Administrator account',
+    dataVerification: 'Data verification',
   },
   
   subscriptions: {
