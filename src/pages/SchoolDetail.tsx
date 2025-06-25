@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft, Users, BookOpen, Calendar, Crown, Mail, Phone, MapPin, User, GraduationCap, Search } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,6 +12,10 @@ import Header from "@/components/Header";
 import { buildApiUrl } from "@/config/hosts";
 import { AuthService } from "@/services/authService";
 import Swal from 'sweetalert2';
+import { StatsCardsSection } from "@/components/school-detail/StatsCardsSection";
+import { SchoolInfoCard } from "@/components/school-detail/SchoolInfoCard";
+import { AdminInfoCard } from "@/components/school-detail/AdminInfoCard";
+import { SearchableListCard } from "@/components/school-detail/SearchableListCard";
 
 interface Apprenant {
   _id: string;
@@ -299,341 +303,121 @@ const SchoolDetail = () => {
           )}
 
           {/* Informations générales de l'école */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <Card className="lg:col-span-2 border-orange-200 shadow-soft">
-              <CardHeader className="bg-gradient-to-r from-orange-50 to-orange-100 border-b border-orange-200">
-                <CardTitle className="flex items-center text-orange-700 text-xl">
-                  <GraduationCap className="mr-3 h-6 w-6" />
-                  Informations de l'école
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="flex items-center space-x-3">
-                    <MapPin className="h-5 w-5 text-orange-600" />
-                    <div>
-                      <p className="text-sm text-muted-foreground">Adresse</p>
-                      <p className="font-medium text-base">{displayData.ecole.adresse}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <Phone className="h-5 w-5 text-orange-600" />
-                    <div>
-                      <p className="text-sm text-muted-foreground">Téléphone</p>
-                      <p className="font-medium text-base">{displayData.ecole.telephone}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <Mail className="h-5 w-5 text-orange-600" />
-                    <div>
-                      <p className="text-sm text-muted-foreground">Email</p>
-                      <p className="font-medium text-base">{displayData.ecole.email}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <MapPin className="h-5 w-5 text-orange-600" />
-                    <div>
-                      <p className="text-sm text-muted-foreground">Pays</p>
-                      <p className="font-medium text-base">{displayData.ecole.pays.libelle}</p>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Abonnement */}
-            <Card className="border-orange-200 shadow-soft">
-              <CardHeader className="bg-gradient-to-r from-orange-50 to-orange-100 border-b border-orange-200">
-                <CardTitle className="flex items-center text-orange-700 text-xl">
-                  <Crown className="mr-3 h-6 w-6" />
-                  Abonnement
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-6">
-                <div className="space-y-4">
-                  <div>
-                    <Badge variant="default" className="bg-orange-600 hover:bg-orange-700 text-sm px-3 py-1">
-                      {displayData.abonnement.nom}
-                    </Badge>
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    {displayData.abonnement.description}
-                  </p>
-                  <div className="space-y-3 text-sm">
-                    <div className="flex justify-between">
-                      <span>Prix:</span>
-                      <span className="font-medium">{displayData.abonnement.prix.toLocaleString()} FCFA</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Jeux max:</span>
-                      <span className="font-medium">{displayData.abonnement.nombreJeuxMax}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Apprenants max:</span>
-                      <span className="font-medium">{displayData.abonnement.nombreApprenantsMax}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Durée:</span>
-                      <span className="font-medium">{displayData.abonnement.dureeEnJours} jours</span>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          <SchoolInfoCard 
+            school={displayData.ecole} 
+            subscription={displayData.abonnement} 
+          />
 
           {/* Administrateur */}
-          <Card className="border-orange-200 shadow-soft">
-            <CardHeader className="bg-gradient-to-r from-orange-50 to-orange-100 border-b border-orange-200">
-              <CardTitle className="flex items-center text-orange-700 text-xl">
-                <User className="mr-3 h-6 w-6" />
-                Administrateur
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-6">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div>
-                  <p className="text-sm text-muted-foreground">Nom complet</p>
-                  <p className="font-medium text-base">{displayData.administrateur.prenom} {displayData.administrateur.nom}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Email</p>
-                  <p className="font-medium text-base">{displayData.administrateur.email}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Téléphone</p>
-                  <p className="font-medium text-base">{displayData.administrateur.phone}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Matricule</p>
-                  <p className="font-medium text-base">{displayData.administrateur.matricule}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Statut</p>
-                  <Badge variant={displayData.administrateur.statut === 'actif' ? 'default' : 'secondary'} 
-                         className={displayData.administrateur.statut === 'actif' ? 'bg-green-600 hover:bg-green-700' : ''}>
-                    {displayData.administrateur.statut}
-                  </Badge>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Genre</p>
-                  <p className="font-medium text-base">{displayData.administrateur.genre}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <AdminInfoCard administrator={displayData.administrateur} />
 
           {/* Statistiques - Mise en valeur améliorée */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <Card className="border-orange-200 shadow-lg hover:shadow-xl transition-shadow duration-300 bg-gradient-to-br from-white to-orange-50">
-              <CardContent className="p-8">
-                <div className="flex items-center space-x-4">
-                  <div className="bg-gradient-to-br from-orange-500 to-orange-600 p-4 rounded-xl shadow-lg">
-                    <Users className="h-10 w-10 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-4xl font-bold text-orange-700">{displayData.ecole.apprenants.length}</p>
-                    <p className="text-base text-muted-foreground font-medium">Apprenants</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="border-orange-200 shadow-lg hover:shadow-xl transition-shadow duration-300 bg-gradient-to-br from-white to-blue-50">
-              <CardContent className="p-8">
-                <div className="flex items-center space-x-4">
-                  <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-4 rounded-xl shadow-lg">
-                    <BookOpen className="h-10 w-10 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-4xl font-bold text-blue-700">{displayData.jeux.length}</p>
-                    <p className="text-base text-muted-foreground font-medium">Jeux créés</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="border-orange-200 shadow-lg hover:shadow-xl transition-shadow duration-300 bg-gradient-to-br from-white to-green-50">
-              <CardContent className="p-8">
-                <div className="flex items-center space-x-4">
-                  <div className="bg-gradient-to-br from-green-500 to-green-600 p-4 rounded-xl shadow-lg">
-                    <Calendar className="h-10 w-10 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-4xl font-bold text-green-700">{displayData.planifications.total}</p>
-                    <p className="text-base text-muted-foreground font-medium">Planifications</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="border-orange-200 shadow-lg hover:shadow-xl transition-shadow duration-300 bg-gradient-to-br from-white to-purple-50">
-              <CardContent className="p-8">
-                <div className="flex items-center space-x-4">
-                  <div className="bg-gradient-to-br from-purple-500 to-purple-600 p-4 rounded-xl shadow-lg">
-                    <GraduationCap className="h-10 w-10 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-4xl font-bold text-purple-700">
-                      {displayData.jeux.reduce((acc, jeu) => acc + jeu.nombreQuestions, 0)}
-                    </p>
-                    <p className="text-base text-muted-foreground font-medium">Questions totales</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          <StatsCardsSection
+            studentsCount={displayData.ecole.apprenants.length}
+            gamesCount={displayData.jeux.length}
+            planificationsCount={displayData.planifications.total}
+            totalQuestions={displayData.jeux.reduce((acc, jeu) => acc + jeu.nombreQuestions, 0)}
+          />
 
           {/* Jeux avec recherche */}
-          <Card className="border-orange-200 shadow-soft">
-            <CardHeader className="bg-gradient-to-r from-orange-50 to-orange-100 border-b border-orange-200">
-              <div className="flex items-center justify-between">
-                <CardTitle className="flex items-center text-orange-700 text-xl">
-                  <BookOpen className="mr-3 h-6 w-6" />
-                  Jeux créés ({filteredGames.length})
-                </CardTitle>
-                <div className="relative w-64">
-                  <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-orange-400" />
-                  <Input
-                    type="search"
-                    placeholder="Rechercher un jeu..."
-                    value={searchGames}
-                    onChange={(e) => setSearchGames(e.target.value)}
-                    className="pl-9 bg-white border-orange-200 focus:border-orange-300"
-                  />
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent className="p-6">
-              {filteredGames.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {filteredGames.map((jeu) => (
-                    <Card key={jeu._id} className="border border-orange-100 hover:shadow-md transition-shadow">
-                      <CardContent className="p-4">
-                        <div className="space-y-2">
-                          <h4 className="font-semibold text-orange-700 text-base">{jeu.titre}</h4>
-                          <p className="text-sm text-muted-foreground">
-                            Par: {jeu.professeur.prenom} {jeu.professeur.nom}
-                          </p>
-                          <div className="flex justify-between text-xs text-muted-foreground">
-                            <span>{jeu.nombreQuestions} questions</span>
-                            <span>{new Date(jeu.date).toLocaleDateString()}</span>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-center text-muted-foreground py-8 text-base">
-                  {displayData.jeux.length === 0 ? "Aucun jeu créé pour le moment" : "Aucun jeu trouvé avec ces critères"}
-                </p>
-              )}
-            </CardContent>
-          </Card>
+          <SearchableListCard
+            title="Jeux créés"
+            icon={<BookOpen className="mr-3 h-6 w-6" />}
+            searchValue={searchGames}
+            onSearchChange={setSearchGames}
+            searchPlaceholder="Rechercher un jeu..."
+            itemCount={filteredGames.length}
+            emptyMessage="Aucun jeu créé pour le moment"
+            noResultsMessage="Aucun jeu trouvé avec ces critères"
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredGames.map((jeu) => (
+                <Card key={jeu._id} className="border border-orange-100 hover:shadow-md transition-shadow">
+                  <CardContent className="p-4">
+                    <div className="space-y-2">
+                      <h4 className="font-semibold text-orange-700 text-base">{jeu.titre}</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Par: {jeu.professeur.prenom} {jeu.professeur.nom}
+                      </p>
+                      <div className="flex justify-between text-xs text-muted-foreground">
+                        <span>{jeu.nombreQuestions} questions</span>
+                        <span>{new Date(jeu.date).toLocaleDateString()}</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </SearchableListCard>
 
           {/* Apprenants avec recherche */}
-          <Card className="border-orange-200 shadow-soft">
-            <CardHeader className="bg-gradient-to-r from-orange-50 to-orange-100 border-b border-orange-200">
-              <div className="flex items-center justify-between">
-                <CardTitle className="flex items-center text-orange-700 text-xl">
-                  <Users className="mr-3 h-6 w-6" />
-                  Apprenants ({filteredStudents.length})
-                </CardTitle>
-                <div className="relative w-64">
-                  <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-orange-400" />
-                  <Input
-                    type="search"
-                    placeholder="Rechercher un apprenant..."
-                    value={searchStudents}
-                    onChange={(e) => setSearchStudents(e.target.value)}
-                    className="pl-9 bg-white border-orange-200 focus:border-orange-300"
-                  />
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent className="p-6">
-              {filteredStudents.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {filteredStudents.map((apprenant) => (
-                    <Card key={apprenant._id} className="border border-orange-100">
-                      <CardContent className="p-4">
-                        <div className="space-y-2">
-                          <h4 className="font-semibold text-orange-700 text-base">
-                            {apprenant.prenom} {apprenant.nom}
-                          </h4>
-                          <p className="text-sm text-muted-foreground">
-                            Matricule: {apprenant.matricule}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            Inscrit le: {new Date(apprenant.date).toLocaleDateString()}
-                          </p>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-center text-muted-foreground py-8 text-base">
-                  {displayData.ecole.apprenants.length === 0 ? "Aucun apprenant inscrit pour le moment" : "Aucun apprenant trouvé avec ces critères"}
-                </p>
-              )}
-            </CardContent>
-          </Card>
+          <SearchableListCard
+            title="Apprenants"
+            icon={<Users className="mr-3 h-6 w-6" />}
+            searchValue={searchStudents}
+            onSearchChange={setSearchStudents}
+            searchPlaceholder="Rechercher un apprenant..."
+            itemCount={filteredStudents.length}
+            emptyMessage="Aucun apprenant inscrit pour le moment"
+            noResultsMessage="Aucun apprenant trouvé avec ces critères"
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {filteredStudents.map((apprenant) => (
+                <Card key={apprenant._id} className="border border-orange-100">
+                  <CardContent className="p-4">
+                    <div className="space-y-2">
+                      <h4 className="font-semibold text-orange-700 text-base">
+                        {apprenant.prenom} {apprenant.nom}
+                      </h4>
+                      <p className="text-sm text-muted-foreground">
+                        Matricule: {apprenant.matricule}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        Inscrit le: {new Date(apprenant.date).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </SearchableListCard>
 
           {/* Planifications avec recherche */}
-          <Card className="border-orange-200 shadow-soft">
-            <CardHeader className="bg-gradient-to-r from-orange-50 to-orange-100 border-b border-orange-200">
-              <div className="flex items-center justify-between">
-                <CardTitle className="flex items-center text-orange-700 text-xl">
-                  <Calendar className="mr-3 h-6 w-6" />
-                  Planifications ({filteredPlans.length})
-                </CardTitle>
-                <div className="relative w-64">
-                  <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-orange-400" />
-                  <Input
-                    type="search"
-                    placeholder="Rechercher une planification..."
-                    value={searchPlans}
-                    onChange={(e) => setSearchPlans(e.target.value)}
-                    className="pl-9 bg-white border-orange-200 focus:border-orange-300"
-                  />
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent className="p-6">
-              {filteredPlans.length > 0 ? (
-                <div className="space-y-4">
-                  {filteredPlans.map((planification) => (
-                    <Card key={planification._id} className="border border-orange-100">
-                      <CardContent className="p-4">
-                        <div className="flex justify-between items-start">
-                          <div className="space-y-1">
-                            <h4 className="font-semibold text-orange-700 text-base">
-                              {planification.jeu.titre}
-                            </h4>
-                            <p className="text-sm text-muted-foreground">
-                              PIN: {planification.pin}
-                            </p>
-                          </div>
-                          <Badge 
-                            variant={planification.statut === 'en attente' ? 'secondary' : 'default'}
-                            className={planification.statut === 'actif' ? 'bg-green-600 hover:bg-green-700' : ''}
-                          >
-                            {planification.statut}
-                          </Badge>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-center text-muted-foreground py-8 text-base">
-                  {displayData.planifications.liste.length === 0 ? "Aucune planification pour le moment" : "Aucune planification trouvée avec ces critères"}
-                </p>
-              )}
-            </CardContent>
-          </Card>
+          <SearchableListCard
+            title="Planifications"
+            icon={<Calendar className="mr-3 h-6 w-6" />}
+            searchValue={searchPlans}
+            onSearchChange={setSearchPlans}
+            searchPlaceholder="Rechercher une planification..."
+            itemCount={filteredPlans.length}
+            emptyMessage="Aucune planification pour le moment"
+            noResultsMessage="Aucune planification trouvée avec ces critères"
+          >
+            <div className="space-y-4">
+              {filteredPlans.map((planification) => (
+                <Card key={planification._id} className="border border-orange-100">
+                  <CardContent className="p-4">
+                    <div className="flex justify-between items-start">
+                      <div className="space-y-1">
+                        <h4 className="font-semibold text-orange-700 text-base">
+                          {planification.jeu.titre}
+                        </h4>
+                        <p className="text-sm text-muted-foreground">
+                          PIN: {planification.pin}
+                        </p>
+                      </div>
+                      <Badge 
+                        variant={planification.statut === 'en attente' ? 'secondary' : 'default'}
+                        className={planification.statut === 'actif' ? 'bg-green-600 hover:bg-green-700' : ''}
+                      >
+                        {planification.statut}
+                      </Badge>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </SearchableListCard>
         </motion.div>
       </div>
     </div>
