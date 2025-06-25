@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
@@ -9,7 +8,7 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
-import { Edit, Trash2, School } from "lucide-react";
+import { Edit, Trash2, School, Globe } from "lucide-react";
 
 interface Country {
   _id: string;
