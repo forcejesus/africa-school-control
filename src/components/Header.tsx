@@ -18,10 +18,16 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useI18n } from "@/contexts/I18nContext";
 import { useAuth } from "@/contexts/AuthContext";
+import { useIsMobile } from "@/hooks/use-mobile";
 
-export function Header() {
+interface HeaderProps {
+  onMobileMenuToggle?: () => void;
+}
+
+export function Header({ onMobileMenuToggle }: HeaderProps) {
   const { t } = useI18n();
   const { user, logout } = useAuth();
+  const isMobile = useIsMobile();
 
   const handleLogout = () => {
     logout();
@@ -40,40 +46,45 @@ export function Header() {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.3 }}
-      className="border-b bg-white/90 backdrop-blur-lg supports-[backdrop-filter]:bg-white/70 sticky top-0 z-50 border-orange-200/60"
+      className="border-b bg-white/90 backdrop-blur-lg supports-[backdrop-filter]:bg-white/70 sticky top-0 z-40 border-orange-200/60"
     >
-      <div className="container flex h-16 items-center justify-between px-6">
-        <div className="flex items-center space-x-4">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden hover:bg-orange-100"
-          >
-            <Menu className="h-5 w-5" />
-          </Button>
+      <div className="container flex h-14 sm:h-16 items-center justify-between px-3 sm:px-4 lg:px-6">
+        <div className="flex items-center space-x-2 sm:space-x-4">
+          {isMobile && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="hover:bg-orange-100 h-10 w-10"
+              onClick={onMobileMenuToggle}
+            >
+              <Menu className="h-5 w-5" />
+            </Button>
+          )}
           
-          <h1 className="text-xl font-bold bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent">
+          <h1 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent">
             {t('auth.title')}
           </h1>
         </div>
         
-        <div className="flex items-center space-x-3">
-          <div className="relative hidden md:block">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-orange-400" />
-            <Input
-              type="search"
-              placeholder={t('common.search')}
-              className="w-64 pl-9 bg-orange-50/50 border-orange-200 focus:border-orange-300 focus:bg-white transition-all duration-200" 
-            />
-          </div>
+        <div className="flex items-center space-x-2 sm:space-x-3">
+          {!isMobile && (
+            <div className="relative hidden sm:block">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-orange-400" />
+              <Input
+                type="search"
+                placeholder={t('common.search')}
+                className="w-48 lg:w-64 pl-9 bg-orange-50/50 border-orange-200 focus:border-orange-300 focus:bg-white transition-all duration-200 h-10" 
+              />
+            </div>
+          )}
           
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Link to="/notifications">
-              <Button variant="ghost" size="icon" className="relative hover:bg-orange-100">
-                <Bell className="h-5 w-5" />
+              <Button variant="ghost" size="icon" className="relative hover:bg-orange-100 h-10 w-10">
+                <Bell className="h-4 w-4 sm:h-5 sm:w-5" />
                 <Badge 
                   variant="destructive" 
-                  className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-xs bg-red-500 hover:bg-red-600"
+                  className="absolute -top-1 -right-1 h-4 w-4 sm:h-5 sm:w-5 p-0 flex items-center justify-center text-xs bg-red-500 hover:bg-red-600"
                 >
                   3
                 </Badge>
@@ -81,13 +92,15 @@ export function Header() {
             </Link>
           </motion.div>
           
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Link to="/subscriptions">
-              <Button variant="ghost" size="icon" className="hover:bg-orange-100">
-                <FileText className="h-5 w-5" />
-              </Button>
-            </Link>
-          </motion.div>
+          {!isMobile && (
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Link to="/subscriptions">
+                <Button variant="ghost" size="icon" className="hover:bg-orange-100 h-10 w-10">
+                  <FileText className="h-4 w-4 sm:h-5 sm:w-5" />
+                </Button>
+              </Link>
+            </motion.div>
+          )}
           
           <LanguageSwitcher />
           <ThemeSwitcher />
@@ -95,17 +108,21 @@ export function Header() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button variant="ghost" className="relative h-9 w-9 rounded-full">
-                  <Avatar className="h-9 w-9">
+                <Button variant="ghost" className="relative h-8 w-8 sm:h-9 sm:w-9 rounded-full">
+                  <Avatar className="h-8 w-8 sm:h-9 sm:w-9">
                     <AvatarImage src="" alt={user?.prenom || "Admin"} />
-                    <AvatarFallback className="bg-gradient-to-br from-orange-500 to-orange-600 text-white font-semibold">
+                    <AvatarFallback className="bg-gradient-to-br from-orange-500 to-orange-600 text-white font-semibold text-xs sm:text-sm">
                       {getInitials()}
                     </AvatarFallback>
                   </Avatar>
                 </Button>
               </motion.div>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56 bg-white/95 backdrop-blur-sm border-orange-200/60" align="end" forceMount>
+            <DropdownMenuContent 
+              className="w-56 bg-white/95 backdrop-blur-sm border-orange-200/60 mr-2 sm:mr-0" 
+              align="end" 
+              forceMount
+            >
               <DropdownMenuLabel className="font-normal">
                 <div className="flex flex-col space-y-1">
                   <p className="text-sm font-medium leading-none">
@@ -129,6 +146,14 @@ export function Header() {
                   <span>{t('nav.settings')}</span>
                 </DropdownMenuItem>
               </Link>
+              {isMobile && (
+                <Link to="/subscriptions">
+                  <DropdownMenuItem className="hover:bg-orange-50">
+                    <FileText className="mr-2 h-4 w-4" />
+                    <span>{t('nav.subscriptions')}</span>
+                  </DropdownMenuItem>
+                </Link>
+              )}
               <DropdownMenuSeparator />
               <DropdownMenuItem 
                 className="text-red-600 hover:bg-red-50"

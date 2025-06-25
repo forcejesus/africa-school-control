@@ -113,32 +113,54 @@
   body {
     @apply bg-gradient-to-br from-orange-50 via-white to-orange-50/30 text-foreground;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    font-size: 1rem;
-    line-height: 1.6;
+    font-size: 0.875rem;
+    line-height: 1.5;
     min-height: 100vh;
   }
 
+  /* Responsive typography */
+  @screen sm {
+    body {
+      font-size: 0.9375rem;
+      line-height: 1.6;
+    }
+  }
+
+  @screen lg {
+    body {
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+  }
+
   h1 {
-    @apply text-3xl font-bold tracking-tight;
-    font-size: 2rem;
+    @apply text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight;
     line-height: 1.2;
   }
   
   h2 {
-    @apply text-2xl font-semibold tracking-tight;
-    font-size: 1.5rem;
+    @apply text-lg sm:text-xl lg:text-2xl font-semibold tracking-tight;
     line-height: 1.3;
   }
 
   h3 {
-    @apply text-xl font-semibold;
-    font-size: 1.25rem;
+    @apply text-base sm:text-lg lg:text-xl font-semibold;
+  }
+
+  /* Mobile-first button adjustments */
+  button {
+    @apply min-h-[44px] sm:min-h-[40px] lg:min-h-[36px];
+  }
+
+  /* Mobile-first input adjustments */
+  input, textarea, select {
+    @apply min-h-[44px] sm:min-h-[40px] lg:min-h-[36px];
   }
 }
 
 @layer components {
   .modern-card {
-    @apply bg-white border border-orange-200 rounded-2xl shadow-card hover:shadow-intense transition-all duration-300 hover:-translate-y-1;
+    @apply bg-white border border-orange-200 rounded-xl sm:rounded-2xl shadow-card hover:shadow-intense transition-all duration-300 hover:-translate-y-1 p-4 sm:p-6;
   }
   
   .hover-lift {
@@ -154,15 +176,15 @@
   }
   
   .dashboard-header {
-    @apply bg-gradient-to-r from-orange-500 to-orange-600 text-white p-6 md:p-8 rounded-2xl shadow-lg;
+    @apply bg-gradient-to-r from-orange-500 to-orange-600 text-white p-4 sm:p-6 lg:p-8 rounded-xl sm:rounded-2xl shadow-lg;
   }
   
   .stats-grid {
-    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6;
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6;
   }
   
   .actions-grid {
-    @apply grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6;
+    @apply grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 lg:gap-6;
   }
   
   .orange-gradient {
@@ -180,27 +202,61 @@
   .purple-gradient {
     @apply bg-gradient-to-r from-purple-500 to-purple-600;
   }
+
+  /* Responsive text utilities */
+  .text-responsive-sm {
+    @apply text-xs sm:text-sm;
+  }
+  
+  .text-responsive-base {
+    @apply text-sm sm:text-base;
+  }
+  
+  .text-responsive-lg {
+    @apply text-base sm:text-lg;
+  }
+
+  /* Responsive spacing utilities */
+  .space-responsive {
+    @apply space-y-3 sm:space-y-4 lg:space-y-6;
+  }
+
+  .gap-responsive {
+    @apply gap-3 sm:gap-4 lg:gap-6;
+  }
+
+  .p-responsive {
+    @apply p-3 sm:p-4 lg:p-6;
+  }
+
+  .px-responsive {
+    @apply px-3 sm:px-4 lg:px-6;
+  }
+
+  .py-responsive {
+    @apply py-3 sm:py-4 lg:py-6;
+  }
 }
 
 /* Professional badge variants with orange theme */
 .badge-success {
-  @apply bg-emerald-100 text-emerald-700 border-emerald-200;
+  @apply bg-emerald-100 text-emerald-700 border-emerald-200 text-xs sm:text-sm px-2 sm:px-3 py-1;
 }
 
 .badge-warning {
-  @apply bg-amber-100 text-amber-700 border-amber-200;
+  @apply bg-amber-100 text-amber-700 border-amber-200 text-xs sm:text-sm px-2 sm:px-3 py-1;
 }
 
 .badge-info {
-  @apply bg-blue-100 text-blue-700 border-blue-200;
+  @apply bg-blue-100 text-blue-700 border-blue-200 text-xs sm:text-sm px-2 sm:px-3 py-1;
 }
 
 .badge-primary {
-  @apply bg-orange-100 text-orange-700 border-orange-200;
+  @apply bg-orange-100 text-orange-700 border-orange-200 text-xs sm:text-sm px-2 sm:px-3 py-1;
 }
 
 .badge-neutral {
-  @apply bg-slate-100 text-slate-700 border-slate-200;
+  @apply bg-slate-100 text-slate-700 border-slate-200 text-xs sm:text-sm px-2 sm:px-3 py-1;
 }
 
 /* Enhanced animations */
@@ -215,7 +271,13 @@
 
 /* Improved scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
+}
+
+@screen sm {
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
 }
 
 ::-webkit-scrollbar-track {
@@ -237,4 +299,42 @@
 
 .dark body {
   @apply bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900;
+}
+
+/* Mobile-specific improvements */
+@media (max-width: 640px) {
+  .container {
+    @apply px-3;
+  }
+  
+  .dialog-content {
+    @apply mx-3 w-[calc(100vw-1.5rem)] max-w-none;
+  }
+  
+  .popover-content {
+    @apply mx-3 w-[calc(100vw-1.5rem)] max-w-none;
+  }
+}
+
+/* Tablet-specific improvements */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .container {
+    @apply px-4;
+  }
+}
+
+/* Touch-friendly improvements for mobile */
+@media (hover: none) and (pointer: coarse) {
+  .hover-lift:hover {
+    @apply transform-none shadow-card;
+  }
+  
+  .hover:bg-accent:hover {
+    @apply bg-accent;
+  }
+  
+  /* Increase tap targets */
+  button, .clickable {
+    @apply min-h-[44px] min-w-[44px];
+  }
 }

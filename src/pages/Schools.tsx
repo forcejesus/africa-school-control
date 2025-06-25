@@ -6,13 +6,16 @@ import { motion } from "framer-motion";
 import { useI18n } from "@/contexts/I18nContext";
 import { SchoolService, ApiSchool } from "@/services/schoolService";
 import { useToast } from "@/hooks/use-toast";
+import { useIsMobile } from "@/hooks/use-mobile";
 import Swal from 'sweetalert2';
 
 const Schools = () => {
   const [schools, setSchools] = useState<ApiSchool[]>([]);
   const [loading, setLoading] = useState(true);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { t } = useI18n();
   const { toast } = useToast();
+  const isMobile = useIsMobile();
   
   const fetchSchools = useCallback(async () => {
     try {
@@ -49,22 +52,22 @@ const Schools = () => {
   }, [fetchSchools]);
 
   return (
-    <div className="flex flex-col h-screen">
-      <Header />
+    <div className="flex flex-col min-h-screen">
+      <Header onMobileMenuToggle={() => setMobileMenuOpen(true)} />
       
-      <div className="flex-1 p-6 bg-gradient-to-br from-orange-50 via-white to-orange-50/30 overflow-auto">
+      <div className="flex-1 p-3 sm:p-4 lg:p-6 bg-gradient-to-br from-orange-50 via-white to-orange-50/30 overflow-auto">
         <motion.div 
-          className="space-y-4"
+          className="space-y-3 sm:space-y-4 max-w-7xl mx-auto"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
             <div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-orange-700 bg-clip-text text-transparent">
+              <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-orange-600 to-orange-700 bg-clip-text text-transparent">
                 {t('schools.title')}
               </h1>
-              <p className="text-base text-muted-foreground">
+              <p className="text-sm sm:text-base text-muted-foreground mt-1">
                 {t('schools.description')}
               </p>
             </div>

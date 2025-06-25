@@ -29,8 +29,8 @@ export function SchoolInfoStep({
   onSchoolSelectChange 
 }: SchoolInfoStepProps) {
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
         <div className="space-y-2">
           <Label htmlFor="libelle" className="text-sm font-medium text-gray-700">
             Nom de l'école *
@@ -41,7 +41,7 @@ export function SchoolInfoStep({
             value={schoolData.libelle}
             onChange={onSchoolChange}
             placeholder="Entrez le nom de l'école"
-            className="border-orange-200 focus:ring-orange-500"
+            className="border-orange-200 focus:ring-orange-500 h-10 sm:h-11"
             required
           />
         </div>
@@ -56,12 +56,12 @@ export function SchoolInfoStep({
             value={schoolData.ville}
             onChange={onSchoolChange}
             placeholder="Entrez la ville"
-            className="border-orange-200 focus:ring-orange-500"
+            className="border-orange-200 focus:ring-orange-500 h-10 sm:h-11"
             required
           />
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-2 md:col-span-2">
           <Label htmlFor="adresse" className="text-sm font-medium text-gray-700">
             Adresse *
           </Label>
@@ -71,7 +71,7 @@ export function SchoolInfoStep({
             value={schoolData.adresse}
             onChange={onSchoolChange}
             placeholder="Entrez l'adresse complète"
-            className="border-orange-200 focus:ring-orange-500"
+            className="border-orange-200 focus:ring-orange-500 h-10 sm:h-11"
             required
           />
         </div>
@@ -86,7 +86,7 @@ export function SchoolInfoStep({
             value={schoolData.telephone}
             onChange={onSchoolChange}
             placeholder="Entrez le numéro de téléphone"
-            className="border-orange-200 focus:ring-orange-500"
+            className="border-orange-200 focus:ring-orange-500 h-10 sm:h-11"
             required
           />
         </div>
@@ -102,7 +102,7 @@ export function SchoolInfoStep({
             value={schoolData.email}
             onChange={onSchoolChange}
             placeholder="Entrez l'adresse email"
-            className="border-orange-200 focus:ring-orange-500"
+            className="border-orange-200 focus:ring-orange-500 h-10 sm:h-11"
             required
           />
         </div>
@@ -112,7 +112,7 @@ export function SchoolInfoStep({
             Pays *
           </Label>
           <Select value={schoolData.pays} onValueChange={(value) => onSchoolSelectChange('pays', value)}>
-            <SelectTrigger className="border-orange-200 focus:ring-orange-500">
+            <SelectTrigger className="border-orange-200 focus:ring-orange-500 h-10 sm:h-11">
               <SelectValue placeholder="Sélectionnez un pays" />
             </SelectTrigger>
             <SelectContent>
@@ -130,13 +130,18 @@ export function SchoolInfoStep({
             Abonnement *
           </Label>
           <Select value={schoolData.abonnementActuel} onValueChange={(value) => onSchoolSelectChange('abonnementActuel', value)}>
-            <SelectTrigger className="border-orange-200 focus:ring-orange-500">
+            <SelectTrigger className="border-orange-200 focus:ring-orange-500 h-10 sm:h-11">
               <SelectValue placeholder="Sélectionnez un abonnement" />
             </SelectTrigger>
             <SelectContent>
               {subscriptions.map((subscription) => (
                 <SelectItem key={subscription._id} value={subscription._id}>
-                  {subscription.nom} - {subscription.prix.toLocaleString()} FCFA
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                    <span className="font-medium">{subscription.nom}</span>
+                    <span className="text-sm text-muted-foreground">
+                      {subscription.prix.toLocaleString()} FCFA
+                    </span>
+                  </div>
                 </SelectItem>
               ))}
             </SelectContent>
@@ -144,7 +149,7 @@ export function SchoolInfoStep({
         </div>
       </div>
 
-      <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+      <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 sm:p-4">
         <p className="text-sm text-orange-700">
           <strong>Note:</strong> Les champs marqués d'un astérisque (*) sont obligatoires.
         </p>
