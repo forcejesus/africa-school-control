@@ -9,6 +9,7 @@ import { SecuritySettings } from "@/components/settings/SecuritySettings";
 import { FAQSettings } from "@/components/settings/FAQSettings";
 import { CountryManagement } from "@/components/settings/CountryManagement";
 import { useI18n } from "@/contexts/I18nContext";
+import { Settings as SettingsIcon, Globe, CreditCard, Bell, Palette, Shield, HelpCircle } from "lucide-react";
 
 const Settings = () => {
   const { t } = useI18n();
@@ -18,50 +19,99 @@ const Settings = () => {
       <Header />
       
       <div className="flex-1 p-6 bg-gradient-to-br from-violet-50 via-purple-50/30 to-fuchsia-50/20 overflow-auto">
-        <div className="space-y-4 max-w-6xl mx-auto">
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">{t('settings.title')}</h1>
-          <p className="text-muted-foreground text-base">
-            {t('settings.description')}
-          </p>
+        <div className="space-y-6 max-w-7xl mx-auto">
+          <div className="space-y-2">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent flex items-center gap-3">
+              <SettingsIcon className="h-8 w-8 text-violet-600" />
+              {t('settings.title')}
+            </h1>
+            <p className="text-muted-foreground text-lg">
+              {t('settings.description')}
+            </p>
+          </div>
           
           <Tabs defaultValue="general" className="w-full">
-            <TabsList className="mb-4 bg-white/70 backdrop-blur-sm">
-              <TabsTrigger value="general" className="text-base">{t('settings.general')}</TabsTrigger>
-              <TabsTrigger value="countries" className="text-base">Pays</TabsTrigger>
-              <TabsTrigger value="subscriptions" className="text-base">{t('settings.subscriptions')}</TabsTrigger>
-              <TabsTrigger value="notifications" className="text-base">{t('settings.notifications')}</TabsTrigger>
-              <TabsTrigger value="appearance" className="text-base">{t('settings.appearance')}</TabsTrigger>
-              <TabsTrigger value="security" className="text-base">{t('settings.security')}</TabsTrigger>
-              <TabsTrigger value="faq" className="text-base">{t('settings.faq')}</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-7 h-14 bg-white/80 backdrop-blur-sm border border-violet-200 rounded-xl p-1">
+              <TabsTrigger 
+                value="general" 
+                className="flex items-center gap-2 text-sm font-medium data-[state=active]:bg-violet-100 data-[state=active]:text-violet-700 data-[state=active]:shadow-sm transition-all duration-200"
+              >
+                <SettingsIcon className="h-4 w-4" />
+                {t('settings.general')}
+              </TabsTrigger>
+              <TabsTrigger 
+                value="countries" 
+                className="flex items-center gap-2 text-sm font-medium data-[state=active]:bg-violet-100 data-[state=active]:text-violet-700 data-[state=active]:shadow-sm transition-all duration-200"
+              >
+                <Globe className="h-4 w-4" />
+                Pays
+              </TabsTrigger>
+              <TabsTrigger 
+                value="subscriptions" 
+                className="flex items-center gap-2 text-sm font-medium data-[state=active]:bg-violet-100 data-[state=active]:text-violet-700 data-[state=active]:shadow-sm transition-all duration-200"
+              >
+                <CreditCard className="h-4 w-4" />
+                {t('settings.subscriptions')}
+              </TabsTrigger>
+              <TabsTrigger 
+                value="notifications" 
+                className="flex items-center gap-2 text-sm font-medium data-[state=active]:bg-violet-100 data-[state=active]:text-violet-700 data-[state=active]:shadow-sm transition-all duration-200"
+              >
+                <Bell className="h-4 w-4" />
+                {t('settings.notifications')}
+              </TabsTrigger>
+              <TabsTrigger 
+                value="appearance" 
+                className="flex items-center gap-2 text-sm font-medium data-[state=active]:bg-violet-100 data-[state=active]:text-violet-700 data-[state=active]:shadow-sm transition-all duration-200"
+              >
+                <Palette className="h-4 w-4" />
+                {t('settings.appearance')}
+              </TabsTrigger>
+              <TabsTrigger 
+                value="security" 
+                className="flex items-center gap-2 text-sm font-medium data-[state=active]:bg-violet-100 data-[state=active]:text-violet-700 data-[state=active]:shadow-sm transition-all duration-200"
+              >
+                <Shield className="h-4 w-4" />
+                {t('settings.security')}
+              </TabsTrigger>
+              <TabsTrigger 
+                value="faq" 
+                className="flex items-center gap-2 text-sm font-medium data-[state=active]:bg-violet-100 data-[state=active]:text-violet-700 data-[state=active]:shadow-sm transition-all duration-200"
+              >
+                <HelpCircle className="h-4 w-4" />
+                {t('settings.faq')}
+              </TabsTrigger>
             </TabsList>
             
-            <TabsContent value="general" className="space-y-4">
-              <GeneralSettings />
-            </TabsContent>
-            
-            <TabsContent value="countries" className="space-y-4">
-              <CountryManagement />
-            </TabsContent>
-            
-            <TabsContent value="subscriptions" className="space-y-4">
-              <SubscriptionSettings />
-            </TabsContent>
-            
-            <TabsContent value="notifications" className="space-y-4">
-              <NotificationSettings />
-            </TabsContent>
-            
-            <TabsContent value="appearance" className="space-y-4">
-              <AppearanceSettings />
-            </TabsContent>
-            
-            <TabsContent value="security" className="space-y-4">
-              <SecuritySettings />
-            </TabsContent>
+            <div className="mt-8">
+              <TabsContent value="general" className="space-y-6">
+                <GeneralSettings />
+              </TabsContent>
+              
+              <TabsContent value="countries" className="space-y-6">
+                <CountryManagement />
+              </TabsContent>
+              
+              <TabsContent value="subscriptions" className="space-y-6">
+                <SubscriptionSettings />
+              </TabsContent>
+              
+              <TabsContent value="notifications" className="space-y-6">
+                <NotificationSettings />
+              </TabsContent>
+              
+              <TabsContent value="appearance" className="space-y-6">
+                <AppearanceSettings />
+              </TabsContent>
+              
+              <TabsContent value="security" className="space-y-6">
+                <SecuritySettings />
+              </TabsContent>
 
-            <TabsContent value="faq" className="space-y-4">
-              <FAQSettings />
-            </TabsContent>
+              <TabsContent value="faq" className="space-y-6">
+                <FAQSettings />
+              </TabsContent>
+            </div>
           </Tabs>
         </div>
       </div>

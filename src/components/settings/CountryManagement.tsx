@@ -1,50 +1,37 @@
 
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { buildApiUrl } from "@/config/hosts";
+import { SubscriptionService, ApiCountry, CountryStatistics } from "@/services/subscriptionService";
 import { AuthService } from "@/services/authService";
+import { buildApiUrl } from "@/config/hosts";
 import { useToast } from "@/hooks/use-toast";
 import { CountryHeader } from "./country/CountryHeader";
 import { CountryTable } from "./country/CountryTable";
+import { CountryStats } from "./country/CountryStats";
 import { EditCountryDialog } from "./country/EditCountryDialog";
 
-interface Country {
-  _id: string;
-  libelle: string;
-  __v?: number;
-}
-
-interface ApiResponse {
-  success: boolean;
-  message: string;
-  data: Country[];
-}
-
 export function CountryManagement() {
-  const [countries, setCountries] = useState<Country[]>([]);
+  const [countries, setCountries] = useState<ApiCountry[]>([]);
+  const [statistics, setStatistics] = useState<CountryStatistics>({
+    totalPays: 0,
+    totalEcoles: 0,
+    paysAvecEcoles: 0,
+    paysSansEcoles: 0,
+    moyenneEcolesParPays: 0
+  });
   const [loading, setLoading] = useState(true);
-  const [editingCountry, setEditingCountry] = useState<Country | null>(null);
+  const [editingCountry, setEditingCountry] = useState<ApiCountry | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const { toast } = useToast();
 
   const fetchCountries = async () => {
     try {
       setLoading(true);
-      const headers = {
-        'Content-Type': 'application/json',
-        ...AuthService.getAuthHeaders(),
-      };
-
-      const response = await fetch(buildApiUrl('/api/pays'), {
-        method: 'GET',
-        headers,
-      });
-
-      if (response.ok) {
-        const data: ApiResponse = await response.json();
-        if (data.success) {
-          setCountries(data.data);
-        }
+      const response = await SubscriptionService.getCountries();
+      
+      if (response.success) {
+        setCountries(response.data);
+        setStatistics(response.statistiques);
       }
     } catch (error) {
       console.error('Erreur lors du chargement des pays:', error);
@@ -157,7 +144,7 @@ export function CountryManagement() {
     }
   };
 
-  const openEditDialog = (country: Country) => {
+  const openEditDialog = (country: ApiCountry) => {
     setEditingCountry(country);
     setIsEditDialogOpen(true);
   };
@@ -172,25 +159,27 @@ export function CountryManagement() {
   }, []);
 
   return (
-    <Card className="border-blue-200">
-      <CountryHeader onAdd={createCountry} />
-      <CardContent className="p-6">
-        <div className="space-y-4">
+    <div className="space-y-6">
+      <CountryStats statistics={statistics} loading={loading} />
+      
+      <Card className="border-violet-200 shadow-sm">
+        <CountryHeader onAdd={createCountry} />
+        <CardContent className="p-6">
           <CountryTable 
             countries={countries} 
             loading={loading}
             onEdit={openEditDialog}
             onDelete={deleteCountry}
           />
-        </div>
 
-        <EditCountryDialog
-          country={editingCountry}
-          isOpen={isEditDialogOpen}
-          onClose={closeEditDialog}
-          onEdit={updateCountry}
-        />
-      </CardContent>
-    </Card>
+          <EditCountryDialog
+            country={editingCountry}
+            isOpen={isEditDialogOpen}
+            onClose={closeEditDialog}
+            onEdit={updateCountry}
+          />
+        </CardContent>
+      </Card>
+    </div>
   );
 }

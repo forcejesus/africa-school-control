@@ -23,13 +23,23 @@ export interface SubscriptionsResponse {
 export interface ApiCountry {
   _id: string;
   libelle: string;
-  __v: number;
+  totalEcoles: number;
+  __v?: number;
+}
+
+export interface CountryStatistics {
+  totalPays: number;
+  totalEcoles: number;
+  paysAvecEcoles: number;
+  paysSansEcoles: number;
+  moyenneEcolesParPays: number;
 }
 
 export interface CountriesResponse {
   success: boolean;
   message: string;
   data: ApiCountry[];
+  statistiques: CountryStatistics;
 }
 
 export class SubscriptionService {
