@@ -23,9 +23,9 @@ export const getCurrentConfig = () => HOSTS[CURRENT_ENVIRONMENT];
 
 // Endpoints API pré-configurés
 export const API_ENDPOINTS = {
-  // Authentication - correspond exactement à votre spécification
+  // Authentication - endpoint corrigé selon la spécification
   auth: {
-    login: '/api/login-admin', // Endpoint confirmé : HOST + /api/login-admin
+    login: '/api/login', // Endpoint confirmé : HOST + /api/login
     logout: '/api/logout',
     refresh: '/api/refresh-token'
   },
