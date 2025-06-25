@@ -37,6 +37,10 @@ const SchoolDetail = () => {
   const filteredStudents = filterStudents(displayData.ecole.apprenants, searchStudents);
   const filteredPlans = filterPlans(displayData.planifications.liste, searchPlans);
 
+  // Calculer le nombre d'enseignants uniques
+  const uniqueTeachers = new Set(displayData.jeux.map(jeu => jeu.professeur.nom + jeu.professeur.prenom));
+  const teachersCount = uniqueTeachers.size;
+
   if (loading) {
     return (
       <div className="flex flex-col h-screen">
@@ -101,6 +105,8 @@ const SchoolDetail = () => {
           <SchoolInfoCard 
             school={displayData.ecole} 
             subscription={displayData.abonnement}
+            gamesCount={displayData.jeux.length}
+            teachersCount={teachersCount}
             hasPartialData={hasPartialData}
           />
 
