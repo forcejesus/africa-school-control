@@ -11,7 +11,7 @@ import {
   BarChart, 
   Settings, 
   Users,
-  Monitor,
+  Award,
   LogOut
 } from "lucide-react";
 import { useI18n } from "@/contexts/I18nContext";
@@ -63,22 +63,22 @@ export function Sidebar() {
 
   return (
     <motion.div
-      className="bg-white/90 backdrop-blur-sm border-r border-slate-200/60 flex flex-col h-screen sticky top-0 left-0 shadow-lg"
+      className="bg-white/95 backdrop-blur-sm border-r border-orange-200/60 flex flex-col h-screen sticky top-0 left-0 shadow-xl"
       initial={{ width: "16rem" }}
       animate={{ width: collapsed ? "4rem" : "16rem" }}
       transition={{ duration: 0.3, ease: "easeInOut" }}
     >
-      <div className="p-4 flex items-center justify-between border-b border-slate-200/60">
+      <div className="p-4 flex items-center justify-between border-b border-orange-200/60 bg-gradient-to-r from-orange-500 to-orange-600">
         <AnimatePresence mode="wait">
           {!collapsed && (
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
-              className="text-lg font-bold text-slate-800 flex items-center"
+              className="text-lg font-bold text-white flex items-center"
             >
-              <Monitor className="h-6 w-6 mr-2 text-blue-600" />
-              <span className="professional-text-gradient font-bold">
+              <Award className="h-6 w-6 mr-2 text-white" />
+              <span className="font-bold">
                 {t('auth.title')}
               </span>
             </motion.div>
@@ -88,12 +88,12 @@ export function Sidebar() {
           onClick={() => setCollapsed(!collapsed)}
           variant="ghost"
           size="icon"
-          className="p-2 rounded-lg hover:bg-slate-100 transition-colors duration-200"
+          className="p-2 rounded-lg hover:bg-white/20 transition-colors duration-200"
         >
           <motion.div
             animate={{ rotate: collapsed ? 180 : 0 }}
             transition={{ duration: 0.3 }}
-            className="h-5 w-5 text-slate-600"
+            className="h-5 w-5 text-white"
           >
             <ChevronLeft />
           </motion.div>
@@ -111,8 +111,8 @@ export function Sidebar() {
                 className={cn(
                   "flex items-center gap-3 px-3 py-3 rounded-xl text-base transition-all duration-200 relative group",
                   isActive
-                    ? "bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 font-semibold shadow-sm border-l-4 border-blue-600"
-                    : "text-slate-700 hover:bg-slate-50 hover:text-blue-600"
+                    ? "bg-gradient-to-r from-orange-50 to-orange-100 text-orange-700 font-semibold shadow-sm border-l-4 border-orange-600"
+                    : "text-slate-700 hover:bg-orange-50 hover:text-orange-600"
                 )}
               >
                 <motion.div
@@ -120,7 +120,7 @@ export function Sidebar() {
                   transition={{ duration: 0.2 }}
                   className={cn(collapsed ? "mx-auto" : "")}
                 >
-                  <item.icon className="h-5 w-5" />
+                  <item.icon className={cn("h-5 w-5", isActive ? "text-orange-700" : "")} />
                 </motion.div>
 
                 <AnimatePresence mode="wait">
@@ -141,7 +141,7 @@ export function Sidebar() {
         </nav>
       </div>
 
-      <div className="p-4 border-t border-slate-200/60">
+      <div className="p-4 border-t border-orange-200/60">
         <Button
           onClick={handleLogout}
           variant="ghost"
