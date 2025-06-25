@@ -1,6 +1,7 @@
 
-import { GraduationCap, MapPin, Phone, Mail } from "lucide-react";
+import { GraduationCap, MapPin, Phone, Mail, AlertCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface SchoolInfoCardProps {
   school: {
@@ -20,9 +21,12 @@ interface SchoolInfoCardProps {
     nombreApprenantsMax: number;
     dureeEnJours: number;
   };
+  hasPartialData?: boolean;
 }
 
-export function SchoolInfoCard({ school, subscription }: SchoolInfoCardProps) {
+export function SchoolInfoCard({ school, subscription, hasPartialData = false }: SchoolInfoCardProps) {
+  const isDefaultSubscription = subscription.nom === 'Aucun abonnement';
+  
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <Card className="lg:col-span-2 border-orange-200 shadow-soft">
@@ -74,34 +78,43 @@ export function SchoolInfoCard({ school, subscription }: SchoolInfoCardProps) {
           </CardTitle>
         </CardHeader>
         <CardContent className="p-6">
-          <div className="space-y-4">
-            <div>
-              <div className="bg-orange-600 hover:bg-orange-700 text-white text-sm px-3 py-1 rounded inline-block">
-                {subscription.nom}
+          {isDefaultSubscription ? (
+            <Alert className="border-amber-200 bg-amber-50">
+              <AlertCircle className="h-4 w-4 text-amber-600" />
+              <AlertDescription className="text-amber-700">
+                Aucun abonnement configuré pour cette école
+              </AlertDescription>
+            </Alert>
+          ) : (
+            <div className="space-y-4">
+              <div>
+                <div className="bg-orange-600 hover:bg-orange-700 text-white text-sm px-3 py-1 rounded inline-block">
+                  {subscription.nom}
+                </div>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                {subscription.description}
+              </p>
+              <div className="space-y-3 text-sm">
+                <div className="flex justify-between">
+                  <span>Prix:</span>
+                  <span className="font-medium">{subscription.prix.toLocaleString()} FCFA</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Jeux max:</span>
+                  <span className="font-medium">{subscription.nombreJeuxMax}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Apprenants max:</span>
+                  <span className="font-medium">{subscription.nombreApprenantsMax}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Durée:</span>
+                  <span className="font-medium">{subscription.dureeEnJours} jours</span>
+                </div>
               </div>
             </div>
-            <p className="text-sm text-muted-foreground">
-              {subscription.description}
-            </p>
-            <div className="space-y-3 text-sm">
-              <div className="flex justify-between">
-                <span>Prix:</span>
-                <span className="font-medium">{subscription.prix.toLocaleString()} FCFA</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Jeux max:</span>
-                <span className="font-medium">{subscription.nombreJeuxMax}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Apprenants max:</span>
-                <span className="font-medium">{subscription.nombreApprenantsMax}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Durée:</span>
-                <span className="font-medium">{subscription.dureeEnJours} jours</span>
-              </div>
-            </div>
-          </div>
+          )}
         </CardContent>
       </Card>
     </div>

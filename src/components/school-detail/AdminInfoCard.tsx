@@ -1,7 +1,8 @@
 
-import { User } from "lucide-react";
+import { User, AlertCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface AdminInfoCardProps {
   administrator: {
@@ -16,6 +17,8 @@ interface AdminInfoCardProps {
 }
 
 export function AdminInfoCard({ administrator }: AdminInfoCardProps) {
+  const isDefaultAdmin = administrator.nom === 'Aucun nom' || administrator.email === 'Aucun email';
+  
   return (
     <Card className="border-orange-200 shadow-soft">
       <CardHeader className="bg-gradient-to-r from-orange-50 to-orange-100 border-b border-orange-200">
@@ -25,35 +28,44 @@ export function AdminInfoCard({ administrator }: AdminInfoCardProps) {
         </CardTitle>
       </CardHeader>
       <CardContent className="p-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div>
-            <p className="text-sm text-muted-foreground">Nom complet</p>
-            <p className="font-medium text-base">{administrator.prenom} {administrator.nom}</p>
+        {isDefaultAdmin ? (
+          <Alert className="border-amber-200 bg-amber-50">
+            <AlertCircle className="h-4 w-4 text-amber-600" />
+            <AlertDescription className="text-amber-700">
+              Aucun administrateur configuré pour cette école
+            </AlertDescription>
+          </Alert>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+              <p className="text-sm text-muted-foreground">Nom complet</p>
+              <p className="font-medium text-base">{administrator.prenom} {administrator.nom}</p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Email</p>
+              <p className="font-medium text-base">{administrator.email}</p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Téléphone</p>
+              <p className="font-medium text-base">{administrator.phone}</p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Matricule</p>
+              <p className="font-medium text-base">{administrator.matricule}</p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Statut</p>
+              <Badge variant={administrator.statut === 'actif' ? 'default' : 'secondary'} 
+                     className={administrator.statut === 'actif' ? 'bg-green-600 hover:bg-green-700' : ''}>
+                {administrator.statut}
+              </Badge>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Genre</p>
+              <p className="font-medium text-base">{administrator.genre}</p>
+            </div>
           </div>
-          <div>
-            <p className="text-sm text-muted-foreground">Email</p>
-            <p className="font-medium text-base">{administrator.email}</p>
-          </div>
-          <div>
-            <p className="text-sm text-muted-foreground">Téléphone</p>
-            <p className="font-medium text-base">{administrator.phone}</p>
-          </div>
-          <div>
-            <p className="text-sm text-muted-foreground">Matricule</p>
-            <p className="font-medium text-base">{administrator.matricule}</p>
-          </div>
-          <div>
-            <p className="text-sm text-muted-foreground">Statut</p>
-            <Badge variant={administrator.statut === 'actif' ? 'default' : 'secondary'} 
-                   className={administrator.statut === 'actif' ? 'bg-green-600 hover:bg-green-700' : ''}>
-              {administrator.statut}
-            </Badge>
-          </div>
-          <div>
-            <p className="text-sm text-muted-foreground">Genre</p>
-            <p className="font-medium text-base">{administrator.genre}</p>
-          </div>
-        </div>
+        )}
       </CardContent>
     </Card>
   );

@@ -25,7 +25,7 @@ const SchoolDetail = () => {
   const [searchPlans, setSearchPlans] = useState("");
   const { t } = useI18n();
   
-  const { schoolData, loading } = useSchoolDetail(id);
+  const { schoolData, loading, hasPartialData } = useSchoolDetail(id);
 
   const handleBack = () => {
     navigate('/ecoles');
@@ -85,13 +85,13 @@ const SchoolDetail = () => {
             </div>
           </div>
 
-          {/* Message d'alerte si pas de données */}
-          {!schoolData && (
+          {/* Message d'alerte si données partielles */}
+          {hasPartialData && (
             <Card className="border-amber-200 bg-amber-50 shadow-soft">
               <CardContent className="p-6">
                 <div className="text-center text-amber-700">
-                  <p className="text-lg font-medium">Aucune donnée disponible pour cette école</p>
-                  <p className="text-sm">Les informations ci-dessous sont des valeurs par défaut.</p>
+                  <p className="text-lg font-medium">Données partielles disponibles</p>
+                  <p className="text-sm">Certaines informations peuvent être manquantes pour cette école.</p>
                 </div>
               </CardContent>
             </Card>
@@ -100,13 +100,14 @@ const SchoolDetail = () => {
           {/* Informations générales de l'école */}
           <SchoolInfoCard 
             school={displayData.ecole} 
-            subscription={displayData.abonnement} 
+            subscription={displayData.abonnement}
+            hasPartialData={hasPartialData}
           />
 
           {/* Administrateur */}
           <AdminInfoCard administrator={displayData.administrateur} />
 
-          {/* Statistiques - Mise en valeur améliorée */}
+          {/* Statistiques */}
           <StatsCardsSection
             studentsCount={displayData.ecole.apprenants.length}
             gamesCount={displayData.jeux.length}
