@@ -80,6 +80,13 @@ export const fr: TranslationKeys = {
     addNew: 'Ajouter une nouvelle école',
     editSchool: 'Modifier l\'école',
     management: 'Gestion',
+    createSchool: 'Créer une école',
+    schoolInfo: 'Informations de l\'école',
+    adminInfo: 'Informations administrateur',
+    confirmation: 'Confirmation',
+    schoolDetails: 'Détails de l\'établissement',
+    adminAccount: 'Compte administrateur',
+    dataVerification: 'Vérification des données',
   },
   
   subscriptions: {

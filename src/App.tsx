@@ -54,12 +54,38 @@ function AuthenticatedApp() {
         <Suspense fallback={<PageLoader />}>
           <Routes>
             <Route path="/" element={<Dashboard />} />
+            <Route path="/tableau-de-bord" element={<Dashboard />} />
+            <Route path="/ecoles" element={<Schools />} />
+            <Route path="/ecoles/:id" element={<SchoolDetail />} />
+            <Route path="/ecoles/ajouter" element={
+              <div className="flex flex-col h-screen">
+                <div className="p-6 bg-gradient-to-b from-background to-accent/20 flex-1 overflow-auto">
+                  <SchoolForm />
+                </div>
+              </div>
+            } />
+            <Route path="/ecoles/modifier/:id" element={
+              <div className="flex flex-col h-screen">
+                <div className="p-6 bg-gradient-to-b from-background to-accent/20 flex-1 overflow-auto">
+                  <SchoolForm 
+                    school={schools.find(s => s.id === window.location.pathname.split('/').pop())} 
+                    isEditing 
+                  />
+                </div>
+              </div>
+            } />
+            <Route path="/abonnements" element={<Subscriptions />} />
+            <Route path="/analytique" element={<Analytics />} />
+            <Route path="/utilisateurs" element={<Users />} />
+            <Route path="/parametres" element={<Settings />} />
+            <Route path="/notifications" element={<Notifications />} />
+            
+            {/* Redirections pour les anciennes routes anglaises */}
             <Route path="/schools" element={<Schools />} />
             <Route path="/schools/:id" element={<SchoolDetail />} />
             <Route path="/schools/add" element={
               <div className="flex flex-col h-screen">
                 <div className="p-6 bg-gradient-to-b from-background to-accent/20 flex-1 overflow-auto">
-                  <h1 className="text-2xl font-bold mb-6">Ajouter une nouvelle école</h1>
                   <SchoolForm />
                 </div>
               </div>
@@ -67,7 +93,6 @@ function AuthenticatedApp() {
             <Route path="/schools/edit/:id" element={
               <div className="flex flex-col h-screen">
                 <div className="p-6 bg-gradient-to-b from-background to-accent/20 flex-1 overflow-auto">
-                  <h1 className="text-2xl font-bold mb-6">Modifier l'école</h1>
                   <SchoolForm 
                     school={schools.find(s => s.id === window.location.pathname.split('/').pop())} 
                     isEditing 
@@ -79,7 +104,7 @@ function AuthenticatedApp() {
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/users" element={<Users />} />
             <Route path="/settings" element={<Settings />} />
-            <Route path="/notifications" element={<Notifications />} />
+            
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>

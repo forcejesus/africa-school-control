@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -18,6 +19,8 @@ import { FormStepper } from "./FormStepper";
 import { SchoolInfoStep } from "./SchoolInfoStep";
 import { AdminInfoStep } from "./AdminInfoStep";
 import { ConfirmationStep } from "./ConfirmationStep";
+import { useI18n } from "@/contexts/I18nContext";
+import Swal from 'sweetalert2';
 
 interface SchoolFormProps {
   school?: School;
@@ -27,6 +30,7 @@ interface SchoolFormProps {
 export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useI18n();
   
   const [currentStep, setCurrentStep] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -58,9 +62,9 @@ export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
   });
 
   const stepTitles = [
-    { title: "Informations de l'école", description: "Détails de l'établissement" },
-    { title: "Administrateur", description: "Compte administrateur" },
-    { title: "Confirmation", description: "Vérification des données" }
+    { title: t('schools.schoolInfo'), description: t('schools.schoolDetails') },
+    { title: t('schools.adminInfo'), description: t('schools.adminAccount') },
+    { title: t('schools.confirmation'), description: t('schools.dataVerification') }
   ];
   
   useEffect(() => {
@@ -90,10 +94,12 @@ export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
         }
       } catch (error) {
         console.error('Erreur lors du chargement des données:', error);
-        toast({
-          title: "Erreur",
-          description: "Impossible de charger les données nécessaires",
-          variant: "destructive"
+        await Swal.fire({
+          title: t('alerts.error'),
+          text: "Impossible de charger les données nécessaires",
+          icon: 'error',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#ea580c'
         });
       } finally {
         setLoadingData(false);
@@ -101,7 +107,7 @@ export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
     };
 
     fetchData();
-  }, [toast]);
+  }, [toast, t]);
   
   const handleSchoolChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -156,10 +162,12 @@ export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
 
   const createSchool = async () => {
     if (!validateStep(1)) {
-      toast({
-        title: "Erreur",
-        description: "Veuillez remplir tous les champs obligatoires de l'école",
-        variant: "destructive"
+      await Swal.fire({
+        title: t('alerts.error'),
+        text: "Veuillez remplir tous les champs obligatoires de l'école",
+        icon: 'error',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#ea580c'
       });
       return false;
     }
@@ -188,18 +196,23 @@ export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
       setCreatedSchoolId(schoolId);
       console.log('School created with ID:', schoolId);
       
-      toast({
-        title: "École créée",
-        description: `L'école "${schoolData.libelle}" a été créée avec succès`,
+      await Swal.fire({
+        title: t('alerts.success'),
+        text: `L'école "${schoolData.libelle}" a été créée avec succès`,
+        icon: 'success',
+        confirmButtonText: 'Continuer',
+        confirmButtonColor: '#ea580c'
       });
       
       return true;
     } catch (error: any) {
       console.error('Erreur lors de la création de l\'école:', error);
-      toast({
-        title: "Erreur",
-        description: error.message || "Une erreur est survenue lors de la création de l'école",
-        variant: "destructive"
+      await Swal.fire({
+        title: t('alerts.error'),
+        text: error.message || "Une erreur est survenue lors de la création de l'école",
+        icon: 'error',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#ea580c'
       });
       return false;
     } finally {
@@ -219,10 +232,12 @@ export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
     } else if (validateStep(currentStep)) {
       setCurrentStep(prev => Math.min(prev + 1, 3));
     } else {
-      toast({
-        title: "Erreur",
-        description: "Veuillez remplir tous les champs obligatoires",
-        variant: "destructive"
+      await Swal.fire({
+        title: t('alerts.error'),
+        text: "Veuillez remplir tous les champs obligatoires",
+        icon: 'error',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#ea580c'
       });
     }
   };
@@ -233,28 +248,34 @@ export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
   
   const handleSubmit = async () => {
     if (!createdSchoolId) {
-      toast({
-        title: "Erreur",
-        description: "L'école doit être créée avant de créer l'administrateur",
-        variant: "destructive"
+      await Swal.fire({
+        title: t('alerts.error'),
+        text: "L'école doit être créée avant de créer l'administrateur",
+        icon: 'error',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#ea580c'
       });
       return;
     }
 
     if (adminData.password !== adminData.confirmPassword) {
-      toast({
-        title: "Erreur",
-        description: "Les mots de passe ne correspondent pas",
-        variant: "destructive"
+      await Swal.fire({
+        title: t('alerts.error'),
+        text: "Les mots de passe ne correspondent pas",
+        icon: 'error',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#ea580c'
       });
       return;
     }
 
     if (adminData.password.length < 4) {
-      toast({
-        title: "Erreur",
-        description: "Le mot de passe doit contenir au moins 4 caractères",
-        variant: "destructive"
+      await Swal.fire({
+        title: t('alerts.error'),
+        text: "Le mot de passe doit contenir au moins 4 caractères",
+        icon: 'error',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#ea580c'
       });
       return;
     }
@@ -283,26 +304,33 @@ export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
       
       if (!adminResponse.success) {
         console.warn("École créée mais erreur lors de la création de l'admin:", adminResponse.message);
-        toast({
-          title: "Attention",
-          description: "École créée mais erreur lors de la création de l'administrateur",
-          variant: "destructive"
+        await Swal.fire({
+          title: t('alerts.warning'),
+          text: "École créée mais erreur lors de la création de l'administrateur",
+          icon: 'warning',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#ea580c'
         });
       } else {
-        toast({
-          title: "Succès complet",
-          description: "École et administrateur créés avec succès",
+        await Swal.fire({
+          title: t('alerts.success'),
+          text: "École et administrateur créés avec succès",
+          icon: 'success',
+          confirmButtonText: 'Aller à la liste',
+          confirmButtonColor: '#ea580c'
         });
       }
       
-      navigate("/schools");
+      navigate("/ecoles");
       
     } catch (error: any) {
       console.error('Erreur lors de la création de l\'admin:', error);
-      toast({
-        title: "Erreur",
-        description: error.message || "Une erreur est survenue lors de la création de l'administrateur",
-        variant: "destructive"
+      await Swal.fire({
+        title: t('alerts.error'),
+        text: error.message || "Une erreur est survenue lors de la création de l'administrateur",
+        icon: 'error',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#ea580c'
       });
     } finally {
       setLoading(false);
@@ -343,9 +371,9 @@ export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
 
   if (loadingData) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50/30 to-pink-50/20 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-50/30 flex items-center justify-center">
         <div className="flex items-center space-x-3">
-          <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
+          <Loader2 className="h-8 w-8 animate-spin text-orange-600" />
           <span className="text-lg font-medium text-gray-700">Chargement des données...</span>
         </div>
       </div>
@@ -353,7 +381,7 @@ export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
   }
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50/30 to-pink-50/20">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-50/30">
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         {/* Enhanced Header */}
         <motion.div 
@@ -364,20 +392,20 @@ export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
         >
           <div className="flex items-center justify-center mb-4">
             <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full blur-lg opacity-20 animate-pulse"></div>
-              <div className="relative bg-gradient-to-r from-indigo-600 to-purple-600 p-4 rounded-full">
+              <div className="absolute inset-0 bg-gradient-to-r from-orange-600 to-orange-700 rounded-full blur-lg opacity-20 animate-pulse"></div>
+              <div className="relative bg-gradient-to-r from-orange-600 to-orange-700 p-4 rounded-full">
                 <Building2 className="h-8 w-8 text-white" />
               </div>
             </div>
           </div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-3">
-            Créer une nouvelle école
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-orange-600 to-orange-700 bg-clip-text text-transparent mb-3">
+            {t('schools.createSchool')}
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Suivez les étapes pour ajouter une école à la plateforme
           </p>
           <div className="flex items-center justify-center gap-2 mt-4">
-            <GraduationCap className="h-5 w-5 text-indigo-500" />
+            <GraduationCap className="h-5 w-5 text-orange-500" />
             <span className="text-sm text-gray-500">Étape {currentStep} sur 3</span>
           </div>
         </motion.div>
@@ -394,9 +422,9 @@ export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
           transition={{ duration: 0.3 }}
         >
           <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
-            <CardHeader className="bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border-b border-indigo-100">
+            <CardHeader className="bg-gradient-to-r from-orange-500/10 to-orange-600/10 border-b border-orange-100">
               <CardTitle className="text-xl text-gray-900 flex items-center gap-2">
-                <div className="h-2 w-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full"></div>
+                <div className="h-2 w-2 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full"></div>
                 {stepTitles[currentStep - 1].title}
               </CardTitle>
               <CardDescription className="text-gray-600">
@@ -411,18 +439,18 @@ export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
               <div className="flex justify-between items-center mt-8 pt-6 border-t border-gray-100">
                 <Button 
                   variant="outline" 
-                  onClick={currentStep === 1 ? () => navigate("/schools") : prevStep}
-                  className="px-6 border-indigo-200 hover:bg-indigo-50"
+                  onClick={currentStep === 1 ? () => navigate("/ecoles") : prevStep}
+                  className="px-6 border-orange-200 hover:bg-orange-50"
                   disabled={loading}
                 >
-                  {currentStep === 1 ? "Annuler" : "Précédent"}
+                  {currentStep === 1 ? t('common.cancel') : t('common.previous')}
                 </Button>
                 
                 {currentStep < 3 ? (
                   <Button 
                     onClick={nextStep}
                     disabled={loading || (currentStep === 1 && !validateStep(1))}
-                    className="px-6 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700"
+                    className="px-6 bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800"
                   >
                     {loading ? (
                       <>
@@ -430,14 +458,14 @@ export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
                         {currentStep === 1 ? "Création de l'école..." : "Chargement..."}
                       </>
                     ) : (
-                      "Suivant"
+                      t('common.next')
                     )}
                   </Button>
                 ) : (
                   <Button 
                     onClick={handleSubmit}
                     disabled={loading}
-                    className="px-6 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700"
+                    className="px-6 bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800"
                   >
                     {loading ? (
                       <>

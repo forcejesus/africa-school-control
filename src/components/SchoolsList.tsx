@@ -15,6 +15,7 @@ import {
 import { Search, PlusCircle, Filter, Building2, Users } from "lucide-react";
 import SchoolCard from "./SchoolCard";
 import SkeletonCard from "./SkeletonCard";
+import { useI18n } from "@/contexts/I18nContext";
 
 interface SchoolsListProps {
   schools: ApiSchool[];
@@ -25,6 +26,7 @@ export function SchoolsList({ schools, isLoading = false }: SchoolsListProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [countryFilter, setCountryFilter] = useState("all");
+  const { t } = useI18n();
   
   // Get unique countries for filter
   const uniqueCountries = Array.from(new Set(schools.map(school => school.pays.libelle)));
@@ -61,9 +63,9 @@ export function SchoolsList({ schools, isLoading = false }: SchoolsListProps) {
 
   return (
     <div className="space-y-6">
-      {/* Enhanced Header Section */}
+      {/* Enhanced Header Section avec couleurs orange */}
       <motion.div 
-        className="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-soft border border-indigo-100"
+        className="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-card border border-orange-100"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -72,11 +74,11 @@ export function SchoolsList({ schools, isLoading = false }: SchoolsListProps) {
           {/* Search and Filters */}
           <div className="flex flex-col md:flex-row items-start md:items-center gap-4 flex-1 w-full">
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 h-5 w-5 text-indigo-400 -translate-y-1/2" />
+              <Search className="absolute left-3 top-1/2 h-5 w-5 text-orange-400 -translate-y-1/2" />
               <Input
                 type="search"
-                placeholder="Rechercher par nom, ville, pays ou email..."
-                className="w-full pl-10 py-3 text-base transition-all border-indigo-200 focus-visible:ring-indigo-400 bg-white/50"
+                placeholder={t('common.search') + " par nom, ville, pays ou email..."}
+                className="w-full pl-10 py-3 text-base transition-all border-orange-200 focus-visible:ring-orange-400 bg-white/50"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -84,24 +86,24 @@ export function SchoolsList({ schools, isLoading = false }: SchoolsListProps) {
             
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2">
-                <Filter className="h-4 w-4 text-indigo-500" />
+                <Filter className="h-4 w-4 text-orange-500" />
                 <span className="text-sm font-medium text-gray-700">Filtres:</span>
               </div>
               
               <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-[140px] text-base border-indigo-200">
-                  <SelectValue placeholder="Statut" />
+                <SelectTrigger className="w-[140px] text-base border-orange-200">
+                  <SelectValue placeholder={t('dashboard.status')} />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all" className="text-base">Tous</SelectItem>
-                  <SelectItem value="active" className="text-base">Actif</SelectItem>
+                  <SelectItem value="active" className="text-base">{t('dashboard.active')}</SelectItem>
                   <SelectItem value="inactive" className="text-base">Inactif</SelectItem>
-                  <SelectItem value="pending" className="text-base">En attente</SelectItem>
+                  <SelectItem value="pending" className="text-base">{t('dashboard.pending')}</SelectItem>
                 </SelectContent>
               </Select>
 
               <Select value={countryFilter} onValueChange={setCountryFilter}>
-                <SelectTrigger className="w-[140px] text-base border-indigo-200">
+                <SelectTrigger className="w-[140px] text-base border-orange-200">
                   <SelectValue placeholder="Pays" />
                 </SelectTrigger>
                 <SelectContent>
@@ -117,26 +119,26 @@ export function SchoolsList({ schools, isLoading = false }: SchoolsListProps) {
           </div>
           
           {/* Add School Button */}
-          <Link to="/schools/add">
-            <Button className="text-base bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-indigo-300/30 px-6 py-3">
+          <Link to="/ecoles/ajouter">
+            <Button className="text-base bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800 transition-all duration-300 shadow-lg hover:shadow-orange-300/30 px-6 py-3">
               <PlusCircle className="mr-2 h-5 w-5" />
-              Ajouter une école
+              {t('schools.addNew')}
             </Button>
           </Link>
         </div>
 
-        {/* Stats Summary */}
-        <div className="flex items-center gap-6 mt-4 pt-4 border-t border-indigo-100">
+        {/* Stats Summary avec couleurs orange */}
+        <div className="flex items-center gap-6 mt-4 pt-4 border-t border-orange-100">
           <div className="flex items-center gap-2">
-            <Building2 className="h-4 w-4 text-indigo-500" />
+            <Building2 className="h-4 w-4 text-orange-500" />
             <span className="text-sm text-gray-600">
-              <span className="font-semibold text-indigo-600">{filteredSchools.length}</span> école(s) trouvée(s)
+              <span className="font-semibold text-orange-600">{filteredSchools.length}</span> école(s) trouvée(s)
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <Users className="h-4 w-4 text-purple-500" />
+            <Users className="h-4 w-4 text-orange-600" />
             <span className="text-sm text-gray-600">
-              <span className="font-semibold text-purple-600">
+              <span className="font-semibold text-orange-700">
                 {filteredSchools.reduce((total, school) => total + school.apprenants.length, 0)}
               </span> apprenant(s) au total
             </span>
@@ -160,16 +162,16 @@ export function SchoolsList({ schools, isLoading = false }: SchoolsListProps) {
         </motion.div>
       ) : filteredSchools.length === 0 ? (
         <motion.div 
-          className="text-center py-16 bg-white/50 backdrop-blur-sm rounded-xl border-2 border-dashed border-indigo-200"
+          className="text-center py-16 bg-white/50 backdrop-blur-sm rounded-xl border-2 border-dashed border-orange-200"
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
         >
           <div className="flex flex-col items-center gap-4">
             <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full blur-lg opacity-20"></div>
-              <div className="relative bg-gradient-to-r from-indigo-100 to-purple-100 p-4 rounded-full">
-                <Building2 className="h-8 w-8 text-indigo-600" />
+              <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full blur-lg opacity-20"></div>
+              <div className="relative bg-gradient-to-r from-orange-100 to-orange-200 p-4 rounded-full">
+                <Building2 className="h-8 w-8 text-orange-600" />
               </div>
             </div>
             <div>
@@ -178,7 +180,7 @@ export function SchoolsList({ schools, isLoading = false }: SchoolsListProps) {
             </div>
             <Button 
               variant="outline" 
-              className="mt-4 border-indigo-200 text-indigo-600 hover:bg-indigo-50"
+              className="mt-4 border-orange-200 text-orange-600 hover:bg-orange-50"
               onClick={() => {
                 setSearchTerm("");
                 setStatusFilter("all");

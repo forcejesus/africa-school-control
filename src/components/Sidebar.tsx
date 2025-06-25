@@ -27,32 +27,32 @@ export function Sidebar() {
   const navItems = [
     {
       title: t('nav.dashboard'),
-      href: "/",
+      href: "/tableau-de-bord",
       icon: LayoutDashboard,
     },
     {
       title: t('nav.schools'),
-      href: "/schools",
+      href: "/ecoles",
       icon: School,
     },
     {
       title: t('nav.subscriptions'),
-      href: "/subscriptions",
+      href: "/abonnements",
       icon: FileText,
     },
     {
       title: t('nav.analytics'),
-      href: "/analytics",
+      href: "/analytique",
       icon: BarChart,
     },
     {
       title: t('nav.users'),
-      href: "/users",
+      href: "/utilisateurs",
       icon: Users,
     },
     {
       title: t('nav.settings'),
-      href: "/settings",
+      href: "/parametres",
       icon: Settings,
     },
   ];
@@ -103,7 +103,9 @@ export function Sidebar() {
       <div className="flex-1 py-6 overflow-auto">
         <nav className="px-2 space-y-1">
           {navItems.map((item) => {
-            const isActive = location.pathname === item.href;
+            const isActive = location.pathname === item.href || 
+                            (item.href === "/tableau-de-bord" && location.pathname === "/") ||
+                            (item.href === "/ecoles" && location.pathname === "/schools");
             return (
               <Link
                 key={item.href}

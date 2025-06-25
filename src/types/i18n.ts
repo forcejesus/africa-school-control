@@ -83,6 +83,13 @@ export interface TranslationKeys {
     addNew: string;
     editSchool: string;
     management: string;
+    createSchool: string;
+    schoolInfo: string;
+    adminInfo: string;
+    confirmation: string;
+    schoolDetails: string;
+    adminAccount: string;
+    dataVerification: string;
   };
   
   // Subscriptions
