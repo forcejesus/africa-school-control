@@ -1,6 +1,5 @@
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { 
@@ -25,8 +24,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Search, MoreVertical, CreditCard, History, AlertCircle } from "lucide-react";
+import { Search, MoreVertical, Bell, Award, TrendingUp } from "lucide-react";
 import { subscriptions } from "@/utils/data";
+import { motion } from "framer-motion";
 
 export function SubscriptionsList() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -40,109 +40,141 @@ export function SubscriptionsList() {
     return matchesSearch && matchesStatus;
   });
 
-  // Status badge color variants
+  // Status badge color variants with orange theme
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'active':
-        return <Badge className="badge-success text-sm">Actif</Badge>; // Augmentation du texte du badge
+        return <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200 text-sm font-medium">Actif</Badge>;
       case 'expired':
-        return <Badge variant="destructive" className="text-sm">Expiré</Badge>;
+        return <Badge variant="destructive" className="text-sm font-medium">Expiré</Badge>;
       case 'pending':
-        return <Badge className="badge-warning text-sm">En attente</Badge>;
+        return <Badge className="bg-amber-100 text-amber-700 border-amber-200 text-sm font-medium">En attente</Badge>;
       default:
-        return <Badge className="text-sm">{status}</Badge>;
+        return <Badge className="text-sm font-medium">{status}</Badge>;
     }
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3 flex-1">
-          <div className="relative max-w-xs">
-            <Search className="absolute left-2.5 top-3 h-5 w-5 text-muted-foreground" /> {/* Icône agrandie et repositionnée */}
-            <Input
-              type="search"
-              placeholder="Rechercher des abonnements..."
-              className="w-full pl-9 py-2.5 text-base" /* Input légèrement plus grand avec texte plus grand */
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+    <div className="space-y-6">
+      {/* Filters Section with modern design */}
+      <motion.div 
+        className="modern-card p-6"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-4 flex-1 w-full md:w-auto">
+            <div className="relative flex-1 max-w-sm">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-orange-400" />
+              <Input
+                type="search"
+                placeholder="Rechercher des abonnements..."
+                className="pl-10 py-3 text-base border-orange-200 focus:border-orange-400 focus:ring-orange-400"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+            
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-[200px] text-base border-orange-200 focus:border-orange-400">
+                <SelectValue placeholder="Filtrer par statut" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all" className="text-base">Tous les statuts</SelectItem>
+                <SelectItem value="active" className="text-base">Actif</SelectItem>
+                <SelectItem value="expired" className="text-base">Expiré</SelectItem>
+                <SelectItem value="pending" className="text-base">En attente</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-[180px] text-base"> {/* Augmentation de la largeur et taille du texte */}
-              <SelectValue placeholder="Filtrer par statut" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all" className="text-base">Tous les statuts</SelectItem>
-              <SelectItem value="active" className="text-base">Actif</SelectItem>
-              <SelectItem value="expired" className="text-base">Expiré</SelectItem>
-              <SelectItem value="pending" className="text-base">En attente</SelectItem>
-            </SelectContent>
-          </Select>
+          <div className="text-sm text-slate-600 font-medium">
+            {filteredSubscriptions.length} abonnement(s) trouvé(s)
+          </div>
         </div>
-      </div>
+      </motion.div>
       
-      <div className="border rounded-md">
+      {/* Table Section with modern design */}
+      <motion.div 
+        className="modern-card overflow-hidden"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
+      >
         <Table>
           <TableHeader>
-            <TableRow>
-              <TableHead className="text-base">École</TableHead> {/* Augmentation de la taille du texte */}
-              <TableHead className="text-base">Formule</TableHead>
-              <TableHead className="text-base">Date de début</TableHead>
-              <TableHead className="text-base">Date d'expiration</TableHead>
-              <TableHead className="text-base">Statut</TableHead>
-              <TableHead className="text-base">Prix</TableHead>
-              <TableHead className="text-right text-base">Actions</TableHead>
+            <TableRow className="bg-gradient-to-r from-orange-50 to-amber-50 border-orange-200">
+              <TableHead className="text-base font-semibold text-slate-700">École</TableHead>
+              <TableHead className="text-base font-semibold text-slate-700">Formule</TableHead>
+              <TableHead className="text-base font-semibold text-slate-700">Date de début</TableHead>
+              <TableHead className="text-base font-semibold text-slate-700">Date d'expiration</TableHead>
+              <TableHead className="text-base font-semibold text-slate-700">Statut</TableHead>
+              <TableHead className="text-base font-semibold text-slate-700">Prix</TableHead>
+              <TableHead className="text-right text-base font-semibold text-slate-700">Actions</TableHead>
             </TableRow>
           </TableHeader>
           
           <TableBody>
             {filteredSubscriptions.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="text-center py-6 text-muted-foreground text-base">
-                  Aucun abonnement trouvé
+                <TableCell colSpan={7} className="text-center py-12">
+                  <div className="flex flex-col items-center justify-center text-slate-500">
+                    <Search className="h-12 w-12 mb-4 text-orange-300" />
+                    <p className="text-lg font-medium">Aucun abonnement trouvé</p>
+                    <p className="text-sm">Essayez de modifier vos critères de recherche</p>
+                  </div>
                 </TableCell>
               </TableRow>
             ) : (
-              filteredSubscriptions.map((subscription) => (
-                <TableRow key={subscription.id}>
-                  <TableCell className="text-base">{subscription.schoolName}</TableCell>
-                  <TableCell className="text-base">{subscription.plan}</TableCell>
-                  <TableCell className="text-base">{new Date(subscription.startDate).toLocaleDateString()}</TableCell>
-                  <TableCell className="text-base">{new Date(subscription.expiryDate).toLocaleDateString()}</TableCell>
+              filteredSubscriptions.map((subscription, index) => (
+                <motion.tr 
+                  key={subscription.id}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.3, delay: index * 0.05 }}
+                  className="hover:bg-orange-50/50 transition-colors duration-200"
+                >
+                  <TableCell className="text-base font-medium text-slate-900">{subscription.schoolName}</TableCell>
+                  <TableCell className="text-base">
+                    <span className="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm font-medium">
+                      {subscription.plan}
+                    </span>
+                  </TableCell>
+                  <TableCell className="text-base text-slate-600">{new Date(subscription.startDate).toLocaleDateString()}</TableCell>
+                  <TableCell className="text-base text-slate-600">{new Date(subscription.expiryDate).toLocaleDateString()}</TableCell>
                   <TableCell>{getStatusBadge(subscription.status)}</TableCell>
-                  <TableCell className="text-base">{subscription.price} €</TableCell>
+                  <TableCell className="text-base font-semibold text-slate-900">{subscription.price} €</TableCell>
                   <TableCell className="text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                          <MoreVertical className="h-5 w-5" /> {/* Icône agrandie */}
+                        <Button variant="ghost" size="icon" className="hover:bg-orange-100">
+                          <MoreVertical className="h-5 w-5 text-slate-600" />
                           <span className="sr-only">Ouvrir menu</span>
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem className="flex items-center cursor-pointer text-base">
-                          <CreditCard className="mr-2 h-5 w-5" /> {/* Icône agrandie */}
+                      <DropdownMenuContent align="end" className="w-56">
+                        <DropdownMenuItem className="flex items-center cursor-pointer text-base hover:bg-orange-50">
+                          <TrendingUp className="mr-3 h-5 w-5 text-orange-500" />
                           <span>Renouveler</span>
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="flex items-center cursor-pointer text-base">
-                          <History className="mr-2 h-5 w-5" /> {/* Icône agrandie */}
+                        <DropdownMenuItem className="flex items-center cursor-pointer text-base hover:bg-orange-50">
+                          <Award className="mr-3 h-5 w-5 text-blue-500" />
                           <span>Historique de paiement</span>
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="flex items-center cursor-pointer text-amber-500 text-base">
-                          <AlertCircle className="mr-2 h-5 w-5" /> {/* Icône agrandie */}
+                        <DropdownMenuItem className="flex items-center cursor-pointer text-base hover:bg-orange-50">
+                          <Bell className="mr-3 h-5 w-5 text-amber-500" />
                           <span>Notifier l'école</span>
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
-                </TableRow>
+                </motion.tr>
               ))
             )}
           </TableBody>
         </Table>
-      </div>
+      </motion.div>
     </div>
   );
 }
