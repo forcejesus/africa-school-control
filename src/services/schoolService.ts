@@ -1,5 +1,5 @@
-
 import { AuthService } from './authService';
+import { buildApiUrl, API_ENDPOINTS } from '@/config/hosts';
 
 export interface ApiSchool {
   _id: string;
@@ -49,8 +49,6 @@ export interface SchoolsResponse {
 }
 
 export class SchoolService {
-  private static readonly API_BASE_URL = 'http://kahoot.nos-apps.com';
-
   static async getSchools(): Promise<SchoolsResponse> {
     try {
       const headers = {
@@ -58,7 +56,7 @@ export class SchoolService {
         ...AuthService.getAuthHeaders(),
       };
 
-      const response = await fetch(`${this.API_BASE_URL}/api/ecoles/`, {
+      const response = await fetch(buildApiUrl(API_ENDPOINTS.schools.list), {
         method: 'GET',
         headers,
       });
@@ -75,17 +73,16 @@ export class SchoolService {
     }
   }
 
-  // Convertir les données de l'API au format utilisé par l'interface
   static transformApiSchoolToLocal(apiSchool: ApiSchool) {
     return {
       id: apiSchool._id,
       name: apiSchool.libelle,
       country: apiSchool.pays.libelle,
-      status: 'active' as const, // Par défaut, on considère les écoles comme actives
+      status: 'active' as const,
       contactEmail: apiSchool.email,
       contactPhone: apiSchool.telephone,
       adminName: `${apiSchool.admin.prenom} ${apiSchool.admin.nom}`,
-      teachersCount: 1, // Admin compte comme enseignant
+      teachersCount: 1,
       studentsCount: apiSchool.apprenants.length,
       registrationDate: apiSchool.admin.date,
       logo: apiSchool.fichier || '/placeholder.svg',

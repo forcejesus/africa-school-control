@@ -1,5 +1,4 @@
-
-const API_BASE_URL = 'http://kahoot.nos-apps.com';
+import { buildApiUrl, API_ENDPOINTS } from '@/config/hosts';
 
 export interface LoginCredentials {
   email: string;
@@ -31,7 +30,7 @@ export class AuthService {
 
   static async loginAdmin(credentials: LoginCredentials): Promise<LoginResponse> {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/login-admin`, {
+      const response = await fetch(buildApiUrl(API_ENDPOINTS.auth.login), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
