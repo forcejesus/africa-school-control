@@ -1,9 +1,10 @@
 
-import { School, Users, BookOpen, Plus, List } from "lucide-react";
+import { Users, GraduationCap, Gamepad, Calendar, School, Plus } from "lucide-react";
 import Header from "@/components/Header";
-import StatsCard from "@/components/StatsCard";
+import { DashboardHeader } from "@/components/DashboardHeader";
+import { ModernStatsCard } from "@/components/ModernStatsCard";
+import { QuickActionCard } from "@/components/QuickActionCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -13,12 +14,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { 
-  getTotalActiveSchools,
-  getTotalSchools,
-} from "@/utils/data";
 import { useI18n } from "@/contexts/I18nContext";
 import { cn } from "@/lib/utils";
 
@@ -41,99 +37,132 @@ const planificationsData = [
 
 const Dashboard = () => {
   const { t } = useI18n();
+  
+  // Calculs des statistiques
   const totalActiveSessions = gamesData.reduce((total, game) => total + game.sessionsActive, 0);
   const totalGamesCreated = gamesData.length;
   const totalPlanifications = planificationsData.length;
+  const totalSchools = 12; // Example data
   
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
+  const statsConfig = [
+    {
+      title: "Jeux Créés",
+      value: totalGamesCreated.toString(),
+      icon: Gamepad,
+      bgGradient: "orange-gradient",
+      iconBg: "bg-gradient-to-r from-orange-500 to-orange-600",
+      subtitle: `${totalActiveSessions} sessions actives`,
+      change: "+12%"
+    },
+    {
+      title: "Planifications",
+      value: totalPlanifications.toString(),
+      icon: Calendar,
+      bgGradient: "purple-gradient",
+      iconBg: "bg-gradient-to-r from-purple-500 to-purple-600",
+      subtitle: "En cours d'exécution",
+      change: "+8%"
+    },
+    {
+      title: "Enseignants",
+      value: "24",
+      icon: GraduationCap,
+      bgGradient: "blue-gradient",
+      iconBg: "bg-gradient-to-r from-blue-500 to-blue-600",
+      subtitle: "Actifs ce mois",
+      change: "+5%"
+    },
+    {
+      title: "Apprenants",
+      value: "456",
+      icon: Users,
+      bgGradient: "green-gradient",
+      iconBg: "bg-gradient-to-r from-emerald-500 to-emerald-600",
+      subtitle: "Inscrits au total",
+      change: "+15%"
     }
-  };
+  ];
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
-  };
+  const quickActions = [
+    {
+      title: "Ajouter une École",
+      description: "Créer et configurer une nouvelle école dans le système",
+      icon: School,
+      href: "/schools/add",
+      iconColor: "bg-gradient-to-r from-orange-500 to-orange-600"
+    },
+    {
+      title: "Nouveau Jeu",
+      description: "Développer un nouveau jeu éducatif interactif",
+      icon: Plus,
+      href: "/games/add",
+      iconColor: "bg-gradient-to-r from-purple-500 to-purple-600"
+    }
+  ];
   
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/40 to-purple-50/30">
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-50/30">
       <Header />
       
-      <div className="flex-1 p-8">
+      <div className="flex-1 p-6 md:p-8">
         <motion.div 
-          className="max-w-7xl mx-auto space-y-8"
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
+          className="max-w-7xl mx-auto space-y-6 md:space-y-8"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
         >
+          {/* Dashboard Header */}
+          <DashboardHeader />
+          
           {/* Statistics Cards */}
+          <div className="stats-grid">
+            {statsConfig.map((stat, index) => (
+              <ModernStatsCard
+                key={stat.title}
+                title={stat.title}
+                value={stat.value}
+                icon={stat.icon}
+                subtitle={stat.subtitle}
+                bgGradient={stat.bgGradient}
+                iconBg={stat.iconBg}
+                change={stat.change}
+                delay={index * 0.1}
+              />
+            ))}
+          </div>
+          
+          {/* Quick Actions */}
           <motion.div 
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
-            variants={itemVariants}
+            className="actions-grid"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
           >
-            <StatsCard 
-              title={t('dashboard.totalSchools')}
-              value={getTotalSchools()}
-              icon={<School className="h-7 w-7" />}
-              subtitle={`${getTotalActiveSchools()} ${t('dashboard.activeSubscriptions')}`}
-              iconColor="from-blue-500 to-blue-600"
-            />
-            <StatsCard 
-              title={t('dashboard.totalGameSessions')}
-              value={totalActiveSessions}
-              icon={<Users className="h-7 w-7" />}
-              subtitle={t('dashboard.nonExpiredSessions')}
-              iconColor="from-emerald-500 to-emerald-600"
-            />
-            <StatsCard 
-              title={t('dashboard.totalGamesCreated')}
-              value={totalGamesCreated}
-              icon={<BookOpen className="h-7 w-7" />}
-              subtitle={`${totalPlanifications} ${t('dashboard.totalPlanifications')}`}
-              iconColor="from-purple-500 to-purple-600"
-            />
-            <Card className="professional-card overflow-hidden bg-white/70 backdrop-blur-sm shadow-lg">
-              <CardContent className="p-6">
-                <div className="space-y-4">
-                  <div>
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">
-                      {t('dashboard.quickActions')}
-                    </h3>
-                    <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
-                      {t('dashboard.manageSchools')}
-                    </p>
-                  </div>
-                  <div className="flex flex-col gap-3">
-                    <Button asChild size="sm" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg">
-                      <Link to="/schools/add">
-                        <Plus className="h-4 w-4 mr-2" />
-                        {t('dashboard.addSchool')}
-                      </Link>
-                    </Button>
-                    <Button asChild variant="outline" size="sm" className="border-slate-300 text-slate-700 hover:bg-slate-50 bg-white/50">
-                      <Link to="/schools">
-                        <List className="h-4 w-4 mr-2" />
-                        {t('dashboard.schoolsList')}
-                      </Link>
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            {quickActions.map((action, index) => (
+              <QuickActionCard
+                key={action.title}
+                title={action.title}
+                description={action.description}
+                icon={action.icon}
+                href={action.href}
+                iconColor={action.iconColor}
+                delay={0.7 + index * 0.1}
+              />
+            ))}
           </motion.div>
           
           {/* Tables Section */}
-          <motion.div className="space-y-8" variants={itemVariants}>
+          <motion.div 
+            className="space-y-6 md:space-y-8"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.9 }}
+          >
             {/* Games Created by School */}
-            <Card className="bg-white/80 backdrop-blur-sm border border-slate-200/60 rounded-xl shadow-lg overflow-hidden">
-              <CardHeader className="bg-gradient-to-r from-blue-50/80 to-purple-50/80 border-b border-slate-200/80">
-                <CardTitle className="text-2xl font-bold text-slate-900 dark:text-white flex items-center">
-                  <BookOpen className="h-6 w-6 mr-3 text-blue-600" />
+            <Card className="modern-card overflow-hidden">
+              <CardHeader className="bg-gradient-to-r from-orange-50 to-orange-100/50 border-b border-orange-200/50">
+                <CardTitle className="text-xl font-bold text-slate-900 flex items-center">
+                  <Gamepad className="h-5 w-5 mr-3 text-orange-600" />
                   {t('dashboard.gamesCreatedBySchool')}
                 </CardTitle>
               </CardHeader>
@@ -141,17 +170,17 @@ const Dashboard = () => {
                 <div className="overflow-x-auto">
                   <Table>
                     <TableHeader>
-                      <TableRow className="border-b border-slate-200/80">
-                        <TableHead className="font-bold text-slate-800 dark:text-slate-200 py-4 px-6">
+                      <TableRow className="border-b border-orange-200/30">
+                        <TableHead className="font-semibold text-slate-800 py-4 px-6">
                           {t('dashboard.school')}
                         </TableHead>
-                        <TableHead className="font-bold text-slate-800 dark:text-slate-200 py-4 px-6">
+                        <TableHead className="font-semibold text-slate-800 py-4 px-6">
                           {t('dashboard.game')}
                         </TableHead>
-                        <TableHead className="font-bold text-slate-800 dark:text-slate-200 py-4 px-6 text-center">
+                        <TableHead className="font-semibold text-slate-800 py-4 px-6 text-center">
                           {t('dashboard.activeSessions')}
                         </TableHead>
-                        <TableHead className="font-bold text-slate-800 dark:text-slate-200 py-4 px-6 text-center">
+                        <TableHead className="font-semibold text-slate-800 py-4 px-6 text-center">
                           {t('dashboard.totalSessions')}
                         </TableHead>
                       </TableRow>
@@ -160,20 +189,20 @@ const Dashboard = () => {
                       {gamesData.map((game, index) => (
                         <TableRow 
                           key={game.id} 
-                          className="hover:bg-blue-50/50 transition-colors duration-200 border-b border-slate-100/50"
+                          className="hover:bg-orange-50/50 transition-colors duration-200 border-b border-orange-100/30"
                         >
-                          <TableCell className="font-semibold text-slate-900 dark:text-slate-100 py-4 px-6">
+                          <TableCell className="font-medium text-slate-900 py-4 px-6">
                             {game.schoolName}
                           </TableCell>
-                          <TableCell className="text-slate-700 dark:text-slate-300 py-4 px-6">
+                          <TableCell className="text-slate-700 py-4 px-6">
                             {game.gameName}
                           </TableCell>
                           <TableCell className="text-center py-4 px-6">
-                            <Badge className="badge-success font-medium px-3 py-1">
+                            <Badge className="badge-primary font-medium px-3 py-1">
                               {game.sessionsActive}
                             </Badge>
                           </TableCell>
-                          <TableCell className="text-slate-700 dark:text-slate-300 text-center py-4 px-6 font-medium">
+                          <TableCell className="text-slate-700 text-center py-4 px-6 font-medium">
                             {game.totalSessions}
                           </TableCell>
                         </TableRow>
@@ -185,10 +214,10 @@ const Dashboard = () => {
             </Card>
 
             {/* Planifications Created */}
-            <Card className="bg-white/80 backdrop-blur-sm border border-slate-200/60 rounded-xl shadow-lg overflow-hidden">
-              <CardHeader className="bg-gradient-to-r from-purple-50/80 to-pink-50/80 border-b border-slate-200/80">
-                <CardTitle className="text-2xl font-bold text-slate-900 dark:text-white flex items-center">
-                  <Users className="h-6 w-6 mr-3 text-purple-600" />
+            <Card className="modern-card overflow-hidden">
+              <CardHeader className="bg-gradient-to-r from-purple-50 to-purple-100/50 border-b border-purple-200/50">
+                <CardTitle className="text-xl font-bold text-slate-900 flex items-center">
+                  <Calendar className="h-5 w-5 mr-3 text-purple-600" />
                   {t('dashboard.planificationsCreated')}
                 </CardTitle>
               </CardHeader>
@@ -196,17 +225,17 @@ const Dashboard = () => {
                 <div className="overflow-x-auto">
                   <Table>
                     <TableHeader>
-                      <TableRow className="border-b border-slate-200/80">
-                        <TableHead className="font-bold text-slate-800 dark:text-slate-200 py-4 px-6">
+                      <TableRow className="border-b border-purple-200/30">
+                        <TableHead className="font-semibold text-slate-800 py-4 px-6">
                           {t('dashboard.school')}
                         </TableHead>
-                        <TableHead className="font-bold text-slate-800 dark:text-slate-200 py-4 px-6">
+                        <TableHead className="font-semibold text-slate-800 py-4 px-6">
                           {t('dashboard.game')}
                         </TableHead>
-                        <TableHead className="font-bold text-slate-800 dark:text-slate-200 py-4 px-6">
+                        <TableHead className="font-semibold text-slate-800 py-4 px-6">
                           {t('dashboard.planification')}
                         </TableHead>
-                        <TableHead className="font-bold text-slate-800 dark:text-slate-200 py-4 px-6 text-center">
+                        <TableHead className="font-semibold text-slate-800 py-4 px-6 text-center">
                           {t('dashboard.status')}
                         </TableHead>
                       </TableRow>
@@ -215,15 +244,15 @@ const Dashboard = () => {
                       {planificationsData.map((planification, index) => (
                         <TableRow 
                           key={planification.id} 
-                          className="hover:bg-purple-50/50 transition-colors duration-200 border-b border-slate-100/50"
+                          className="hover:bg-purple-50/50 transition-colors duration-200 border-b border-purple-100/30"
                         >
-                          <TableCell className="font-semibold text-slate-900 dark:text-slate-100 py-4 px-6">
+                          <TableCell className="font-medium text-slate-900 py-4 px-6">
                             {planification.schoolName}
                           </TableCell>
-                          <TableCell className="text-slate-700 dark:text-slate-300 py-4 px-6">
+                          <TableCell className="text-slate-700 py-4 px-6">
                             {planification.gameName}
                           </TableCell>
-                          <TableCell className="text-slate-700 dark:text-slate-300 py-4 px-6">
+                          <TableCell className="text-slate-700 py-4 px-6">
                             {planification.planificationName}
                           </TableCell>
                           <TableCell className="text-center py-4 px-6">
