@@ -1,204 +1,41 @@
-import { useState, useEffect } from "react";
+
+import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, Users, BookOpen, Calendar, Crown, Mail, Phone, MapPin, User, GraduationCap, Search } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ArrowLeft, Users, BookOpen, Calendar } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/contexts/I18nContext";
 import Header from "@/components/Header";
-import { buildApiUrl } from "@/config/hosts";
-import { AuthService } from "@/services/authService";
-import Swal from 'sweetalert2';
 import { StatsCardsSection } from "@/components/school-detail/StatsCardsSection";
 import { SchoolInfoCard } from "@/components/school-detail/SchoolInfoCard";
 import { AdminInfoCard } from "@/components/school-detail/AdminInfoCard";
 import { SearchableListCard } from "@/components/school-detail/SearchableListCard";
-
-interface Apprenant {
-  _id: string;
-  nom: string;
-  prenom: string;
-  avatar: string;
-  matricule: string;
-  phone: string;
-  email: string;
-  date: string;
-}
-
-interface Professeur {
-  _id: string;
-  nom: string;
-  prenom: string;
-  email: string;
-  matricule: string;
-  role: string;
-}
-
-interface Jeu {
-  _id: string;
-  titre: string;
-  image: string | null;
-  date: string;
-  nombreQuestions: number;
-  professeur: Professeur;
-}
-
-interface Planification {
-  _id: string;
-  pin: string;
-  statut: string;
-  jeu: {
-    _id: string;
-    titre: string;
-  };
-  enseignant: any;
-}
-
-interface Abonnement {
-  _id: string;
-  nom: string;
-  description: string;
-  prix: number;
-  nombreJeuxMax: number;
-  nombreApprenantsMax: number;
-  nombreEnseignantsMax: number;
-  dureeEnJours: number;
-  dateCreation: string;
-}
-
-interface Administrateur {
-  _id: string;
-  nom: string;
-  prenom: string;
-  matricule: string;
-  genre: string;
-  statut: string;
-  phone: string;
-  email: string;
-  adresse: string;
-  date: string;
-  pays: {
-    _id: string;
-    libelle: string;
-  };
-  role: string;
-}
-
-interface Ecole {
-  _id: string;
-  libelle: string;
-  adresse: string;
-  ville: string;
-  telephone: string;
-  email: string;
-  fichier: string;
-  pays: {
-    _id: string;
-    libelle: string;
-  };
-  apprenants: Apprenant[];
-}
-
-interface SchoolDetailData {
-  ecole: Ecole;
-  abonnement: Abonnement;
-  administrateur: Administrateur;
-  jeux: Jeu[];
-  planifications: {
-    total: number;
-    liste: Planification[];
-  };
-}
-
-interface ApiResponse {
-  success: boolean;
-  message: string;
-  data: SchoolDetailData;
-  timestamp: string;
-}
+import { useSchoolDetail } from "@/hooks/useSchoolDetail";
+import { filterGames, filterStudents, filterPlans } from "@/utils/schoolDetailFilters";
+import { createDefaultSchoolData } from "@/utils/schoolDetailDefaults";
 
 const SchoolDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [schoolData, setSchoolData] = useState<SchoolDetailData | null>(null);
-  const [loading, setLoading] = useState(true);
   const [searchGames, setSearchGames] = useState("");
   const [searchStudents, setSearchStudents] = useState("");
   const [searchPlans, setSearchPlans] = useState("");
   const { t } = useI18n();
-
-  useEffect(() => {
-    const fetchSchoolDetail = async () => {
-      if (!id) return;
-      
-      try {
-        setLoading(true);
-        const headers = {
-          'Content-Type': 'application/json',
-          ...AuthService.getAuthHeaders(),
-        };
-
-        const response = await fetch(buildApiUrl(`/api/ecoles/${id}/statistiques-detaillees`), {
-          method: 'GET',
-          headers,
-        });
-
-        if (!response.ok) {
-          throw new Error(`Erreur HTTP: ${response.status}`);
-        }
-
-        const data: ApiResponse = await response.json();
-        
-        if (data.success) {
-          setSchoolData(data.data);
-        } else {
-          await Swal.fire({
-            title: t('alerts.error'),
-            text: data.message || "Impossible de récupérer les détails de l'école",
-            icon: 'error',
-            confirmButtonText: 'OK',
-            confirmButtonColor: '#ea580c'
-          });
-        }
-      } catch (error: any) {
-        console.error('Erreur lors du chargement des détails:', error);
-        await Swal.fire({
-          title: 'Erreur de connexion',
-          text: "Impossible de récupérer les détails de l'école depuis le serveur",
-          icon: 'error',
-          confirmButtonText: 'Réessayer',
-          confirmButtonColor: '#ea580c'
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchSchoolDetail();
-  }, [id, t]);
+  
+  const { schoolData, loading } = useSchoolDetail(id);
 
   const handleBack = () => {
     navigate('/ecoles');
   };
 
-  // Fonctions de filtrage
-  const filteredGames = schoolData?.jeux.filter(jeu =>
-    jeu.titre.toLowerCase().includes(searchGames.toLowerCase()) ||
-    `${jeu.professeur.prenom} ${jeu.professeur.nom}`.toLowerCase().includes(searchGames.toLowerCase())
-  ) || [];
-
-  const filteredStudents = schoolData?.ecole.apprenants.filter(apprenant =>
-    `${apprenant.prenom} ${apprenant.nom}`.toLowerCase().includes(searchStudents.toLowerCase()) ||
-    apprenant.matricule.toLowerCase().includes(searchStudents.toLowerCase())
-  ) || [];
-
-  const filteredPlans = schoolData?.planifications.liste.filter(plan =>
-    plan.jeu.titre.toLowerCase().includes(searchPlans.toLowerCase()) ||
-    plan.pin.toLowerCase().includes(searchPlans.toLowerCase())
-  ) || [];
+  const displayData = schoolData || createDefaultSchoolData(id || '');
+  
+  const filteredGames = filterGames(displayData.jeux, searchGames);
+  const filteredStudents = filterStudents(displayData.ecole.apprenants, searchStudents);
+  const filteredPlans = filterPlans(displayData.planifications.liste, searchPlans);
 
   if (loading) {
     return (
@@ -213,48 +50,6 @@ const SchoolDetail = () => {
       </div>
     );
   }
-
-  // Créer des données par défaut si schoolData est null
-  const displayData = schoolData || {
-    ecole: {
-      _id: id || '',
-      libelle: 'École non trouvée',
-      adresse: 'Aucune adresse',
-      ville: 'Aucune ville',
-      telephone: 'Aucun téléphone',
-      email: 'Aucun email',
-      fichier: '',
-      pays: { _id: '', libelle: 'Aucun pays' },
-      apprenants: []
-    },
-    abonnement: {
-      _id: '',
-      nom: 'Aucun abonnement',
-      description: 'Aucune description',
-      prix: 0,
-      nombreJeuxMax: 0,
-      nombreApprenantsMax: 0,
-      nombreEnseignantsMax: 0,
-      dureeEnJours: 0,
-      dateCreation: ''
-    },
-    administrateur: {
-      _id: '',
-      nom: 'Aucun nom',
-      prenom: 'Aucun prénom',
-      matricule: 'Aucun matricule',
-      genre: 'Non spécifié',
-      statut: 'inactif',
-      phone: 'Aucun téléphone',
-      email: 'Aucun email',
-      adresse: 'Aucune adresse',
-      date: '',
-      pays: { _id: '', libelle: 'Aucun pays' },
-      role: 'admin'
-    },
-    jeux: [],
-    planifications: { total: 0, liste: [] }
-  };
 
   return (
     <div className="flex flex-col h-screen">
