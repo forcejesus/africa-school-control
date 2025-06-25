@@ -110,18 +110,18 @@ export function useSchoolForm(school?: School) {
     setAdminData(prev => ({ ...prev, [field]: value }));
   };
 
-  const validateStep = (step: number): boolean => {
+  const validateStep = (step: number) => {
     if (step === 1) {
-      return !!(schoolData.libelle && schoolData.ville && schoolData.adresse && 
-               schoolData.telephone && schoolData.email && schoolData.pays && 
-               schoolData.abonnementActuel);
+      return schoolData.libelle && schoolData.ville && schoolData.adresse && 
+             schoolData.telephone && schoolData.email && schoolData.pays && 
+             schoolData.abonnementActuel;
     }
     if (step === 2) {
-      return !!(adminData.nom && adminData.prenom && adminData.genre && 
-               adminData.phone && adminData.email && adminData.adresse && 
-               adminData.password && adminData.confirmPassword &&
-               adminData.password === adminData.confirmPassword &&
-               adminData.password.length >= 4);
+      return adminData.nom && adminData.prenom && adminData.genre && 
+             adminData.phone && adminData.email && adminData.adresse && 
+             adminData.password && adminData.confirmPassword &&
+             adminData.password === adminData.confirmPassword &&
+             adminData.password.length >= 4;
     }
     return true;
   };
