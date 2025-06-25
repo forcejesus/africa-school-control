@@ -1,3 +1,4 @@
+
 import { AuthService } from './authService';
 import { buildApiUrl, API_ENDPOINTS } from '@/config/hosts';
 
@@ -19,11 +20,14 @@ export interface ApiSchool {
     phone: string;
     email: string;
     adresse: string;
-    pays: string;
+    pays: {
+      _id: string;
+      libelle: string;
+    };
     role: string;
     date: string;
     ecole: string;
-  };
+  } | null;
   pays: {
     _id: string;
     libelle: string;
@@ -59,6 +63,24 @@ export interface CreateSchoolData {
   pays: string;
 }
 
+export interface CreateSchoolResponse {
+  success: boolean;
+  message: string;
+  data: {
+    _id: string;
+    libelle: string;
+    adresse: string;
+    ville: string;
+    telephone: string;
+    email: string;
+    fichier: string;
+    pays: string;
+    apprenants: any[];
+    abonnementActuel: string;
+    abonnementHistorique: any[];
+  };
+}
+
 export interface CreateAdminData {
   nom: string;
   prenom: string;
@@ -80,16 +102,21 @@ export class SchoolService {
         ...AuthService.getAuthHeaders(),
       };
 
-      const response = await fetch(buildApiUrl(API_ENDPOINTS.schools.list), {
+      console.log('Fetching schools from:', buildApiUrl('/api/ecoles/'));
+      
+      const response = await fetch(buildApiUrl('/api/ecoles/'), {
         method: 'GET',
         headers,
       });
+
+      console.log('Schools API response status:', response.status);
 
       if (!response.ok) {
         throw new Error(`Erreur HTTP: ${response.status}`);
       }
 
       const data: SchoolsResponse = await response.json();
+      console.log('Schools API response data:', data);
       return data;
     } catch (error) {
       console.error('Erreur lors de la récupération des écoles:', error);
@@ -97,12 +124,15 @@ export class SchoolService {
     }
   }
 
-  static async createSchool(schoolData: CreateSchoolData): Promise<any> {
+  static async createSchool(schoolData: CreateSchoolData): Promise<CreateSchoolResponse> {
     try {
       const headers = {
         'Content-Type': 'application/json',
         ...AuthService.getAuthHeaders(),
       };
+
+      console.log('Creating school with data:', schoolData);
+      console.log('Sending request to:', buildApiUrl('/api/ecoles'));
 
       const response = await fetch(buildApiUrl('/api/ecoles'), {
         method: 'POST',
@@ -110,11 +140,16 @@ export class SchoolService {
         body: JSON.stringify(schoolData),
       });
 
+      console.log('Create school response status:', response.status);
+
       if (!response.ok) {
-        throw new Error(`Erreur HTTP: ${response.status}`);
+        const errorText = await response.text();
+        console.error('Create school error response:', errorText);
+        throw new Error(`Erreur HTTP: ${response.status} - ${errorText}`);
       }
 
-      const data = await response.json();
+      const data: CreateSchoolResponse = await response.json();
+      console.log('Create school response data:', data);
       return data;
     } catch (error) {
       console.error('Erreur lors de la création de l\'école:', error);
@@ -129,17 +164,24 @@ export class SchoolService {
         ...AuthService.getAuthHeaders(),
       };
 
+      console.log('Creating admin with data:', adminData);
+
       const response = await fetch(buildApiUrl('/api/admin'), {
         method: 'POST',
         headers,
         body: JSON.stringify(adminData),
       });
 
+      console.log('Create admin response status:', response.status);
+
       if (!response.ok) {
-        throw new Error(`Erreur HTTP: ${response.status}`);
+        const errorText = await response.text();
+        console.error('Create admin error response:', errorText);
+        throw new Error(`Erreur HTTP: ${response.status} - ${errorText}`);
       }
 
       const data = await response.json();
+      console.log('Create admin response data:', data);
       return data;
     } catch (error) {
       console.error('Erreur lors de la création de l\'admin:', error);
@@ -155,10 +197,10 @@ export class SchoolService {
       status: 'active' as const,
       contactEmail: apiSchool.email,
       contactPhone: apiSchool.telephone,
-      adminName: `${apiSchool.admin.prenom} ${apiSchool.admin.nom}`,
+      adminName: apiSchool.admin ? `${apiSchool.admin.prenom} ${apiSchool.admin.nom}` : 'Aucun admin',
       teachersCount: 1,
       studentsCount: apiSchool.apprenants.length,
-      registrationDate: apiSchool.admin.date,
+      registrationDate: apiSchool.admin?.date || '',
       logo: apiSchool.fichier || '/placeholder.svg',
       address: `${apiSchool.adresse}, ${apiSchool.ville}`,
     };

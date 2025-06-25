@@ -68,17 +68,26 @@ export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
     const fetchData = async () => {
       try {
         setLoadingData(true);
+        console.log('Fetching subscriptions and countries...');
+        
         const [subscriptionsResponse, countriesResponse] = await Promise.all([
           SubscriptionService.getSubscriptions(),
           SubscriptionService.getCountries()
         ]);
         
+        console.log('Subscriptions response:', subscriptionsResponse);
+        console.log('Countries response:', countriesResponse);
+        
         if (subscriptionsResponse.success) {
           setSubscriptions(subscriptionsResponse.data);
+        } else {
+          console.error('Erreur subscriptions:', subscriptionsResponse.message);
         }
         
         if (countriesResponse.success) {
           setCountries(countriesResponse.data);
+        } else {
+          console.error('Erreur countries:', countriesResponse.message);
         }
       } catch (error) {
         console.error('Erreur lors du chargement des données:', error);
@@ -115,16 +124,20 @@ export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
 
   const validateStep = (step: number) => {
     if (step === 1) {
-      return schoolData.libelle && schoolData.ville && schoolData.adresse && 
+      const isValid = schoolData.libelle && schoolData.ville && schoolData.adresse && 
              schoolData.telephone && schoolData.email && schoolData.pays && 
              schoolData.abonnementActuel;
+      console.log('Step 1 validation:', isValid, schoolData);
+      return isValid;
     }
     if (step === 2) {
-      return adminData.nom && adminData.prenom && adminData.genre && 
+      const isValid = adminData.nom && adminData.prenom && adminData.genre && 
              adminData.phone && adminData.email && adminData.adresse && 
              adminData.password && adminData.confirmPassword &&
              adminData.password === adminData.confirmPassword &&
              adminData.password.length >= 4;
+      console.log('Step 2 validation:', isValid, adminData);
+      return isValid;
     }
     return true;
   };
@@ -141,15 +154,24 @@ export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
 
     try {
       setLoading(true);
+      console.log('Creating school with data:', schoolData);
+      
       const schoolPayload: CreateSchoolData = { ...schoolData };
       const schoolResponse = await SchoolService.createSchool(schoolPayload);
+      
+      console.log('School creation response:', schoolResponse);
       
       if (!schoolResponse.success) {
         throw new Error(schoolResponse.message || "Erreur lors de la création de l'école");
       }
       
-      const schoolId = schoolResponse.data?._id || schoolResponse.data?.id;
+      const schoolId = schoolResponse.data?._id;
+      if (!schoolId) {
+        throw new Error("ID de l'école non trouvé dans la réponse");
+      }
+      
       setCreatedSchoolId(schoolId);
+      console.log('School created with ID:', schoolId);
       
       toast({
         title: "École créée",
@@ -171,6 +193,8 @@ export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
   };
 
   const nextStep = async () => {
+    console.log('Next step clicked, current step:', currentStep);
+    
     if (currentStep === 1) {
       // Créer l'école avant de passer à l'étape suivante
       const success = await createSchool();
@@ -222,6 +246,7 @@ export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
     
     try {
       setLoading(true);
+      console.log('Creating admin for school ID:', createdSchoolId);
       
       // Créer l'administrateur avec l'ID de l'école créée
       const adminPayload: CreateAdminData = {
@@ -237,7 +262,9 @@ export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
         ecole: createdSchoolId,
       };
       
+      console.log('Admin payload:', adminPayload);
       const adminResponse = await SchoolService.createAdmin(adminPayload);
+      console.log('Admin creation response:', adminResponse);
       
       if (!adminResponse.success) {
         console.warn("École créée mais erreur lors de la création de l'admin:", adminResponse.message);
@@ -354,6 +381,7 @@ export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
                   variant="outline" 
                   onClick={currentStep === 1 ? () => navigate("/schools") : prevStep}
                   className="px-6"
+                  disabled={loading}
                 >
                   {currentStep === 1 ? "Annuler" : "Précédent"}
                 </Button>
@@ -367,7 +395,7 @@ export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
                     {loading ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        {currentStep === 1 ? "Création..." : "Chargement..."}
+                        {currentStep === 1 ? "Création de l'école..." : "Chargement..."}
                       </>
                     ) : (
                       "Suivant"
@@ -382,7 +410,7 @@ export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
                     {loading ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Création en cours...
+                        Création de l'admin...
                       </>
                     ) : (
                       "Créer l'administrateur"
