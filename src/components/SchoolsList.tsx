@@ -20,9 +20,10 @@ import { useI18n } from "@/contexts/I18nContext";
 interface SchoolsListProps {
   schools: ApiSchool[];
   isLoading?: boolean;
+  onUpdate?: () => void;
 }
 
-export function SchoolsList({ schools, isLoading = false }: SchoolsListProps) {
+export function SchoolsList({ schools, isLoading = false, onUpdate }: SchoolsListProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [countryFilter, setCountryFilter] = useState("all");
@@ -200,7 +201,11 @@ export function SchoolsList({ schools, isLoading = false }: SchoolsListProps) {
         >
           {filteredSchools.map((school) => (
             <motion.div key={school._id} variants={item}>
-              <SchoolCard school={SchoolService.transformApiSchoolToLocal(school)} />
+              <SchoolCard 
+                school={SchoolService.transformApiSchoolToLocal(school)} 
+                apiSchool={school}
+                onUpdate={onUpdate}
+              />
             </motion.div>
           ))}
         </motion.div>

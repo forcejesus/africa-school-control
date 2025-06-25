@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Header from "@/components/Header";
 import SchoolsList from "@/components/SchoolsList";
 import { motion } from "framer-motion";
@@ -14,39 +14,39 @@ const Schools = () => {
   const { t } = useI18n();
   const { toast } = useToast();
   
-  useEffect(() => {
-    const fetchSchools = async () => {
-      try {
-        setLoading(true);
-        const response = await SchoolService.getSchools();
-        
-        if (response.success) {
-          setSchools(response.data);
-        } else {
-          await Swal.fire({
-            title: t('alerts.error'),
-            text: response.message || "Impossible de récupérer les écoles",
-            icon: 'error',
-            confirmButtonText: 'OK',
-            confirmButtonColor: '#ea580c'
-          });
-        }
-      } catch (error: any) {
-        console.error('Erreur lors du chargement des écoles:', error);
+  const fetchSchools = useCallback(async () => {
+    try {
+      setLoading(true);
+      const response = await SchoolService.getSchools();
+      
+      if (response.success) {
+        setSchools(response.data);
+      } else {
         await Swal.fire({
-          title: 'Erreur de connexion',
-          text: "Impossible de récupérer les écoles depuis le serveur",
+          title: t('alerts.error'),
+          text: response.message || "Impossible de récupérer les écoles",
           icon: 'error',
-          confirmButtonText: 'Réessayer',
+          confirmButtonText: 'OK',
           confirmButtonColor: '#ea580c'
         });
-      } finally {
-        setLoading(false);
       }
-    };
-
-    fetchSchools();
+    } catch (error: any) {
+      console.error('Erreur lors du chargement des écoles:', error);
+      await Swal.fire({
+        title: 'Erreur de connexion',
+        text: "Impossible de récupérer les écoles depuis le serveur",
+        icon: 'error',
+        confirmButtonText: 'Réessayer',
+        confirmButtonColor: '#ea580c'
+      });
+    } finally {
+      setLoading(false);
+    }
   }, [toast, t]);
+
+  useEffect(() => {
+    fetchSchools();
+  }, [fetchSchools]);
 
   return (
     <div className="flex flex-col h-screen">
@@ -70,7 +70,7 @@ const Schools = () => {
             </div>
           </div>
           
-          <SchoolsList schools={schools} isLoading={loading} />
+          <SchoolsList schools={schools} isLoading={loading} onUpdate={fetchSchools} />
         </motion.div>
       </div>
     </div>

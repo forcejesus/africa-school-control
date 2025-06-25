@@ -1,4 +1,3 @@
-
 import { AuthService } from './authService';
 import { buildApiUrl, API_ENDPOINTS } from '@/config/hosts';
 
@@ -94,6 +93,17 @@ export interface CreateAdminData {
   ecole?: string; // ID de l'école
 }
 
+export interface UpdateSchoolData {
+  libelle: string;
+  adresse: string;
+  ville: string;
+  telephone: string;
+  email: string;
+  fichier: string;
+  admin: string;
+  pays: string;
+}
+
 export class SchoolService {
   static async getSchools(): Promise<SchoolsResponse> {
     try {
@@ -185,6 +195,69 @@ export class SchoolService {
       return data;
     } catch (error) {
       console.error('Erreur lors de la création de l\'admin:', error);
+      throw error;
+    }
+  }
+
+  static async updateSchool(schoolId: string, schoolData: UpdateSchoolData): Promise<any> {
+    try {
+      const headers = {
+        'Content-Type': 'application/json',
+        ...AuthService.getAuthHeaders(),
+      };
+
+      console.log('Updating school with ID:', schoolId, 'Data:', schoolData);
+
+      const response = await fetch(buildApiUrl(`/api/ecoles/update/${schoolId}`), {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(schoolData),
+      });
+
+      console.log('Update school response status:', response.status);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Update school error response:', errorText);
+        throw new Error(`Erreur HTTP: ${response.status} - ${errorText}`);
+      }
+
+      const data = await response.json();
+      console.log('Update school response data:', data);
+      return data;
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour de l\'école:', error);
+      throw error;
+    }
+  }
+
+  static async deleteSchool(schoolId: string): Promise<any> {
+    try {
+      const headers = {
+        'Content-Type': 'application/json',
+        ...AuthService.getAuthHeaders(),
+      };
+
+      console.log('Deleting school with ID:', schoolId);
+
+      const response = await fetch(buildApiUrl(`/api/ecoles/delete/${schoolId}`), {
+        method: 'POST',
+        headers,
+      });
+
+      console.log('Delete school response status:', response.status);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Delete school error response:', errorText);
+        throw new Error(`Erreur HTTP: ${response.status} - ${errorText}`);
+      }
+
+      const data = await response.json();
+      console.log('Delete school response data:', data);
+      return data;
+    } catch (error) {
+      console.error('Erreur lors de la suppression de l\'école:', error);
       throw error;
     }
   }
