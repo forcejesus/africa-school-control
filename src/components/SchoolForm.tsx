@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -122,20 +121,33 @@ export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
     setAdminData(prev => ({ ...prev, [field]: value }));
   };
 
-  const validateStep = (step: number) => {
+  const validateStep = (step: number): boolean => {
     if (step === 1) {
-      const isValid = schoolData.libelle && schoolData.ville && schoolData.adresse && 
-             schoolData.telephone && schoolData.email && schoolData.pays && 
-             schoolData.abonnementActuel;
+      const isValid = Boolean(
+        schoolData.libelle && 
+        schoolData.ville && 
+        schoolData.adresse && 
+        schoolData.telephone && 
+        schoolData.email && 
+        schoolData.pays && 
+        schoolData.abonnementActuel
+      );
       console.log('Step 1 validation:', isValid, schoolData);
       return isValid;
     }
     if (step === 2) {
-      const isValid = adminData.nom && adminData.prenom && adminData.genre && 
-             adminData.phone && adminData.email && adminData.adresse && 
-             adminData.password && adminData.confirmPassword &&
-             adminData.password === adminData.confirmPassword &&
-             adminData.password.length >= 4;
+      const isValid = Boolean(
+        adminData.nom && 
+        adminData.prenom && 
+        adminData.genre && 
+        adminData.phone && 
+        adminData.email && 
+        adminData.adresse && 
+        adminData.password && 
+        adminData.confirmPassword &&
+        adminData.password === adminData.confirmPassword &&
+        adminData.password.length >= 4
+      );
       console.log('Step 2 validation:', isValid, adminData);
       return isValid;
     }
