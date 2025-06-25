@@ -13,7 +13,7 @@ import { School } from "@/utils/data/types";
 import { useToast } from "@/hooks/use-toast";
 import { SchoolService, CreateSchoolData, CreateAdminData } from "@/services/schoolService";
 import { SubscriptionService, ApiSubscription, ApiCountry } from "@/services/subscriptionService";
-import { Loader2 } from "lucide-react";
+import { Loader2, GraduationCap, Building2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { FormStepper } from "./FormStepper";
 import { SchoolInfoStep } from "./SchoolInfoStep";
@@ -43,7 +43,7 @@ export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
     ville: "",
     telephone: school?.contactPhone || "",
     email: school?.contactEmail || "",
-    fichier: "",
+    fichier: "aucune image",
     pays: "",
   });
 
@@ -156,7 +156,10 @@ export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
       setLoading(true);
       console.log('Creating school with data:', schoolData);
       
-      const schoolPayload: CreateSchoolData = { ...schoolData };
+      const schoolPayload: CreateSchoolData = { 
+        ...schoolData,
+        fichier: "aucune image"
+      };
       const schoolResponse = await SchoolService.createSchool(schoolPayload);
       
       console.log('School creation response:', schoolResponse);
@@ -328,27 +331,43 @@ export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
 
   if (loadingData) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50/30 to-pink-50/20 flex items-center justify-center">
         <div className="flex items-center space-x-3">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          <span className="text-lg font-medium">Chargement des données...</span>
+          <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
+          <span className="text-lg font-medium text-gray-700">Chargement des données...</span>
         </div>
       </div>
     );
   }
   
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50/30 to-pink-50/20">
       <div className="container mx-auto px-4 py-8 max-w-4xl">
-        {/* Header */}
+        {/* Enhanced Header */}
         <motion.div 
           className="text-center mb-8"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Créer une nouvelle école</h1>
-          <p className="text-gray-600">Suivez les étapes pour ajouter une école à la plateforme</p>
+          <div className="flex items-center justify-center mb-4">
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full blur-lg opacity-20 animate-pulse"></div>
+              <div className="relative bg-gradient-to-r from-indigo-600 to-purple-600 p-4 rounded-full">
+                <Building2 className="h-8 w-8 text-white" />
+              </div>
+            </div>
+          </div>
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-3">
+            Créer une nouvelle école
+          </h1>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Suivez les étapes pour ajouter une école à la plateforme
+          </p>
+          <div className="flex items-center justify-center gap-2 mt-4">
+            <GraduationCap className="h-5 w-5 text-indigo-500" />
+            <span className="text-sm text-gray-500">Étape {currentStep} sur 3</span>
+          </div>
         </motion.div>
 
         {/* Stepper */}
@@ -362,9 +381,10 @@ export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
           exit={{ opacity: 0, x: -20 }}
           transition={{ duration: 0.3 }}
         >
-          <Card className="shadow-lg border-0 bg-white">
-            <CardHeader className="bg-gradient-to-r from-primary/5 to-primary/10 border-b">
-              <CardTitle className="text-xl text-gray-900">
+          <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
+            <CardHeader className="bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border-b border-indigo-100">
+              <CardTitle className="text-xl text-gray-900 flex items-center gap-2">
+                <div className="h-2 w-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full"></div>
                 {stepTitles[currentStep - 1].title}
               </CardTitle>
               <CardDescription className="text-gray-600">
@@ -376,11 +396,11 @@ export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
               {renderCurrentStep()}
 
               {/* Navigation Buttons */}
-              <div className="flex justify-between items-center mt-8 pt-6 border-t">
+              <div className="flex justify-between items-center mt-8 pt-6 border-t border-gray-100">
                 <Button 
                   variant="outline" 
                   onClick={currentStep === 1 ? () => navigate("/schools") : prevStep}
-                  className="px-6"
+                  className="px-6 border-indigo-200 hover:bg-indigo-50"
                   disabled={loading}
                 >
                   {currentStep === 1 ? "Annuler" : "Précédent"}
@@ -390,7 +410,7 @@ export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
                   <Button 
                     onClick={nextStep}
                     disabled={loading || (currentStep === 1 && !validateStep(1))}
-                    className="px-6"
+                    className="px-6 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700"
                   >
                     {loading ? (
                       <>
@@ -405,7 +425,7 @@ export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
                   <Button 
                     onClick={handleSubmit}
                     disabled={loading}
-                    className="px-6"
+                    className="px-6 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700"
                   >
                     {loading ? (
                       <>
