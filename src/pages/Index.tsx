@@ -1,5 +1,6 @@
 
 import { Users, GraduationCap, Gamepad, Calendar, School, Plus } from "lucide-react";
+import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import { DashboardHeader } from "@/components/DashboardHeader";
 import { ModernStatsCard } from "@/components/ModernStatsCard";
@@ -17,6 +18,8 @@ import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
 import { useI18n } from "@/contexts/I18nContext";
 import { cn } from "@/lib/utils";
+import { StatsService, GlobalStats, StatsDetails } from "@/services/statsService";
+import { useToast } from "@/hooks/use-toast";
 
 // Mock data for games and planifications
 const gamesData = [
@@ -37,48 +40,79 @@ const planificationsData = [
 
 const Dashboard = () => {
   const { t } = useI18n();
+  const { toast } = useToast();
+  const [globalStats, setGlobalStats] = useState<GlobalStats | null>(null);
+  const [statsDetails, setStatsDetails] = useState<StatsDetails | null>(null);
+  const [loading, setLoading] = useState(true);
   
-  // Calculs des statistiques
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        setLoading(true);
+        const response = await StatsService.getGlobalStats();
+        
+        if (response.success) {
+          setGlobalStats(response.data.global);
+          setStatsDetails(response.data.details);
+        } else {
+          throw new Error(response.message || "Erreur lors de la récupération des statistiques");
+        }
+      } catch (error) {
+        console.error('Erreur lors de la récupération des statistiques:', error);
+        toast({
+          title: "Erreur",
+          description: "Impossible de récupérer les statistiques",
+          variant: "destructive"
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStats();
+  }, [toast]);
+  
+  // Calculs des statistiques avec les vraies données ou valeurs par défaut
   const totalActiveSessions = gamesData.reduce((total, game) => total + game.sessionsActive, 0);
-  const totalGamesCreated = gamesData.length;
-  const totalPlanifications = planificationsData.length;
-  const totalSchools = 12; // Example data
+  const totalGamesCreated = globalStats?.total_jeux || 0;
+  const totalPlanifications = globalStats?.total_planifications || 0;
+  const totalSchools = globalStats?.total_ecoles || 0;
   
   const statsConfig = [
+    {
+      title: "Écoles",
+      value: totalSchools.toString(),
+      icon: School,
+      bgGradient: "orange-gradient",
+      iconBg: "bg-gradient-to-r from-orange-500 to-orange-600",
+      subtitle: `${statsDetails?.ecoles.actives || 0} actives`,
+      change: "+12%"
+    },
     {
       title: "Jeux Créés",
       value: totalGamesCreated.toString(),
       icon: Gamepad,
-      bgGradient: "orange-gradient",
-      iconBg: "bg-gradient-to-r from-orange-500 to-orange-600",
-      subtitle: `${totalActiveSessions} sessions actives`,
-      change: "+12%"
+      bgGradient: "purple-gradient",
+      iconBg: "bg-gradient-to-r from-purple-500 to-purple-600",
+      subtitle: `${statsDetails?.jeux.avec_questions || 0} avec questions`,
+      change: "+8%"
     },
     {
       title: "Planifications",
       value: totalPlanifications.toString(),
       icon: Calendar,
-      bgGradient: "purple-gradient",
-      iconBg: "bg-gradient-to-r from-purple-500 to-purple-600",
-      subtitle: "En cours d'exécution",
-      change: "+8%"
-    },
-    {
-      title: "Enseignants",
-      value: "24",
-      icon: GraduationCap,
       bgGradient: "blue-gradient",
       iconBg: "bg-gradient-to-r from-blue-500 to-blue-600",
-      subtitle: "Actifs ce mois",
+      subtitle: `${statsDetails?.planifications.actives || 0} actives`,
       change: "+5%"
     },
     {
-      title: "Apprenants",
-      value: "456",
+      title: "Sessions Actives",
+      value: totalActiveSessions.toString(),
       icon: Users,
       bgGradient: "green-gradient",
       iconBg: "bg-gradient-to-r from-emerald-500 to-emerald-600",
-      subtitle: "Inscrits au total",
+      subtitle: "En cours d'exécution",
       change: "+15%"
     }
   ];
@@ -120,7 +154,7 @@ const Dashboard = () => {
               <ModernStatsCard
                 key={stat.title}
                 title={stat.title}
-                value={stat.value}
+                value={loading ? "..." : stat.value}
                 icon={stat.icon}
                 subtitle={stat.subtitle}
                 bgGradient={stat.bgGradient}
