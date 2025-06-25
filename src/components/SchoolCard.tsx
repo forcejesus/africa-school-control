@@ -71,9 +71,27 @@ export function SchoolCard({ school, apiSchool, onUpdate }: SchoolCardProps) {
     }
   };
 
-  const handleEditSuccess = () => {
-    if (onUpdate) {
-      onUpdate();
+  const handleEditSchool = async (schoolData: any) => {
+    if (!apiSchool) return;
+    
+    try {
+      await SchoolService.updateSchool(apiSchool._id, schoolData);
+      
+      toast({
+        title: "Succès",
+        description: "École modifiée avec succès",
+      });
+
+      if (onUpdate) {
+        onUpdate();
+      }
+    } catch (error: any) {
+      toast({
+        title: "Erreur",
+        description: error.message || "Impossible de modifier l'école",
+        variant: "destructive",
+      });
+      throw error;
     }
   };
 
@@ -167,7 +185,7 @@ export function SchoolCard({ school, apiSchool, onUpdate }: SchoolCardProps) {
           school={apiSchool}
           isOpen={isEditModalOpen}
           onClose={() => setIsEditModalOpen(false)}
-          onSuccess={handleEditSuccess}
+          onEdit={handleEditSchool}
         />
       )}
     </>
