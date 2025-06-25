@@ -1,3 +1,4 @@
+
 import { AuthService } from './authService';
 import { buildApiUrl, API_ENDPOINTS } from '@/config/hosts';
 
@@ -48,6 +49,29 @@ export interface SchoolsResponse {
   data: ApiSchool[];
 }
 
+export interface CreateSchoolData {
+  libelle: string;
+  adresse: string;
+  abonnementActuel: string;
+  ville: string;
+  telephone: string;
+  email: string;
+  fichier: string;
+  pays: string;
+}
+
+export interface CreateAdminData {
+  nom: string;
+  prenom: string;
+  genre: string;
+  statut: string;
+  phone: string;
+  email: string;
+  adresse: string;
+  role: string;
+  password: string;
+}
+
 export class SchoolService {
   static async getSchools(): Promise<SchoolsResponse> {
     try {
@@ -69,6 +93,56 @@ export class SchoolService {
       return data;
     } catch (error) {
       console.error('Erreur lors de la récupération des écoles:', error);
+      throw error;
+    }
+  }
+
+  static async createSchool(schoolData: CreateSchoolData): Promise<any> {
+    try {
+      const headers = {
+        'Content-Type': 'application/json',
+        ...AuthService.getAuthHeaders(),
+      };
+
+      const response = await fetch(buildApiUrl('/api/ecoles'), {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(schoolData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Erreur HTTP: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Erreur lors de la création de l\'école:', error);
+      throw error;
+    }
+  }
+
+  static async createAdmin(adminData: CreateAdminData): Promise<any> {
+    try {
+      const headers = {
+        'Content-Type': 'application/json',
+        ...AuthService.getAuthHeaders(),
+      };
+
+      const response = await fetch(buildApiUrl('/api/admin'), {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(adminData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Erreur HTTP: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Erreur lors de la création de l\'admin:', error);
       throw error;
     }
   }
