@@ -1,4 +1,3 @@
-
 import { AuthService } from './authService';
 import { buildApiUrl, API_ENDPOINTS } from '@/config/hosts';
 
@@ -70,6 +69,7 @@ export interface CreateAdminData {
   adresse: string;
   role: string;
   password: string;
+  ecole?: string; // ID de l'école
 }
 
 export class SchoolService {

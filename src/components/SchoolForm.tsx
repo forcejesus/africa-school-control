@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -166,12 +165,22 @@ export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
     try {
       setLoading(true);
       
+      // Étape 1: Créer l'école
       const schoolPayload: CreateSchoolData = { ...schoolData };
       const schoolResponse = await SchoolService.createSchool(schoolPayload);
       
       if (!schoolResponse.success) {
         throw new Error(schoolResponse.message || "Erreur lors de la création de l'école");
       }
+      
+      // Notification de succès pour la création de l'école
+      toast({
+        title: "École créée",
+        description: `L'école "${schoolData.libelle}" a été créée avec succès`,
+      });
+      
+      // Étape 2: Créer l'administrateur avec l'ID de l'école
+      const createdSchoolId = schoolResponse.data?._id || schoolResponse.data?.id;
       
       const adminPayload: CreateAdminData = {
         nom: adminData.nom,
@@ -183,18 +192,24 @@ export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
         adresse: adminData.adresse,
         role: "admin",
         password: adminData.password,
+        ecole: createdSchoolId, // Ajouter l'ID de l'école créée
       };
       
       const adminResponse = await SchoolService.createAdmin(adminPayload);
       
       if (!adminResponse.success) {
         console.warn("École créée mais erreur lors de la création de l'admin:", adminResponse.message);
+        toast({
+          title: "Attention",
+          description: "École créée mais erreur lors de la création de l'administrateur",
+          variant: "destructive"
+        });
+      } else {
+        toast({
+          title: "Succès complet",
+          description: "École et administrateur créés avec succès",
+        });
       }
-      
-      toast({
-        title: "Succès",
-        description: `École "${schoolData.libelle}" créée avec succès`,
-      });
       
       navigate("/schools");
       
