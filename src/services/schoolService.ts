@@ -95,12 +95,10 @@ export interface CreateAdminData {
 
 export interface UpdateSchoolData {
   libelle: string;
-  adresse: string;
   ville: string;
+  adresse: string;
   telephone: string;
   email: string;
-  fichier: string;
-  admin: string;
   pays: string;
 }
 
