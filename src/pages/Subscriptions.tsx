@@ -18,32 +18,32 @@ const Subscriptions = () => {
       title: "Total Écoles",
       value: "24",
       icon: School,
-      bgColor: "bg-gradient-to-br from-blue-500 to-blue-600",
-      textColor: "text-blue-600",
+      bgGradient: "bg-gradient-to-br from-blue-500 to-blue-600",
+      iconBg: "bg-gradient-to-br from-blue-500 to-blue-600",
       change: "+12%"
     },
     {
       title: "Abonnements Actifs",
       value: "18",
       icon: Award,
-      bgColor: "bg-gradient-to-br from-orange-500 to-orange-600",
-      textColor: "text-orange-600",
+      bgGradient: "bg-gradient-to-br from-orange-500 to-orange-600",
+      iconBg: "bg-gradient-to-br from-orange-500 to-orange-600",
       change: "+8%"
     },
     {
       title: "Enseignants",
       value: "156",
       icon: Users,
-      bgColor: "bg-gradient-to-br from-green-500 to-green-600",
-      textColor: "text-green-600",
+      bgGradient: "bg-gradient-to-br from-green-500 to-green-600",
+      iconBg: "bg-gradient-to-br from-green-500 to-green-600",
       change: "+15%"
     },
     {
       title: "Statistiques",
       value: "89%",
       icon: BarChart,
-      bgColor: "bg-gradient-to-br from-purple-500 to-purple-600",
-      textColor: "text-purple-600",
+      bgGradient: "bg-gradient-to-br from-purple-500 to-purple-600",
+      iconBg: "bg-gradient-to-br from-purple-500 to-purple-600",
       change: "+5%"
     }
   ];
@@ -139,8 +139,8 @@ const Subscriptions = () => {
               title={stat.title}
               value={stat.value}
               icon={stat.icon}
-              bgColor={stat.bgColor}
-              textColor={stat.textColor}
+              bgGradient={stat.bgGradient}
+              iconBg={stat.iconBg}
               change={stat.change}
               delay={index * 0.1}
             />
