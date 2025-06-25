@@ -62,20 +62,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         
         return true;
       } else {
-        toast({
-          title: "Erreur de connexion",
-          description: response.message || "Identifiants incorrects",
-          variant: "destructive"
-        });
+        // Ne pas afficher de toast pour les erreurs, le composant LoginForm gère l'affichage
         return false;
       }
     } catch (error: any) {
-      toast({
-        title: "Erreur de connexion",
-        description: error.message || "Impossible de se connecter au serveur",
-        variant: "destructive"
-      });
-      return false;
+      // Relancer l'erreur pour que LoginForm puisse la capturer
+      throw error;
     } finally {
       setLoading(false);
     }

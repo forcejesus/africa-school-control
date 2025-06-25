@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -33,6 +34,7 @@ export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
   const [subscriptions, setSubscriptions] = useState<ApiSubscription[]>([]);
   const [countries, setCountries] = useState<ApiCountry[]>([]);
   const [loadingData, setLoadingData] = useState(true);
+  const [createdSchoolId, setCreatedSchoolId] = useState<string | null>(null);
   
   const [schoolData, setSchoolData] = useState({
     libelle: school?.name || "",
@@ -127,8 +129,55 @@ export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
     return true;
   };
 
-  const nextStep = () => {
-    if (validateStep(currentStep)) {
+  const createSchool = async () => {
+    if (!validateStep(1)) {
+      toast({
+        title: "Erreur",
+        description: "Veuillez remplir tous les champs obligatoires de l'école",
+        variant: "destructive"
+      });
+      return false;
+    }
+
+    try {
+      setLoading(true);
+      const schoolPayload: CreateSchoolData = { ...schoolData };
+      const schoolResponse = await SchoolService.createSchool(schoolPayload);
+      
+      if (!schoolResponse.success) {
+        throw new Error(schoolResponse.message || "Erreur lors de la création de l'école");
+      }
+      
+      const schoolId = schoolResponse.data?._id || schoolResponse.data?.id;
+      setCreatedSchoolId(schoolId);
+      
+      toast({
+        title: "École créée",
+        description: `L'école "${schoolData.libelle}" a été créée avec succès`,
+      });
+      
+      return true;
+    } catch (error: any) {
+      console.error('Erreur lors de la création de l\'école:', error);
+      toast({
+        title: "Erreur",
+        description: error.message || "Une erreur est survenue lors de la création de l'école",
+        variant: "destructive"
+      });
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const nextStep = async () => {
+    if (currentStep === 1) {
+      // Créer l'école avant de passer à l'étape suivante
+      const success = await createSchool();
+      if (success) {
+        setCurrentStep(2);
+      }
+    } else if (validateStep(currentStep)) {
       setCurrentStep(prev => Math.min(prev + 1, 3));
     } else {
       toast({
@@ -144,6 +193,15 @@ export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
   };
   
   const handleSubmit = async () => {
+    if (!createdSchoolId) {
+      toast({
+        title: "Erreur",
+        description: "L'école doit être créée avant de créer l'administrateur",
+        variant: "destructive"
+      });
+      return;
+    }
+
     if (adminData.password !== adminData.confirmPassword) {
       toast({
         title: "Erreur",
@@ -165,23 +223,7 @@ export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
     try {
       setLoading(true);
       
-      // Étape 1: Créer l'école
-      const schoolPayload: CreateSchoolData = { ...schoolData };
-      const schoolResponse = await SchoolService.createSchool(schoolPayload);
-      
-      if (!schoolResponse.success) {
-        throw new Error(schoolResponse.message || "Erreur lors de la création de l'école");
-      }
-      
-      // Notification de succès pour la création de l'école
-      toast({
-        title: "École créée",
-        description: `L'école "${schoolData.libelle}" a été créée avec succès`,
-      });
-      
-      // Étape 2: Créer l'administrateur avec l'ID de l'école
-      const createdSchoolId = schoolResponse.data?._id || schoolResponse.data?.id;
-      
+      // Créer l'administrateur avec l'ID de l'école créée
       const adminPayload: CreateAdminData = {
         nom: adminData.nom,
         prenom: adminData.prenom,
@@ -192,7 +234,7 @@ export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
         adresse: adminData.adresse,
         role: "admin",
         password: adminData.password,
-        ecole: createdSchoolId, // Ajouter l'ID de l'école créée
+        ecole: createdSchoolId,
       };
       
       const adminResponse = await SchoolService.createAdmin(adminPayload);
@@ -214,10 +256,10 @@ export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
       navigate("/schools");
       
     } catch (error: any) {
-      console.error('Erreur lors de la création:', error);
+      console.error('Erreur lors de la création de l\'admin:', error);
       toast({
         title: "Erreur",
-        description: error.message || "Une erreur est survenue lors de la création",
+        description: error.message || "Une erreur est survenue lors de la création de l'administrateur",
         variant: "destructive"
       });
     } finally {
@@ -319,10 +361,17 @@ export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
                 {currentStep < 3 ? (
                   <Button 
                     onClick={nextStep}
-                    disabled={!validateStep(currentStep)}
+                    disabled={loading || (currentStep === 1 && !validateStep(1))}
                     className="px-6"
                   >
-                    Suivant
+                    {loading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        {currentStep === 1 ? "Création..." : "Chargement..."}
+                      </>
+                    ) : (
+                      "Suivant"
+                    )}
                   </Button>
                 ) : (
                   <Button 
@@ -336,7 +385,7 @@ export function SchoolForm({ school, isEditing = false }: SchoolFormProps) {
                         Création en cours...
                       </>
                     ) : (
-                      "Créer l'école"
+                      "Créer l'administrateur"
                     )}
                   </Button>
                 )}

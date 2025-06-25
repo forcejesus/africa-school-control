@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { LoadingProgress } from "@/components/LoadingProgress";
+import { ErrorDialog } from "@/components/auth/ErrorDialog";
 import { useI18n } from "@/contexts/I18nContext";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useAuth } from "@/contexts/AuthContext";
@@ -17,12 +18,27 @@ export function LoginForm() {
     email: "",
     password: ""
   });
+  const [errorDialog, setErrorDialog] = useState({ open: false, message: "" });
   const { t } = useI18n();
   const { login, loading } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await login(formData);
+    
+    try {
+      const success = await login(formData);
+      if (!success) {
+        setErrorDialog({
+          open: true,
+          message: "Identifiants incorrects. Veuillez vérifier votre email et mot de passe."
+        });
+      }
+    } catch (error: any) {
+      setErrorDialog({
+        open: true,
+        message: error.message || "Impossible de se connecter au serveur. Veuillez réessayer plus tard."
+      });
+    }
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -32,9 +48,18 @@ export function LoginForm() {
     }));
   };
 
+  const closeErrorDialog = () => {
+    setErrorDialog({ open: false, message: "" });
+  };
+
   return (
     <>
       <LoadingProgress isLoading={loading} message={t('auth.connectionInProgress')} />
+      <ErrorDialog 
+        open={errorDialog.open}
+        onClose={closeErrorDialog}
+        description={errorDialog.message}
+      />
       
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 via-orange-50/30 to-orange-100/20 p-4">
         <div className="absolute top-4 right-4">
