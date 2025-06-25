@@ -1,10 +1,9 @@
-
 // Configuration globale des environnements et endpoints API
 
 export type Environment = 'development' | 'production';
 
 // Configuration centralisée - changez cette variable pour basculer d'environnement
-export const CURRENT_ENVIRONMENT: Environment = 'development';
+export const CURRENT_ENVIRONMENT: Environment = 'development' as Environment;
 
 // Configuration des hosts par environnement
 export const HOSTS = {
