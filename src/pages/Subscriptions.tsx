@@ -1,52 +1,45 @@
 
+import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import SubscriptionsList from "@/components/SubscriptionsList";
 import { useI18n } from "@/contexts/I18nContext";
-import { Award, Sparkles, Users, School, BarChart, Settings, PlusCircle } from "lucide-react";
+import { Award, Sparkles, Users, School, BarChart, Settings, PlusCircle, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ModernStatsCard } from "@/components/ModernStatsCard";
 import { QuickActionCard } from "@/components/QuickActionCard";
+import { SubscriptionStatsService, SubscriptionStatsResponse } from "@/services/subscriptionStatsService";
+import { SubscriptionStatsCards } from "@/components/subscriptions/SubscriptionStatsCards";
+import { SubscriptionUsageTable } from "@/components/subscriptions/SubscriptionUsageTable";
+import { useToast } from "@/hooks/use-toast";
 
 const Subscriptions = () => {
   const { t } = useI18n();
+  const { toast } = useToast();
+  const [subscriptionStats, setSubscriptionStats] = useState<SubscriptionStatsResponse | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  // Données statistiques mockées
-  const statsData = [
-    {
-      title: "Total Écoles",
-      value: "24",
-      icon: School,
-      bgGradient: "bg-gradient-to-br from-blue-500 to-blue-600",
-      iconBg: "bg-gradient-to-br from-blue-500 to-blue-600",
-      change: "+12%"
-    },
-    {
-      title: "Abonnements Actifs",
-      value: "18",
-      icon: Award,
-      bgGradient: "bg-gradient-to-br from-orange-500 to-orange-600",
-      iconBg: "bg-gradient-to-br from-orange-500 to-orange-600",
-      change: "+8%"
-    },
-    {
-      title: "Enseignants",
-      value: "156",
-      icon: Users,
-      bgGradient: "bg-gradient-to-br from-green-500 to-green-600",
-      iconBg: "bg-gradient-to-br from-green-500 to-green-600",
-      change: "+15%"
-    },
-    {
-      title: "Statistiques",
-      value: "89%",
-      icon: BarChart,
-      bgGradient: "bg-gradient-to-br from-purple-500 to-purple-600",
-      iconBg: "bg-gradient-to-br from-purple-500 to-purple-600",
-      change: "+5%"
+  useEffect(() => {
+    loadSubscriptionStats();
+  }, []);
+
+  const loadSubscriptionStats = async () => {
+    try {
+      setLoading(true);
+      const response = await SubscriptionStatsService.getUtilisationEcoles();
+      setSubscriptionStats(response);
+    } catch (error) {
+      console.error('Erreur lors du chargement des statistiques:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de charger les statistiques d'utilisation",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
 
   // Actions rapides avec les nouveaux menus
   const quickActions = [
@@ -72,6 +65,20 @@ const Subscriptions = () => {
       iconColor: "bg-gradient-to-br from-purple-500 to-purple-600"
     }
   ];
+
+  if (loading) {
+    return (
+      <div className="flex flex-col h-screen">
+        <Header />
+        <div className="flex-1 flex items-center justify-center">
+          <div className="flex items-center gap-3">
+            <Loader2 className="h-6 w-6 animate-spin text-orange-500" />
+            <span className="text-lg text-slate-600">Chargement des statistiques...</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col h-screen">
@@ -109,7 +116,7 @@ const Subscriptions = () => {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.3 }}
                 >
-                  {t('subscriptions.description')}
+                  Gestion et suivi des abonnements des écoles partenaires
                 </motion.p>
               </div>
             </div>
@@ -127,25 +134,9 @@ const Subscriptions = () => {
         </motion.div>
 
         {/* Cartes de statistiques */}
-        <motion.div 
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          {statsData.map((stat, index) => (
-            <ModernStatsCard
-              key={stat.title}
-              title={stat.title}
-              value={stat.value}
-              icon={stat.icon}
-              bgGradient={stat.bgGradient}
-              iconBg={stat.iconBg}
-              change={stat.change}
-              delay={index * 0.1}
-            />
-          ))}
-        </motion.div>
+        {subscriptionStats && (
+          <SubscriptionStatsCards stats={subscriptionStats.data.resume} />
+        )}
 
         {/* Bouton Ajouter une école */}
         <motion.div 
@@ -181,12 +172,29 @@ const Subscriptions = () => {
             />
           ))}
         </motion.div>
+
+        {/* Tableau d'utilisation des abonnements */}
+        {subscriptionStats && (
+          <div className="space-y-6">
+            <motion.h2 
+              className="text-2xl font-bold text-slate-900"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.7 }}
+            >
+              Utilisation des abonnements par école
+            </motion.h2>
+            <SubscriptionUsageTable ecoles={subscriptionStats.data.ecoles} />
+          </div>
+        )}
         
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.8 }}
+          className="mt-12"
         >
+          <h2 className="text-2xl font-bold text-slate-900 mb-6">Liste des abonnements</h2>
           <SubscriptionsList />
         </motion.div>
       </div>
