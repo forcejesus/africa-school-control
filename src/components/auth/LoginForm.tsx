@@ -73,7 +73,7 @@ export function LoginForm() {
           className="w-full max-w-md"
         >
           <Card className="border-0 shadow-2xl bg-white backdrop-blur-sm modern-card border-orange-200">
-            <CardHeader className="text-center space-y-6 pb-8 bg-white border-b border-orange-200">
+            <CardHeader className="text-center space-y-6 pb-8 bg-white">
               <motion.div 
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}

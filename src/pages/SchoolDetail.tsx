@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Users, BookOpen, Calendar } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import Header from "@/components/Header";
 import { StatsCardsSection } from "@/components/school-detail/StatsCardsSection";
 import { SchoolInfoCard } from "@/components/school-detail/SchoolInfoCard";
@@ -90,24 +91,26 @@ const SchoolDetail = () => {
             emptyMessage="Aucun jeu créé pour le moment"
             noResultsMessage="Aucun jeu trouvé avec ces critères"
           >
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredGames.map((jeu) => (
-                <Card key={jeu._id} className="border border-orange-100 hover:shadow-md transition-shadow">
-                  <CardContent className="p-4">
-                    <div className="space-y-2">
-                      <h4 className="font-semibold text-orange-700 text-base">{jeu.titre}</h4>
-                      <p className="text-sm text-muted-foreground">
-                        Par: {jeu.professeur.prenom} {jeu.professeur.nom}
-                      </p>
-                      <div className="flex justify-between text-xs text-muted-foreground">
-                        <span>{jeu.nombreQuestions} questions</span>
-                        <span>{new Date(jeu.date).toLocaleDateString()}</span>
+            <ScrollArea className="h-96">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pr-4">
+                {filteredGames.map((jeu) => (
+                  <Card key={jeu._id} className="border border-orange-100 hover:shadow-md transition-shadow">
+                    <CardContent className="p-4">
+                      <div className="space-y-2">
+                        <h4 className="font-semibold text-orange-700 text-base">{jeu.titre}</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Par: {jeu.professeur.prenom} {jeu.professeur.nom}
+                        </p>
+                        <div className="flex justify-between text-xs text-muted-foreground">
+                          <span>{jeu.nombreQuestions} questions</span>
+                          <span>{new Date(jeu.date).toLocaleDateString()}</span>
+                        </div>
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </ScrollArea>
           </SearchableListCard>
 
           <SearchableListCard
@@ -120,25 +123,27 @@ const SchoolDetail = () => {
             emptyMessage="Aucun apprenant inscrit pour le moment"
             noResultsMessage="Aucun apprenant trouvé avec ces critères"
           >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {filteredStudents.map((apprenant) => (
-                <Card key={apprenant._id} className="border border-orange-100">
-                  <CardContent className="p-4">
-                    <div className="space-y-2">
-                      <h4 className="font-semibold text-orange-700 text-base">
-                        {apprenant.prenom} {apprenant.nom}
-                      </h4>
-                      <p className="text-sm text-muted-foreground">
-                        Matricule: {apprenant.matricule}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        Inscrit le: {new Date(apprenant.date).toLocaleDateString()}
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+            <ScrollArea className="h-96">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pr-4">
+                {filteredStudents.map((apprenant) => (
+                  <Card key={apprenant._id} className="border border-orange-100">
+                    <CardContent className="p-4">
+                      <div className="space-y-2">
+                        <h4 className="font-semibold text-orange-700 text-base">
+                          {apprenant.prenom} {apprenant.nom}
+                        </h4>
+                        <p className="text-sm text-muted-foreground">
+                          Matricule: {apprenant.matricule}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          Inscrit le: {new Date(apprenant.date).toLocaleDateString()}
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </ScrollArea>
           </SearchableListCard>
 
           <SearchableListCard
@@ -151,30 +156,32 @@ const SchoolDetail = () => {
             emptyMessage="Aucune planification pour le moment"
             noResultsMessage="Aucune planification trouvée avec ces critères"
           >
-            <div className="space-y-4">
-              {filteredPlans.map((planification) => (
-                <Card key={planification._id} className="border border-orange-100">
-                  <CardContent className="p-4">
-                    <div className="flex justify-between items-start">
-                      <div className="space-y-1">
-                        <h4 className="font-semibold text-orange-700 text-base">
-                          {planification.jeu.titre}
-                        </h4>
-                        <p className="text-sm text-muted-foreground">
-                          PIN: {planification.pin}
-                        </p>
+            <ScrollArea className="h-96">
+              <div className="space-y-4 pr-4">
+                {filteredPlans.map((planification) => (
+                  <Card key={planification._id} className="border border-orange-100">
+                    <CardContent className="p-4">
+                      <div className="flex justify-between items-start">
+                        <div className="space-y-1">
+                          <h4 className="font-semibold text-orange-700 text-base">
+                            {planification.jeu.titre}
+                          </h4>
+                          <p className="text-sm text-muted-foreground">
+                            PIN: {planification.pin}
+                          </p>
+                        </div>
+                        <Badge 
+                          variant={planification.statut === 'en attente' ? 'secondary' : 'default'}
+                          className={planification.statut === 'actif' ? 'bg-green-600 hover:bg-green-700' : ''}
+                        >
+                          {planification.statut}
+                        </Badge>
                       </div>
-                      <Badge 
-                        variant={planification.statut === 'en attente' ? 'secondary' : 'default'}
-                        className={planification.statut === 'actif' ? 'bg-green-600 hover:bg-green-700' : ''}
-                      >
-                        {planification.statut}
-                      </Badge>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </ScrollArea>
           </SearchableListCard>
 
           <SchoolHeader 
