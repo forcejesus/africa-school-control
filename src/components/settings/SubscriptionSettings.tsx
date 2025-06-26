@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -27,6 +27,7 @@ export function SubscriptionSettings() {
   const [updatingFree, setUpdatingFree] = useState<string | null>(null);
   const { t } = useI18n();
   const { toast } = useToast();
+  const editFormRef = useRef<HTMLDivElement>(null);
   
   const [formData, setFormData] = useState({
     nom: "",
@@ -66,6 +67,14 @@ export function SubscriptionSettings() {
         dureeEnJours: subscription.dureeEnJours,
         nombreJeuxMax: subscription.nombreJeuxMax
       });
+      
+      // Scroll automatique vers le formulaire de modification
+      setTimeout(() => {
+        editFormRef.current?.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start' 
+        });
+      }, 100);
     }
   };
 
@@ -187,9 +196,7 @@ export function SubscriptionSettings() {
                   className={`border-2 rounded-xl p-6 space-y-4 transition-all duration-300 ${
                     subscription.free 
                       ? 'border-green-300 bg-gradient-to-br from-green-50 to-emerald-50 shadow-md' 
-                      : subscription.actif 
-                        ? 'border-orange-200 hover:shadow-card bg-white' 
-                        : 'border-gray-200 bg-gray-50 opacity-75'
+                      : 'border-orange-200 hover:shadow-card bg-white'
                   }`}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -203,11 +210,6 @@ export function SubscriptionSettings() {
                           <div className="flex items-center gap-2 px-3 py-1 bg-green-100 text-green-700 rounded-full border border-green-200">
                             <Gift className="h-4 w-4" />
                             <span className="text-sm font-semibold">GRATUIT</span>
-                          </div>
-                        )}
-                        {!subscription.actif && (
-                          <div className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full border border-gray-200">
-                            <span className="text-sm font-medium">Inactif</span>
                           </div>
                         )}
                       </div>
@@ -244,20 +246,22 @@ export function SubscriptionSettings() {
                       </div>
                       
                       <div className="flex items-center justify-between pt-3 border-t border-slate-200">
-                        <div className="flex items-center gap-3">
-                          <Label htmlFor={`free-${subscription._id}`} className="font-medium text-slate-700">
+                        <div className="flex items-center gap-6">
+                          <Label htmlFor={`free-${subscription._id}`} className="font-medium text-slate-700 text-base">
                             Abonnement gratuit par défaut
                           </Label>
-                          <Switch
-                            id={`free-${subscription._id}`}
-                            checked={subscription.free}
-                            onCheckedChange={() => handleFreeToggle(subscription._id)}
-                            disabled={updatingFree === subscription._id}
-                            className="data-[state=checked]:bg-green-500"
-                          />
-                          {updatingFree === subscription._id && (
-                            <Loader2 className="h-4 w-4 animate-spin text-orange-500" />
-                          )}
+                          <div className="flex items-center gap-3">
+                            <Switch
+                              id={`free-${subscription._id}`}
+                              checked={subscription.free}
+                              onCheckedChange={() => handleFreeToggle(subscription._id)}
+                              disabled={updatingFree === subscription._id}
+                              className="data-[state=checked]:bg-green-500 h-7 w-12 scale-110"
+                            />
+                            {updatingFree === subscription._id && (
+                              <Loader2 className="h-4 w-4 animate-spin text-orange-500" />
+                            )}
+                          </div>
                         </div>
                         
                         <Button 
@@ -307,6 +311,7 @@ export function SubscriptionSettings() {
           
           {selectedSubscription && (
             <motion.div 
+              ref={editFormRef}
               className="space-y-4 border border-orange-200 p-6 rounded-xl bg-gradient-to-br from-orange-50/50 to-amber-50/30"
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}

@@ -12,6 +12,7 @@ import { AlertSystem } from "./components/alerts/AlertSystem";
 import { useAlert } from "./hooks/useAlert";
 import { I18nProvider } from "./contexts/I18nContext";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
+import { useScrollReset } from "./hooks/useScrollReset";
 
 // Lazy load components for better performance
 const Dashboard = lazy(() => import("./pages/Index"));
@@ -45,6 +46,7 @@ const queryClient = new QueryClient();
 
 function AuthenticatedApp() {
   const { alerts, dismissAlert } = useAlert();
+  useScrollReset(); // Réinitialise le scroll lors de la navigation
 
   return (
     <div className="flex h-screen w-full">
