@@ -8,7 +8,6 @@ import { Badge } from "@/components/ui/badge";
 import Header from "@/components/Header";
 import { StatsCardsSection } from "@/components/school-detail/StatsCardsSection";
 import { SchoolInfoCard } from "@/components/school-detail/SchoolInfoCard";
-import { AdminInfoCard } from "@/components/school-detail/AdminInfoCard";
 import { SearchableListCard } from "@/components/school-detail/SearchableListCard";
 import { BackButton } from "@/components/school-detail/BackButton";
 import { PartialDataAlert } from "@/components/school-detail/PartialDataAlert";
@@ -65,21 +64,14 @@ const SchoolDetail = () => {
 
           <PartialDataAlert show={hasPartialData} />
 
-          <SchoolHeader 
-            schoolName={displayData.ecole.libelle}
-            city={displayData.ecole.ville}
-            country={displayData.ecole.pays.libelle}
-          />
-
           <SchoolInfoCard 
             school={displayData.ecole} 
             subscription={displayData.abonnement}
+            administrator={displayData.administrateur}
             gamesCount={displayData.jeux.length}
             teachersCount={teachersCount}
             hasPartialData={hasPartialData}
           />
-
-          <AdminInfoCard administrator={displayData.administrateur} />
 
           <StatsCardsSection
             studentsCount={displayData.ecole.apprenants.length}
@@ -184,6 +176,12 @@ const SchoolDetail = () => {
               ))}
             </div>
           </SearchableListCard>
+
+          <SchoolHeader 
+            schoolName={displayData.ecole.libelle}
+            city={displayData.ecole.ville}
+            country={displayData.ecole.pays.libelle}
+          />
         </motion.div>
       </div>
     </div>

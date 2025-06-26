@@ -1,5 +1,5 @@
 
-import { GraduationCap, MapPin, Phone, Mail, AlertCircle, CreditCard, RotateCcw, TrendingUp, Users, BookOpen, GraduationCapIcon } from "lucide-react";
+import { GraduationCap, MapPin, Phone, Mail, AlertCircle, CreditCard, RotateCcw, TrendingUp, Users, BookOpen, GraduationCapIcon, User } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -26,6 +26,15 @@ interface SchoolInfoCardProps {
     nombreEnseignantsMax: number;
     dureeEnJours: number;
   };
+  administrator: {
+    prenom: string;
+    nom: string;
+    email: string;
+    phone: string;
+    matricule: string;
+    statut: string;
+    genre: string;
+  };
   gamesCount: number;
   teachersCount: number;
   hasPartialData?: boolean;
@@ -34,11 +43,13 @@ interface SchoolInfoCardProps {
 export function SchoolInfoCard({ 
   school, 
   subscription, 
+  administrator,
   gamesCount, 
   teachersCount, 
   hasPartialData = false 
 }: SchoolInfoCardProps) {
   const isDefaultSubscription = subscription.nom === 'Aucun abonnement';
+  const isDefaultAdmin = administrator.nom === 'Aucun nom' || administrator.email === 'Aucun email';
   
   const handleRenew = () => {
     console.log('Renouveler l\'abonnement');
@@ -65,34 +76,89 @@ export function SchoolInfoCard({
           </CardTitle>
         </CardHeader>
         <CardContent className="p-4 sm:p-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-            <div className="flex items-start space-x-3">
-              <MapPin className="h-5 w-5 text-orange-600 mt-0.5 flex-shrink-0" />
-              <div className="min-w-0 flex-1">
-                <p className="text-sm text-muted-foreground">Adresse</p>
-                <p className="font-medium text-sm sm:text-base break-words">{school.adresse}</p>
+          <div className="space-y-6">
+            {/* Informations de l'école */}
+            <div>
+              <h4 className="font-semibold text-gray-700 mb-4 text-sm sm:text-base flex items-center">
+                <GraduationCap className="mr-2 h-4 w-4" />
+                École
+              </h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                <div className="flex items-start space-x-3">
+                  <MapPin className="h-5 w-5 text-orange-600 mt-0.5 flex-shrink-0" />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm text-muted-foreground">Adresse</p>
+                    <p className="font-medium text-sm sm:text-base break-words">{school.adresse}</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <Phone className="h-5 w-5 text-orange-600 mt-0.5 flex-shrink-0" />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm text-muted-foreground">Téléphone</p>
+                    <p className="font-medium text-sm sm:text-base break-words">{school.telephone}</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <Mail className="h-5 w-5 text-orange-600 mt-0.5 flex-shrink-0" />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm text-muted-foreground">Email</p>
+                    <p className="font-medium text-sm sm:text-base break-words">{school.email}</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <MapPin className="h-5 w-5 text-orange-600 mt-0.5 flex-shrink-0" />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm text-muted-foreground">Pays</p>
+                    <p className="font-medium text-sm sm:text-base">{school.pays.libelle}</p>
+                  </div>
+                </div>
               </div>
             </div>
-            <div className="flex items-start space-x-3">
-              <Phone className="h-5 w-5 text-orange-600 mt-0.5 flex-shrink-0" />
-              <div className="min-w-0 flex-1">
-                <p className="text-sm text-muted-foreground">Téléphone</p>
-                <p className="font-medium text-sm sm:text-base break-words">{school.telephone}</p>
-              </div>
-            </div>
-            <div className="flex items-start space-x-3">
-              <Mail className="h-5 w-5 text-orange-600 mt-0.5 flex-shrink-0" />
-              <div className="min-w-0 flex-1">
-                <p className="text-sm text-muted-foreground">Email</p>
-                <p className="font-medium text-sm sm:text-base break-words">{school.email}</p>
-              </div>
-            </div>
-            <div className="flex items-start space-x-3">
-              <MapPin className="h-5 w-5 text-orange-600 mt-0.5 flex-shrink-0" />
-              <div className="min-w-0 flex-1">
-                <p className="text-sm text-muted-foreground">Pays</p>
-                <p className="font-medium text-sm sm:text-base">{school.pays.libelle}</p>
-              </div>
+
+            {/* Informations de l'administrateur */}
+            <div className="border-t pt-6">
+              <h4 className="font-semibold text-gray-700 mb-4 text-sm sm:text-base flex items-center">
+                <User className="mr-2 h-4 w-4" />
+                Administrateur
+              </h4>
+              {isDefaultAdmin ? (
+                <Alert className="border-amber-200 bg-amber-50">
+                  <AlertCircle className="h-4 w-4 text-amber-600" />
+                  <AlertDescription className="text-amber-700">
+                    Aucun administrateur configuré pour cette école
+                  </AlertDescription>
+                </Alert>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                  <div className="flex items-start space-x-3">
+                    <User className="h-5 w-5 text-orange-600 mt-0.5 flex-shrink-0" />
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm text-muted-foreground">Nom complet</p>
+                      <p className="font-medium text-sm sm:text-base">{administrator.prenom} {administrator.nom}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start space-x-3">
+                    <Mail className="h-5 w-5 text-orange-600 mt-0.5 flex-shrink-0" />
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm text-muted-foreground">Email</p>
+                      <p className="font-medium text-sm sm:text-base break-words">{administrator.email}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start space-x-3">
+                    <Phone className="h-5 w-5 text-orange-600 mt-0.5 flex-shrink-0" />
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm text-muted-foreground">Téléphone</p>
+                      <p className="font-medium text-sm sm:text-base">{administrator.phone}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start space-x-3">
+                    <Badge variant={administrator.statut === 'actif' ? 'default' : 'secondary'} 
+                           className={administrator.statut === 'actif' ? 'bg-green-600 hover:bg-green-700 mt-1' : 'mt-1'}>
+                      {administrator.statut}
+                    </Badge>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </CardContent>
