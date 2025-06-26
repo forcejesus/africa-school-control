@@ -2,17 +2,18 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, Users, BookOpen, Calendar } from "lucide-react";
+import { Users, BookOpen, Calendar } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { Button } from "@/components/ui/button";
-import { useI18n } from "@/contexts/I18nContext";
 import Header from "@/components/Header";
 import { StatsCardsSection } from "@/components/school-detail/StatsCardsSection";
 import { SchoolInfoCard } from "@/components/school-detail/SchoolInfoCard";
 import { AdminInfoCard } from "@/components/school-detail/AdminInfoCard";
 import { SearchableListCard } from "@/components/school-detail/SearchableListCard";
+import { BackButton } from "@/components/school-detail/BackButton";
+import { PartialDataAlert } from "@/components/school-detail/PartialDataAlert";
+import { SchoolHeader } from "@/components/school-detail/SchoolHeader";
+import { LoadingSpinner } from "@/components/school-detail/LoadingSpinner";
 import { useSchoolDetail } from "@/hooks/useSchoolDetail";
 import { filterGames, filterStudents, filterPlans } from "@/utils/schoolDetailFilters";
 import { createDefaultSchoolData } from "@/utils/schoolDetailDefaults";
@@ -23,7 +24,6 @@ const SchoolDetail = () => {
   const [searchGames, setSearchGames] = useState("");
   const [searchStudents, setSearchStudents] = useState("");
   const [searchPlans, setSearchPlans] = useState("");
-  const { t } = useI18n();
   
   const { schoolData, loading, hasPartialData } = useSchoolDetail(id);
 
@@ -45,12 +45,7 @@ const SchoolDetail = () => {
     return (
       <div className="flex flex-col h-screen">
         <Header />
-        <div className="flex-1 p-6 bg-gradient-to-br from-orange-50 via-white to-orange-50/30 flex items-center justify-center">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mx-auto mb-4"></div>
-            <p className="text-lg text-muted-foreground">{t('common.loading')}</p>
-          </div>
-        </div>
+        <LoadingSpinner />
       </div>
     );
   }
@@ -66,41 +61,16 @@ const SchoolDetail = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          {/* Bouton retour en haut */}
-          <div className="flex justify-start">
-            <Button
-              onClick={handleBack}
-              variant="outline"
-              className="inline-flex items-center text-orange-600 hover:text-orange-700 border-orange-300 hover:bg-orange-50"
-            >
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Retour aux écoles
-            </Button>
-          </div>
+          <BackButton onBack={handleBack} />
 
-          {/* Message d'alerte si données partielles */}
-          {hasPartialData && (
-            <Card className="border-amber-200 bg-amber-50 shadow-soft">
-              <CardContent className="p-6">
-                <div className="text-center text-amber-700">
-                  <p className="text-lg font-medium">Données partielles disponibles</p>
-                  <p className="text-sm">Certaines informations peuvent être manquantes pour cette école.</p>
-                </div>
-              </CardContent>
-            </Card>
-          )}
+          <PartialDataAlert show={hasPartialData} />
 
-          {/* Nom de l'école centré */}
-          <div className="text-center space-y-2">
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-orange-600 to-orange-700 bg-clip-text text-transparent">
-              {displayData.ecole.libelle}
-            </h1>
-            <p className="text-lg text-muted-foreground">
-              {displayData.ecole.ville}, {displayData.ecole.pays.libelle}
-            </p>
-          </div>
+          <SchoolHeader 
+            schoolName={displayData.ecole.libelle}
+            city={displayData.ecole.ville}
+            country={displayData.ecole.pays.libelle}
+          />
 
-          {/* Informations générales de l'école */}
           <SchoolInfoCard 
             school={displayData.ecole} 
             subscription={displayData.abonnement}
@@ -109,10 +79,8 @@ const SchoolDetail = () => {
             hasPartialData={hasPartialData}
           />
 
-          {/* Administrateur */}
           <AdminInfoCard administrator={displayData.administrateur} />
 
-          {/* Statistiques */}
           <StatsCardsSection
             studentsCount={displayData.ecole.apprenants.length}
             gamesCount={displayData.jeux.length}
@@ -120,7 +88,6 @@ const SchoolDetail = () => {
             totalQuestions={displayData.jeux.reduce((acc, jeu) => acc + jeu.nombreQuestions, 0)}
           />
 
-          {/* Jeux avec recherche */}
           <SearchableListCard
             title="Jeux créés"
             icon={<BookOpen className="mr-3 h-6 w-6" />}
@@ -151,7 +118,6 @@ const SchoolDetail = () => {
             </div>
           </SearchableListCard>
 
-          {/* Apprenants avec recherche */}
           <SearchableListCard
             title="Apprenants"
             icon={<Users className="mr-3 h-6 w-6" />}
@@ -183,7 +149,6 @@ const SchoolDetail = () => {
             </div>
           </SearchableListCard>
 
-          {/* Planifications avec recherche */}
           <SearchableListCard
             title="Planifications"
             icon={<Calendar className="mr-3 h-6 w-6" />}
