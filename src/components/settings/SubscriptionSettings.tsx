@@ -1,31 +1,20 @@
 
 import { useState, useEffect, useRef } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Switch } from "@/components/ui/switch";
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { Settings, Bell, Loader2, Crown, Users, Calendar, Trophy, Gift } from "lucide-react";
+import { Settings, Bell, Loader2 } from "lucide-react";
 import { useI18n } from "@/contexts/I18nContext";
 import { motion } from "framer-motion";
-import { SubscriptionService, ApiSubscription, UpdateSubscriptionData } from "@/services/subscriptionService";
+import { SubscriptionService, ApiSubscription } from "@/services/subscriptionService";
 import { useToast } from "@/hooks/use-toast";
+import { SubscriptionCard } from "./subscription/SubscriptionCard";
+import { SubscriptionSelector } from "./subscription/SubscriptionSelector";
+import { SubscriptionEditForm } from "./subscription/SubscriptionEditForm";
 
 export function SubscriptionSettings() {
   const [subscriptions, setSubscriptions] = useState<ApiSubscription[]>([]);
   const [selectedSubscription, setSelectedSubscription] = useState("");
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [updatingFree, setUpdatingFree] = useState<string | null>(null);
   const { t } = useI18n();
   const { toast } = useToast();
   const editFormRef = useRef<HTMLDivElement>(null);
@@ -90,7 +79,6 @@ export function SubscriptionSettings() {
 
   const handleFreeToggle = async (subscriptionId: string) => {
     try {
-      setUpdatingFree(subscriptionId);
       await SubscriptionService.setFreeSubscription(subscriptionId);
       
       toast({
@@ -106,54 +94,31 @@ export function SubscriptionSettings() {
         description: "Impossible de modifier le statut gratuit",
         variant: "destructive",
       });
-    } finally {
-      setUpdatingFree(null);
+      throw error;
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!selectedSubscription) return;
+  const handleFormSuccess = async () => {
+    await loadSubscriptions();
+    setSelectedSubscription("");
+    setFormData({
+      nom: "",
+      description: "",
+      prix: 0,
+      dureeEnJours: 0,
+      nombreJeuxMax: 0
+    });
+  };
 
-    try {
-      setSaving(true);
-      
-      const updateData: UpdateSubscriptionData = {
-        nom: formData.nom,
-        description: formData.description,
-        prix: formData.prix,
-        dureeEnJours: formData.dureeEnJours,
-        nombreJeuxMax: formData.nombreJeuxMax
-      };
-
-      await SubscriptionService.updateSubscription(selectedSubscription, updateData);
-      
-      toast({
-        title: "Succès",
-        description: "Abonnement mis à jour avec succès",
-      });
-      
-      await loadSubscriptions();
-      
-      setSelectedSubscription("");
-      setFormData({
-        nom: "",
-        description: "",
-        prix: 0,
-        dureeEnJours: 0,
-        nombreJeuxMax: 0
-      });
-    } catch (error) {
-      console.error('Erreur lors de la sauvegarde:', error);
-      toast({
-        title: "Erreur",
-        description: "Impossible de mettre à jour l'abonnement",
-        variant: "destructive",
-      });
-    } finally {
-      setSaving(false);
-    }
+  const handleFormCancel = () => {
+    setSelectedSubscription("");
+    setFormData({
+      nom: "",
+      description: "",
+      prix: 0,
+      dureeEnJours: 0,
+      nombreJeuxMax: 0
+    });
   };
 
   if (loading) {
@@ -196,223 +161,34 @@ export function SubscriptionSettings() {
             </div>
             <div className="grid gap-4">
               {subscriptions.map((subscription, index) => (
-                <motion.div 
-                  key={subscription._id} 
-                  className={`border-2 rounded-xl p-6 space-y-4 transition-all duration-300 ${
-                    subscription.free 
-                      ? 'border-green-300 bg-gradient-to-br from-green-50 to-emerald-50 shadow-md' 
-                      : 'border-orange-200 hover:shadow-card bg-white'
-                  }`}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.3, delay: index * 0.1 }}
-                >
-                  <div className="flex justify-between items-start">
-                    <div className="space-y-3 flex-1">
-                      <div className="flex items-center gap-3">
-                        <h4 className="font-bold text-xl text-slate-900">{subscription.nom}</h4>
-                        {subscription.free && (
-                          <div className="flex items-center gap-2 px-3 py-1 bg-green-100 text-green-700 rounded-full border border-green-200">
-                            <Gift className="h-4 w-4" />
-                            <span className="text-sm font-semibold">GRATUIT</span>
-                          </div>
-                        )}
-                      </div>
-                      <p className="text-slate-600">{subscription.description}</p>
-                      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                        <div className="flex items-center gap-2">
-                          <Crown className="h-4 w-4 text-orange-500" />
-                          <div>
-                            <span className="text-slate-500 text-sm block">Prix</span>
-                            <span className="font-bold text-lg text-orange-600">{subscription.prix.toLocaleString()} FCFA</span>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Calendar className="h-4 w-4 text-blue-500" />
-                          <div>
-                            <span className="text-slate-500 text-sm block">Durée</span>
-                            <span className="font-semibold text-slate-900">{subscription.dureeEnJours} jours</span>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Trophy className="h-4 w-4 text-purple-500" />
-                          <div>
-                            <span className="text-slate-500 text-sm block">Jeux max</span>
-                            <span className="font-semibold text-slate-900">{subscription.nombreJeuxMax}</span>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Users className="h-4 w-4 text-green-500" />
-                          <div>
-                            <span className="text-slate-500 text-sm block">Apprenants max</span>
-                            <span className="font-semibold text-slate-900">{subscription.nombreApprenantsMax}</span>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center justify-between pt-3 border-t border-slate-200">
-                        <div className="flex items-center gap-6">
-                          <Label htmlFor={`free-${subscription._id}`} className="font-semibold text-slate-700 text-lg">
-                            Abonnement gratuit
-                          </Label>
-                          <div className="flex items-center gap-3">
-                            <Switch
-                              id={`free-${subscription._id}`}
-                              checked={subscription.free}
-                              onCheckedChange={() => handleFreeToggle(subscription._id)}
-                              disabled={updatingFree === subscription._id}
-                              className="data-[state=checked]:bg-green-500 h-8 w-16 scale-125 shadow-lg border-2 border-green-200"
-                            />
-                            {updatingFree === subscription._id && (
-                              <Loader2 className="h-4 w-4 animate-spin text-orange-500" />
-                            )}
-                          </div>
-                        </div>
-                        
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          className="border-orange-200 hover:bg-orange-50"
-                          onClick={() => handleSubscriptionSelect(subscription._id)}
-                        >
-                          <Settings className="h-4 w-4 mr-2" />
-                          Modifier
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
+                <SubscriptionCard
+                  key={subscription._id}
+                  subscription={subscription}
+                  index={index}
+                  onEdit={handleSubscriptionSelect}
+                  onFreeToggle={handleFreeToggle}
+                />
               ))}
             </div>
           </div>
           
           <Separator className="bg-orange-200" />
           
-          <div className="space-y-3">
-            <Label htmlFor="selected-subscription" className="text-base font-medium text-slate-900">
-              Modifier un abonnement
-            </Label>
-            
-            <Select 
-              value={selectedSubscription} 
-              onValueChange={handleSubscriptionSelect}
-            >
-              <SelectTrigger className="w-full text-base border-orange-200 focus:border-orange-400">
-                <SelectValue placeholder="Sélectionner un abonnement" />
-              </SelectTrigger>
-              <SelectContent>
-                {subscriptions.map(subscription => (
-                  <SelectItem 
-                    key={subscription._id} 
-                    value={subscription._id}
-                    className="text-base"
-                  >
-                    {subscription.nom} {subscription.free && "(Gratuit)"}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          <SubscriptionSelector
+            subscriptions={subscriptions}
+            selectedSubscription={selectedSubscription}
+            onSelect={handleSubscriptionSelect}
+          />
           
-          {selectedSubscription && (
-            <motion.div 
-              ref={editFormRef}
-              className="space-y-4 border border-orange-200 p-6 rounded-xl bg-gradient-to-br from-orange-50/50 to-amber-50/30"
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              transition={{ duration: 0.3 }}
-            >
-              <h3 className="text-lg font-medium">Détails de l'abonnement</h3>
-            
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-1 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="nom" className="text-base">Nom</Label>
-                    <Input 
-                      id="nom" 
-                      value={formData.nom}
-                      onChange={(e) => handleInputChange("nom", e.target.value)}
-                      className="text-base"
-                      required
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="description" className="text-base">Description</Label>
-                    <Textarea
-                      id="description"
-                      value={formData.description}
-                      onChange={(e) => handleInputChange("description", e.target.value)}
-                      className="text-base min-h-[80px]"
-                      placeholder="Description de l'abonnement..."
-                    />
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="prix" className="text-base">Prix (FCFA)</Label>
-                    <Input 
-                      id="prix" 
-                      type="number"
-                      value={formData.prix}
-                      onChange={(e) => handleInputChange("prix", parseInt(e.target.value) || 0)}
-                      className="text-base"
-                      required
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="dureeEnJours" className="text-base">Durée (jours)</Label>
-                    <Input 
-                      id="dureeEnJours" 
-                      type="number"
-                      value={formData.dureeEnJours}
-                      onChange={(e) => handleInputChange("dureeEnJours", parseInt(e.target.value) || 0)}
-                      className="text-base"
-                      required
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="nombreJeuxMax" className="text-base">Nombre de jeux max</Label>
-                    <Input 
-                      id="nombreJeuxMax" 
-                      type="number"
-                      value={formData.nombreJeuxMax}
-                      onChange={(e) => handleInputChange("nombreJeuxMax", parseInt(e.target.value) || 0)}
-                      className="text-base"
-                      required
-                    />
-                  </div>
-                </div>
-                
-                <div className="flex justify-end space-x-2">
-                  <Button 
-                    type="button"
-                    variant="outline" 
-                    className="text-base"
-                    onClick={() => {
-                      setSelectedSubscription("");
-                      setFormData({ nom: "", description: "", prix: 0, dureeEnJours: 0, nombreJeuxMax: 0 });
-                    }}
-                  >
-                    {t('common.cancel')}
-                  </Button>
-                  <Button 
-                    type="submit"
-                    className="text-base"
-                    disabled={saving}
-                  >
-                    {saving ? (
-                      <>
-                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                        Sauvegarde...
-                      </>
-                    ) : (
-                      t('subscriptions.update')
-                    )}
-                  </Button>
-                </div>
-              </form>
-            </motion.div>
-          )}
+          <div ref={editFormRef}>
+            <SubscriptionEditForm
+              selectedSubscription={selectedSubscription}
+              formData={formData}
+              onFormDataChange={handleInputChange}
+              onCancel={handleFormCancel}
+              onSuccess={handleFormSuccess}
+            />
+          </div>
         </CardContent>
       </Card>
     </motion.div>

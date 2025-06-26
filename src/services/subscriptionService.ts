@@ -27,6 +27,7 @@ export interface SubscriptionsResponse {
 
 export interface UpdateSubscriptionData {
   nom: string;
+  description: string;
   prix: number;
   dureeEnJours: number;
   nombreJeuxMax: number;
