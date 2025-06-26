@@ -16,7 +16,7 @@ export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
-    password: ""
+    motDePasse: ""
   });
   const [errorDialog, setErrorDialog] = useState({ open: false, message: "" });
   const { t } = useI18n();
@@ -125,8 +125,8 @@ export function LoginForm() {
                         type={showPassword ? "text" : "password"} 
                         placeholder="Votre mot de passe" 
                         className="pl-12 pr-12 h-14 border-orange-200 focus:border-orange-400 focus:ring-orange-200 rounded-xl text-base" 
-                        value={formData.password} 
-                        onChange={e => handleInputChange("password", e.target.value)} 
+                        value={formData.motDePasse} 
+                        onChange={e => handleInputChange("motDePasse", e.target.value)} 
                         required 
                       />
                       <Button 
