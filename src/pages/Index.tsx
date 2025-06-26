@@ -5,39 +5,11 @@ import Header from "@/components/Header";
 import { DashboardHeader } from "@/components/DashboardHeader";
 import { ModernStatsCard } from "@/components/ModernStatsCard";
 import { QuickActionCard } from "@/components/QuickActionCard";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
 import { useI18n } from "@/contexts/I18nContext";
-import { cn } from "@/lib/utils";
 import { StatsService, GlobalStats, StatsDetails } from "@/services/statsService";
 import { SchoolService, ApiSchool } from "@/services/schoolService";
 import { useToast } from "@/hooks/use-toast";
-
-// Mock data for games and planifications
-const gamesData = [
-  { id: 1, schoolName: "Lycée Français de Dakar", gameName: "Mathématiques Quiz", sessionsActive: 5, sessionsExpired: 2, totalSessions: 7 },
-  { id: 2, schoolName: "École Internationale d'Abidjan", gameName: "Histoire Interactive", sessionsActive: 3, sessionsExpired: 1, totalSessions: 4 },
-  { id: 3, schoolName: "Collège Saint-Exupéry", gameName: "Sciences Naturelles", sessionsActive: 8, sessionsExpired: 3, totalSessions: 11 },
-  { id: 4, schoolName: "Institut Supérieur de Tunis", gameName: "Géographie Moderne", sessionsActive: 2, sessionsExpired: 5, totalSessions: 7 },
-  { id: 5, schoolName: "École Primaire Nelson Mandela", gameName: "Français Interactif", sessionsActive: 6, sessionsExpired: 1, totalSessions: 7 }
-];
-
-const planificationsData = [
-  { id: 1, schoolName: "Lycée Français de Dakar", gameName: "Mathématiques Quiz", planificationName: "Révision Trimestre 1", dateCreation: "2024-01-15", status: "active" },
-  { id: 2, schoolName: "École Internationale d'Abidjan", gameName: "Histoire Interactive", planificationName: "Moyen Âge", dateCreation: "2024-01-20", status: "completed" },
-  { id: 3, schoolName: "Collège Saint-Exupéry", gameName: "Sciences Naturelles", planificationName: "Biologie Cellulaire", dateCreation: "2024-02-01", status: "active" },
-  { id: 4, schoolName: "Institut Supérieur de Tunis", gameName: "Géographie Moderne", planificationName: "Climats du Monde", dateCreation: "2024-02-10", status: "pending" },
-  { id: 5, schoolName: "École Primaire Nelson Mandela", gameName: "Français Interactif", planificationName: "Conjugaison CE2", dateCreation: "2024-02-15", status: "active" }
-];
 
 const Dashboard = () => {
   const { t } = useI18n();
@@ -124,13 +96,34 @@ const Dashboard = () => {
     }
   ];
 
-  const quickActions = [
+  const menuCards = [
     {
-      title: "Ajouter une École",
-      description: "Créer et configurer une nouvelle école dans le système",
+      title: "Gestion des Écoles",
+      description: "Consulter, ajouter et gérer toutes les écoles du système",
       icon: School,
-      href: "/schools/add",
+      href: "/ecoles",
       iconColor: "bg-gradient-to-r from-orange-500 to-orange-600"
+    },
+    {
+      title: "Gestion des Utilisateurs",
+      description: "Administrer les comptes utilisateurs et leurs permissions",
+      icon: Users,
+      href: "/utilisateurs",
+      iconColor: "bg-gradient-to-r from-emerald-500 to-emerald-600"
+    },
+    {
+      title: "Analyses et Rapports",
+      description: "Visualiser les statistiques et performances du système",
+      icon: GraduationCap,
+      href: "/analytique",
+      iconColor: "bg-gradient-to-r from-blue-500 to-blue-600"
+    },
+    {
+      title: "Gestion des Abonnements",
+      description: "Suivre et gérer les abonnements des écoles",
+      icon: Calendar,
+      href: "/abonnements",
+      iconColor: "bg-gradient-to-r from-purple-500 to-purple-600"
     }
   ];
   
@@ -165,150 +158,27 @@ const Dashboard = () => {
             ))}
           </div>
           
-          {/* Quick Actions */}
+          {/* Menu Cards */}
           <motion.div 
-            className="actions-grid"
+            className="space-y-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
           >
-            {quickActions.map((action, index) => (
-              <QuickActionCard
-                key={action.title}
-                title={action.title}
-                description={action.description}
-                icon={action.icon}
-                href={action.href}
-                iconColor={action.iconColor}
-                delay={0.7 + index * 0.1}
-              />
-            ))}
-          </motion.div>
-          
-          {/* Tables Section */}
-          <motion.div 
-            className="space-y-6 md:space-y-8"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.9 }}
-          >
-            {/* Games Created by School */}
-            <Card className="modern-card overflow-hidden">
-              <CardHeader className="bg-gradient-to-r from-orange-50 to-orange-100/50 border-b border-orange-200/50">
-                <CardTitle className="text-xl font-bold text-slate-900 flex items-center">
-                  <Gamepad className="h-5 w-5 mr-3 text-orange-600" />
-                  {t('dashboard.gamesCreatedBySchool')}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-0">
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow className="border-b border-orange-200/30">
-                        <TableHead className="font-semibold text-slate-800 py-4 px-6">
-                          {t('dashboard.school')}
-                        </TableHead>
-                        <TableHead className="font-semibold text-slate-800 py-4 px-6">
-                          {t('dashboard.game')}
-                        </TableHead>
-                        <TableHead className="font-semibold text-slate-800 py-4 px-6 text-center">
-                          {t('dashboard.activeSessions')}
-                        </TableHead>
-                        <TableHead className="font-semibold text-slate-800 py-4 px-6 text-center">
-                          {t('dashboard.totalSessions')}
-                        </TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {gamesData.map((game, index) => (
-                        <TableRow 
-                          key={game.id} 
-                          className="hover:bg-orange-50/50 transition-colors duration-200 border-b border-orange-100/30"
-                        >
-                          <TableCell className="font-medium text-slate-900 py-4 px-6">
-                            {game.schoolName}
-                          </TableCell>
-                          <TableCell className="text-slate-700 py-4 px-6">
-                            {game.gameName}
-                          </TableCell>
-                          <TableCell className="text-center py-4 px-6">
-                            <Badge className="badge-primary font-medium px-3 py-1">
-                              {game.sessionsActive}
-                            </Badge>
-                          </TableCell>
-                          <TableCell className="text-slate-700 text-center py-4 px-6 font-medium">
-                            {game.totalSessions}
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Planifications Created */}
-            <Card className="modern-card overflow-hidden">
-              <CardHeader className="bg-gradient-to-r from-purple-50 to-purple-100/50 border-b border-purple-200/50">
-                <CardTitle className="text-xl font-bold text-slate-900 flex items-center">
-                  <Calendar className="h-5 w-5 mr-3 text-purple-600" />
-                  {t('dashboard.planificationsCreated')}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-0">
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow className="border-b border-purple-200/30">
-                        <TableHead className="font-semibold text-slate-800 py-4 px-6">
-                          {t('dashboard.school')}
-                        </TableHead>
-                        <TableHead className="font-semibold text-slate-800 py-4 px-6">
-                          {t('dashboard.game')}
-                        </TableHead>
-                        <TableHead className="font-semibold text-slate-800 py-4 px-6">
-                          {t('dashboard.planification')}
-                        </TableHead>
-                        <TableHead className="font-semibold text-slate-800 py-4 px-6 text-center">
-                          {t('dashboard.status')}
-                        </TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {planificationsData.map((planification, index) => (
-                        <TableRow 
-                          key={planification.id} 
-                          className="hover:bg-purple-50/50 transition-colors duration-200 border-b border-purple-100/30"
-                        >
-                          <TableCell className="font-medium text-slate-900 py-4 px-6">
-                            {planification.schoolName}
-                          </TableCell>
-                          <TableCell className="text-slate-700 py-4 px-6">
-                            {planification.gameName}
-                          </TableCell>
-                          <TableCell className="text-slate-700 py-4 px-6">
-                            {planification.planificationName}
-                          </TableCell>
-                          <TableCell className="text-center py-4 px-6">
-                            <Badge 
-                              className={cn(
-                                "font-medium px-3 py-1",
-                                planification.status === 'active' ? 'badge-success' :
-                                planification.status === 'completed' ? 'badge-info' :
-                                'badge-warning'
-                              )}
-                            >
-                              {planification.status === 'active' ? t('dashboard.active') :
-                               planification.status === 'completed' ? t('dashboard.completed') : t('dashboard.pending')}
-                            </Badge>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              </CardContent>
-            </Card>
+            <h2 className="text-2xl font-bold text-slate-900 mb-6">Menu Principal</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {menuCards.map((card, index) => (
+                <QuickActionCard
+                  key={card.title}
+                  title={card.title}
+                  description={card.description}
+                  icon={card.icon}
+                  href={card.href}
+                  iconColor={card.iconColor}
+                  delay={0.7 + index * 0.1}
+                />
+              ))}
+            </div>
           </motion.div>
         </motion.div>
       </div>
