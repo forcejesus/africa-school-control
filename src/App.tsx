@@ -1,83 +1,159 @@
-import React, { Suspense } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { I18nProvider } from './contexts/I18nContext';
-import { AuthProvider } from './contexts/AuthContext';
-import { SchoolProvider } from './contexts/SchoolContext';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { ReactQueryDevtools } from 'react-query/devtools';
-import PrivateRoute from './components/PrivateRoute';
-import PublicRoute from './components/PublicRoute';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import ForgotPassword from './pages/ForgotPassword';
-import ResetPassword from './pages/ResetPassword';
-import Dashboard from './pages/Dashboard';
-import Schools from './pages/Schools';
-import SchoolDetails from './pages/SchoolDetails';
-import Users from './pages/Users';
-import Settings from './pages/Settings';
-import Subscription from './pages/Subscription';
-import Games from './pages/Games';
-import GameDetails from './pages/GameDetails';
-import Classes from './pages/Classes';
-import ClassDetails from './pages/ClassDetails';
-import Students from './pages/Students';
-import StudentDetails from './pages/StudentDetails';
-import Teachers from './pages/Teachers';
-import TeacherDetails from './pages/TeacherDetails';
-import Logs from './pages/Logs';
-import ErrorPage from './pages/ErrorPage';
-import Loader from './components/Loader';
-import { useScrollReset } from "@/hooks/useScrollReset";
+
+import React, { Suspense, lazy } from "react";
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Skeleton } from "@/components/ui/skeleton";
+import { schools } from "./utils/data";
+import Sidebar from "./components/Sidebar";
+import { AlertSystem } from "./components/alerts/AlertSystem";
+import { useAlert } from "./hooks/useAlert";
+import { I18nProvider } from "./contexts/I18nContext";
+import { AuthProvider, useAuth } from "./contexts/AuthContext";
+
+// Lazy load components for better performance
+const Dashboard = lazy(() => import("./pages/Index"));
+const Schools = lazy(() => import("./pages/Schools"));
+const Subscriptions = lazy(() => import("./pages/Subscriptions"));
+const Analytics = lazy(() => import("./pages/Analytics"));
+const Users = lazy(() => import("./pages/Users"));
+const Settings = lazy(() => import("./pages/Settings"));
+const Notifications = lazy(() => import("./pages/Notifications"));
+const SchoolDetail = lazy(() => import("./pages/SchoolDetail"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const SchoolForm = lazy(() => import("./components/SchoolForm"));
+const Login = lazy(() => import("./pages/Login"));
+
+// Loading fallback component
+const PageLoader = () => (
+  <div className="flex-1 flex items-center justify-center h-screen">
+    <div className="space-y-4 w-full max-w-md">
+      <Skeleton className="h-12 w-3/4 mx-auto rounded-lg" />
+      <Skeleton className="h-64 w-full rounded-lg" />
+      <div className="space-y-2">
+        <Skeleton className="h-4 w-full rounded-lg" />
+        <Skeleton className="h-4 w-5/6 rounded-lg" />
+        <Skeleton className="h-4 w-4/6 rounded-lg" />
+      </div>
+    </div>
+  </div>
+);
 
 const queryClient = new QueryClient();
 
-function App() {
-  // Réinitialiser le scroll lors des changements de page
-  useScrollReset();
+function AuthenticatedApp() {
+  const { alerts, dismissAlert } = useAlert();
 
+  return (
+    <div className="flex h-screen w-full">
+      <AlertSystem alerts={alerts} onDismiss={dismissAlert} />
+      <Sidebar />
+      <div className="flex-1 overflow-auto">
+        <Suspense fallback={<PageLoader />}>
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/tableau-de-bord" element={<Dashboard />} />
+            <Route path="/ecoles" element={<Schools />} />
+            <Route path="/ecoles/:id" element={<SchoolDetail />} />
+            <Route path="/ecoles/ajouter" element={
+              <div className="flex flex-col h-screen">
+                <div className="p-6 bg-gradient-to-b from-background to-accent/20 flex-1 overflow-auto">
+                  <SchoolForm />
+                </div>
+              </div>
+            } />
+            <Route path="/ecoles/modifier/:id" element={
+              <div className="flex flex-col h-screen">
+                <div className="p-6 bg-gradient-to-b from-background to-accent/20 flex-1 overflow-auto">
+                  <SchoolForm 
+                    school={schools.find(s => s.id === window.location.pathname.split('/').pop())} 
+                    isEditing 
+                  />
+                </div>
+              </div>
+            } />
+            <Route path="/abonnements" element={<Subscriptions />} />
+            <Route path="/analytique" element={<Analytics />} />
+            <Route path="/utilisateurs" element={<Users />} />
+            <Route path="/parametres" element={<Settings />} />
+            <Route path="/notifications" element={<Notifications />} />
+            
+            {/* Redirections pour les anciennes routes anglaises */}
+            <Route path="/schools" element={<Schools />} />
+            <Route path="/schools/:id" element={<SchoolDetail />} />
+            <Route path="/schools/add" element={
+              <div className="flex flex-col h-screen">
+                <div className="p-6 bg-gradient-to-b from-background to-accent/20 flex-1 overflow-auto">
+                  <SchoolForm />
+                </div>
+              </div>
+            } />
+            <Route path="/schools/edit/:id" element={
+              <div className="flex flex-col h-screen">
+                <div className="p-6 bg-gradient-to-b from-background to-accent/20 flex-1 overflow-auto">
+                  <SchoolForm 
+                    school={schools.find(s => s.id === window.location.pathname.split('/').pop())} 
+                    isEditing 
+                  />
+                </div>
+              </div>
+            } />
+            <Route path="/subscriptions" element={<Subscriptions />} />
+            <Route path="/analytics" element={<Analytics />} />
+            <Route path="/users" element={<Users />} />
+            <Route path="/settings" element={<Settings />} />
+            
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
+      </div>
+    </div>
+  );
+}
+
+function LoginApp() {
+  const { alerts, dismissAlert } = useAlert();
+
+  return (
+    <div className="min-h-screen">
+      <AlertSystem alerts={alerts} onDismiss={dismissAlert} />
+      <Suspense fallback={<PageLoader />}>
+        <Routes>
+          <Route path="*" element={<Login />} />
+        </Routes>
+      </Suspense>
+    </div>
+  );
+}
+
+function AppContent() {
+  const { isAuthenticated, loading } = useAuth();
+
+  if (loading) {
+    return <PageLoader />;
+  }
+
+  return isAuthenticated ? <AuthenticatedApp /> : <LoginApp />;
+}
+
+const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <I18nProvider>
-        <AuthProvider>
-          <SchoolProvider>
-            <Router>
-              <Suspense fallback={<Loader />}>
-                <Routes>
-                  {/* Public Routes */}
-                  <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
-                  <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
-                  <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
-                  <Route path="/reset-password/:token" element={<PublicRoute><ResetPassword /></PublicRoute>} />
-
-                  {/* Private Routes */}
-                  <Route path="/" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
-                  <Route path="/schools" element={<PrivateRoute><Schools /></PrivateRoute>} />
-                  <Route path="/schools/:id" element={<PrivateRoute><SchoolDetails /></PrivateRoute>} />
-                  <Route path="/users" element={<PrivateRoute><Users /></PrivateRoute>} />
-                  <Route path="/settings" element={<PrivateRoute><Settings /></PrivateRoute>} />
-                  <Route path="/subscriptions" element={<PrivateRoute><Subscription /></PrivateRoute>} />
-                  <Route path="/games" element={<PrivateRoute><Games /></PrivateRoute>} />
-                  <Route path="/games/:id" element={<PrivateRoute><GameDetails /></PrivateRoute>} />
-                  <Route path="/classes" element={<PrivateRoute><Classes /></PrivateRoute>} />
-                  <Route path="/classes/:id" element={<PrivateRoute><ClassDetails /></PrivateRoute>} />
-                  <Route path="/students" element={<PrivateRoute><Students /></PrivateRoute>} />
-                  <Route path="/students/:id" element={<PrivateRoute><StudentDetails /></PrivateRoute>} />
-                  <Route path="/teachers" element={<PrivateRoute><Teachers /></PrivateRoute>} />
-                  <Route path="/teachers/:id" element={<PrivateRoute><TeacherDetails /></PrivateRoute>} />
-                  <Route path="/logs" element={<PrivateRoute><Logs /></PrivateRoute>} />
-
-                  {/* Error Page */}
-                  <Route path="*" element={<ErrorPage />} />
-                </Routes>
-              </Suspense>
-            </Router>
-          </SchoolProvider>
-        </AuthProvider>
+        <TooltipProvider>
+          <AuthProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <AppContent />
+            </BrowserRouter>
+          </AuthProvider>
+        </TooltipProvider>
       </I18nProvider>
-      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
-}
+};
 
 export default App;

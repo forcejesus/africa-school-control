@@ -1,22 +1,18 @@
 
-import { useEffect } from "react";
 import Header from "@/components/Header";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { GeneralSettings } from "@/components/settings/GeneralSettings";
 import { NotificationSettings } from "@/components/settings/NotificationSettings";
 import { SubscriptionSettings } from "@/components/settings/SubscriptionSettings";
+import { AppearanceSettings } from "@/components/settings/AppearanceSettings";
+import { SecuritySettings } from "@/components/settings/SecuritySettings";
 import { FAQSettings } from "@/components/settings/FAQSettings";
 import { CountryManagement } from "@/components/settings/CountryManagement";
 import { useI18n } from "@/contexts/I18nContext";
-import { Settings as SettingsIcon, Globe, CreditCard, Bell, HelpCircle } from "lucide-react";
+import { Settings as SettingsIcon, Globe, CreditCard, Bell, Palette, Shield, HelpCircle } from "lucide-react";
 
 const Settings = () => {
   const { t } = useI18n();
-
-  // Réinitialiser le scroll à zéro lors du chargement de la page
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
 
   return (
     <div className="flex flex-col h-screen">
@@ -35,7 +31,7 @@ const Settings = () => {
           </div>
           
           <Tabs defaultValue="general" className="w-full">
-            <TabsList className="grid w-full grid-cols-5 h-14 bg-white/80 backdrop-blur-sm border border-violet-200 rounded-xl p-1">
+            <TabsList className="grid w-full grid-cols-7 h-14 bg-white/80 backdrop-blur-sm border border-violet-200 rounded-xl p-1">
               <TabsTrigger 
                 value="general" 
                 className="flex items-center gap-2 text-sm font-medium data-[state=active]:bg-violet-100 data-[state=active]:text-violet-700 data-[state=active]:shadow-sm transition-all duration-200"
@@ -65,6 +61,20 @@ const Settings = () => {
                 {t('settings.notifications')}
               </TabsTrigger>
               <TabsTrigger 
+                value="appearance" 
+                className="flex items-center gap-2 text-sm font-medium data-[state=active]:bg-violet-100 data-[state=active]:text-violet-700 data-[state=active]:shadow-sm transition-all duration-200"
+              >
+                <Palette className="h-4 w-4" />
+                {t('settings.appearance')}
+              </TabsTrigger>
+              <TabsTrigger 
+                value="security" 
+                className="flex items-center gap-2 text-sm font-medium data-[state=active]:bg-violet-100 data-[state=active]:text-violet-700 data-[state=active]:shadow-sm transition-all duration-200"
+              >
+                <Shield className="h-4 w-4" />
+                {t('settings.security')}
+              </TabsTrigger>
+              <TabsTrigger 
                 value="faq" 
                 className="flex items-center gap-2 text-sm font-medium data-[state=active]:bg-violet-100 data-[state=active]:text-violet-700 data-[state=active]:shadow-sm transition-all duration-200"
               >
@@ -88,6 +98,14 @@ const Settings = () => {
               
               <TabsContent value="notifications" className="space-y-6">
                 <NotificationSettings />
+              </TabsContent>
+              
+              <TabsContent value="appearance" className="space-y-6">
+                <AppearanceSettings />
+              </TabsContent>
+              
+              <TabsContent value="security" className="space-y-6">
+                <SecuritySettings />
               </TabsContent>
 
               <TabsContent value="faq" className="space-y-6">
