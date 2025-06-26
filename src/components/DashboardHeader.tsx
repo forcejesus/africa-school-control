@@ -29,7 +29,7 @@ export function DashboardHeader() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
             >
-              {t('dashboard.welcome')}
+              Bonjour Admin
             </motion.h1>
             <motion.p 
               className="text-orange-100 text-sm sm:text-base"
@@ -41,16 +41,6 @@ export function DashboardHeader() {
             </motion.p>
           </div>
         </div>
-        
-        <motion.div 
-          className="flex items-center space-x-2 text-orange-100"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.4 }}
-        >
-          <Sparkles className="h-4 w-4 sm:h-5 sm:w-5" />
-          <span className="text-xs sm:text-sm font-medium">Interface Moderne</span>
-        </motion.div>
       </div>
     </motion.div>
   );

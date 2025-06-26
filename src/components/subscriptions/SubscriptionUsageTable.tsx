@@ -21,6 +21,7 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { EcoleUtilisation } from "@/services/subscriptionStatsService";
 import { School, Users, GraduationCap, Gamepad2, Search } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface SubscriptionUsageTableProps {
   ecoles: EcoleUtilisation[];
@@ -29,6 +30,7 @@ interface SubscriptionUsageTableProps {
 export function SubscriptionUsageTable({ ecoles }: SubscriptionUsageTableProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const navigate = useNavigate();
 
   // Filter schools based on search term and status
   const filteredEcoles = ecoles.filter(ecole => {
@@ -59,6 +61,10 @@ export function SubscriptionUsageTable({ ecoles }: SubscriptionUsageTableProps) 
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('fr-FR').format(price) + ' FCFA';
+  };
+
+  const handleEcoleClick = (ecoleId: string) => {
+    navigate(`/ecoles/${ecoleId}`);
   };
 
   // Get unique statuses for filter
@@ -162,11 +168,14 @@ export function SubscriptionUsageTable({ ecoles }: SubscriptionUsageTableProps) 
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.3, delay: index * 0.05 }}
-                  className="hover:bg-orange-50/50 transition-colors duration-200 border-b border-orange-100"
+                  className="hover:bg-orange-50/50 transition-colors duration-200 border-b border-orange-100 cursor-pointer"
+                  onClick={() => handleEcoleClick(ecole._id)}
                 >
                   <TableCell className="text-base">
                     <div>
-                      <div className="font-medium text-slate-900">{ecole.libelle}</div>
+                      <div className="font-medium text-slate-900 hover:text-orange-600 transition-colors">
+                        {ecole.libelle}
+                      </div>
                       <div className="text-sm text-slate-500">{ecole.ville}</div>
                     </div>
                   </TableCell>

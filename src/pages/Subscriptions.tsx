@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import { useI18n } from "@/contexts/I18nContext";
-import { Award, Sparkles, Loader2 } from "lucide-react";
+import { Award, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { SubscriptionStatsService, SubscriptionStatsResponse } from "@/services/subscriptionStatsService";
 import { SubscriptionStatsCards } from "@/components/subscriptions/SubscriptionStatsCards";
@@ -90,16 +90,6 @@ const Subscriptions = () => {
                 </motion.p>
               </div>
             </div>
-            
-            <motion.div 
-              className="flex items-center space-x-2 text-orange-100"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.4 }}
-            >
-              <Sparkles className="h-5 w-5" />
-              <span className="text-sm font-medium">Gestion Moderne</span>
-            </motion.div>
           </div>
         </motion.div>
 
