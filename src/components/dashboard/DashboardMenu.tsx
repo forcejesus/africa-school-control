@@ -1,5 +1,5 @@
 
-import { Users, GraduationCap, Calendar, School } from "lucide-react";
+import { Users, Calendar, School, Plus } from "lucide-react";
 import { motion } from "framer-motion";
 import { QuickActionCard } from "@/components/QuickActionCard";
 
@@ -13,25 +13,18 @@ export function DashboardMenu() {
       iconColor: "bg-gradient-to-r from-orange-500 to-orange-600"
     },
     {
-      title: "Gestion des Utilisateurs",
-      description: "Administrer les comptes utilisateurs et leurs permissions",
-      icon: Users,
-      href: "/utilisateurs",
-      iconColor: "bg-gradient-to-r from-emerald-500 to-emerald-600"
-    },
-    {
-      title: "Analyses et Rapports",
-      description: "Visualiser les statistiques et performances du système",
-      icon: GraduationCap,
-      href: "/analytique",
-      iconColor: "bg-gradient-to-r from-blue-500 to-blue-600"
-    },
-    {
       title: "Gestion des Abonnements",
       description: "Suivre et gérer les abonnements des écoles",
       icon: Calendar,
       href: "/abonnements",
       iconColor: "bg-gradient-to-r from-purple-500 to-purple-600"
+    },
+    {
+      title: "Ajouter une École",
+      description: "Créer une nouvelle école dans le système",
+      icon: Plus,
+      href: "/ecoles/ajouter",
+      iconColor: "bg-gradient-to-r from-emerald-500 to-emerald-600"
     }
   ];
 
@@ -43,7 +36,7 @@ export function DashboardMenu() {
       transition={{ delay: 0.6 }}
     >
       <h2 className="text-2xl font-bold text-slate-900 mb-6">Menu Principal</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {menuCards.map((card, index) => (
           <QuickActionCard
             key={card.title}
