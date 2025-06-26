@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
-import { Textarea } from "@/components/ui/textarea";
 import { 
   Select, 
   SelectContent, 
@@ -32,7 +31,6 @@ export function SubscriptionSettings() {
   
   const [formData, setFormData] = useState({
     nom: "",
-    description: "",
     prix: 0,
     dureeEnJours: 0,
     nombreJeuxMax: 0
@@ -65,7 +63,6 @@ export function SubscriptionSettings() {
     if (subscription) {
       setFormData({
         nom: subscription.nom,
-        description: subscription.description || "",
         prix: subscription.prix,
         dureeEnJours: subscription.dureeEnJours,
         nombreJeuxMax: subscription.nombreJeuxMax
@@ -121,7 +118,6 @@ export function SubscriptionSettings() {
       
       const updateData: UpdateSubscriptionData = {
         nom: formData.nom,
-        description: formData.description,
         prix: formData.prix,
         dureeEnJours: formData.dureeEnJours,
         nombreJeuxMax: formData.nombreJeuxMax
@@ -139,7 +135,6 @@ export function SubscriptionSettings() {
       setSelectedSubscription("");
       setFormData({
         nom: "",
-        description: "",
         prix: 0,
         dureeEnJours: 0,
         nombreJeuxMax: 0
@@ -251,17 +246,17 @@ export function SubscriptionSettings() {
                       </div>
                       
                       <div className="flex items-center justify-between pt-3 border-t border-slate-200">
-                        <div className="flex items-center gap-8">
-                          <Label htmlFor={`free-${subscription._id}`} className="font-semibold text-slate-700 text-lg">
+                        <div className="flex items-center gap-6">
+                          <Label htmlFor={`free-${subscription._id}`} className="font-medium text-slate-700 text-base">
                             Abonnement gratuit par défaut
                           </Label>
-                          <div className="flex items-center gap-4">
+                          <div className="flex items-center gap-3">
                             <Switch
                               id={`free-${subscription._id}`}
                               checked={subscription.free}
                               onCheckedChange={() => handleFreeToggle(subscription._id)}
                               disabled={updatingFree === subscription._id}
-                              className="data-[state=checked]:bg-green-500 h-8 w-14 scale-125"
+                              className="data-[state=checked]:bg-green-500 h-7 w-12 scale-110"
                             />
                             {updatingFree === subscription._id && (
                               <Loader2 className="h-4 w-4 animate-spin text-orange-500" />
@@ -325,7 +320,7 @@ export function SubscriptionSettings() {
               <h3 className="text-lg font-medium">Détails de l'abonnement</h3>
             
               <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-1 gap-4">
+                <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="nom" className="text-base">Nom</Label>
                     <Input 
@@ -336,19 +331,6 @@ export function SubscriptionSettings() {
                       required
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="description" className="text-base">Description</Label>
-                    <Textarea 
-                      id="description" 
-                      value={formData.description}
-                      onChange={(e) => handleInputChange("description", e.target.value)}
-                      className="text-base min-h-[100px]"
-                      placeholder="Description de l'abonnement..."
-                    />
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="prix" className="text-base">Prix (FCFA)</Label>
                     <Input 
@@ -391,7 +373,7 @@ export function SubscriptionSettings() {
                     className="text-base"
                     onClick={() => {
                       setSelectedSubscription("");
-                      setFormData({ nom: "", description: "", prix: 0, dureeEnJours: 0, nombreJeuxMax: 0 });
+                      setFormData({ nom: "", prix: 0, dureeEnJours: 0, nombreJeuxMax: 0 });
                     }}
                   >
                     {t('common.cancel')}
