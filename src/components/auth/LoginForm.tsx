@@ -16,7 +16,7 @@ export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
-    motDePasse: ""
+    password: ""
   });
   const [errorDialog, setErrorDialog] = useState({ open: false, message: "" });
   const { t } = useI18n();
@@ -26,7 +26,6 @@ export function LoginForm() {
     e.preventDefault();
     
     try {
-      console.log("Tentative de connexion avec:", { email: formData.email, motDePasse: "***" });
       const success = await login(formData);
       if (!success) {
         setErrorDialog({
@@ -35,7 +34,6 @@ export function LoginForm() {
         });
       }
     } catch (error: any) {
-      console.error("Erreur de connexion:", error);
       setErrorDialog({
         open: true,
         message: error.message || "Impossible de se connecter au serveur. Veuillez réessayer plus tard."
@@ -127,8 +125,8 @@ export function LoginForm() {
                         type={showPassword ? "text" : "password"} 
                         placeholder="Votre mot de passe" 
                         className="pl-12 pr-12 h-14 border-orange-200 focus:border-orange-400 focus:ring-orange-200 rounded-xl text-base" 
-                        value={formData.motDePasse} 
-                        onChange={e => handleInputChange("motDePasse", e.target.value)} 
+                        value={formData.password} 
+                        onChange={e => handleInputChange("password", e.target.value)} 
                         required 
                       />
                       <Button 
