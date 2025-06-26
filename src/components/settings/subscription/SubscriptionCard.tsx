@@ -82,7 +82,7 @@ export function SubscriptionCard({ subscription, index, onEdit, onFreeToggle }: 
           <div className="flex items-center justify-between pt-3 border-t border-slate-200">
             <div className="flex items-center gap-4">
               <Label className="font-semibold text-slate-700">
-                Abonnement gratuit
+                Type d'abonnement
               </Label>
               <Button
                 variant={subscription.free ? "default" : "outline"}

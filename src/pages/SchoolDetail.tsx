@@ -66,27 +66,16 @@ const SchoolDetail = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          {/* En-tête avec bouton retour */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <Button
-                onClick={handleBack}
-                variant="outline"
-                className="inline-flex items-center text-orange-600 hover:text-orange-700 border-orange-300 hover:bg-orange-50"
-              >
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Retour aux écoles
-              </Button>
-              <Separator orientation="vertical" className="h-6" />
-              <div>
-                <h1 className="text-4xl font-bold bg-gradient-to-r from-orange-600 to-orange-700 bg-clip-text text-transparent">
-                  {displayData.ecole.libelle}
-                </h1>
-                <p className="text-lg text-muted-foreground">
-                  {displayData.ecole.ville}, {displayData.ecole.pays.libelle}
-                </p>
-              </div>
-            </div>
+          {/* Bouton retour en haut */}
+          <div className="flex justify-start">
+            <Button
+              onClick={handleBack}
+              variant="outline"
+              className="inline-flex items-center text-orange-600 hover:text-orange-700 border-orange-300 hover:bg-orange-50"
+            >
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Retour aux écoles
+            </Button>
           </div>
 
           {/* Message d'alerte si données partielles */}
@@ -100,6 +89,16 @@ const SchoolDetail = () => {
               </CardContent>
             </Card>
           )}
+
+          {/* Nom de l'école centré */}
+          <div className="text-center space-y-2">
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-orange-600 to-orange-700 bg-clip-text text-transparent">
+              {displayData.ecole.libelle}
+            </h1>
+            <p className="text-lg text-muted-foreground">
+              {displayData.ecole.ville}, {displayData.ecole.pays.libelle}
+            </p>
+          </div>
 
           {/* Informations générales de l'école */}
           <SchoolInfoCard 
