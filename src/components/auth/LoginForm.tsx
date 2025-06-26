@@ -26,6 +26,7 @@ export function LoginForm() {
     e.preventDefault();
     
     try {
+      console.log("Tentative de connexion avec:", { email: formData.email, motDePasse: "***" });
       const success = await login(formData);
       if (!success) {
         setErrorDialog({
@@ -34,6 +35,7 @@ export function LoginForm() {
         });
       }
     } catch (error: any) {
+      console.error("Erreur de connexion:", error);
       setErrorDialog({
         open: true,
         message: error.message || "Impossible de se connecter au serveur. Veuillez réessayer plus tard."

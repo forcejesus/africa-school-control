@@ -1,3 +1,4 @@
+
 import { buildApiUrl, API_ENDPOINTS } from '@/config/hosts';
 import { jwtDecode } from 'jwt-decode';
 
@@ -53,6 +54,17 @@ export interface UpdateProfileData {
   email: string;
   adresse: string;
   pays: string;
+}
+
+export interface Country {
+  _id: string;
+  libelle: string;
+}
+
+export interface CountriesResponse {
+  success: boolean;
+  message: string;
+  data: Country[];
 }
 
 export class AuthService {
@@ -114,7 +126,11 @@ export class AuthService {
 
   static async loginAdmin(credentials: LoginCredentials): Promise<AuthResponse> {
     try {
-      const response = await fetch(buildApiUrl(API_ENDPOINTS.auth.login), {
+      const url = buildApiUrl(API_ENDPOINTS.auth.login);
+      console.log('URL de connexion:', url);
+      console.log('Données envoyées:', { ...credentials, motDePasse: '***' });
+      
+      const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -122,7 +138,16 @@ export class AuthService {
         body: JSON.stringify(credentials),
       });
 
+      console.log('Statut de la réponse:', response.status);
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Erreur de réponse:', errorText);
+        throw new Error(`Erreur HTTP: ${response.status} - ${errorText}`);
+      }
+
       const data: AuthResponse = await response.json();
+      console.log('Réponse reçue:', { ...data, token: data.token ? '***' : 'undefined' });
 
       if (data.token) {
         this.setToken(data.token);
@@ -184,6 +209,30 @@ export class AuthService {
       return data;
     } catch (error) {
       console.error('Erreur lors de la mise à jour du profil:', error);
+      throw error;
+    }
+  }
+
+  static async getCountries(): Promise<CountriesResponse> {
+    try {
+      const headers = {
+        'Content-Type': 'application/json',
+        ...this.getAuthHeaders(),
+      };
+
+      const response = await fetch(buildApiUrl('/api/pays'), {
+        method: 'GET',
+        headers,
+      });
+
+      if (!response.ok) {
+        throw new Error(`Erreur HTTP: ${response.status}`);
+      }
+
+      const data: CountriesResponse = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Erreur lors de la récupération des pays:', error);
       throw error;
     }
   }
