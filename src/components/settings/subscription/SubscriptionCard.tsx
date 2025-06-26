@@ -3,7 +3,6 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
 import { Crown, Users, Calendar, Trophy, Gift, Settings, Loader2 } from "lucide-react";
 import { ApiSubscription } from "@/services/subscriptionService";
 
@@ -81,22 +80,27 @@ export function SubscriptionCard({ subscription, index, onEdit, onFreeToggle }: 
           </div>
           
           <div className="flex items-center justify-between pt-3 border-t border-slate-200">
-            <div className="flex items-center gap-6">
-              <Label htmlFor={`free-${subscription._id}`} className="font-semibold text-slate-700 text-lg">
+            <div className="flex items-center gap-4">
+              <Label className="font-semibold text-slate-700">
                 Abonnement gratuit
               </Label>
-              <div className="flex items-center gap-3">
-                <Switch
-                  id={`free-${subscription._id}`}
-                  checked={subscription.free}
-                  onCheckedChange={handleFreeToggle}
-                  disabled={updatingFree}
-                  className="data-[state=checked]:bg-green-500 h-8 w-16 scale-125 shadow-lg border-2 border-green-200"
-                />
-                {updatingFree && (
-                  <Loader2 className="h-4 w-4 animate-spin text-orange-500" />
+              <Button
+                variant={subscription.free ? "default" : "outline"}
+                size="sm"
+                onClick={handleFreeToggle}
+                disabled={updatingFree}
+                className={`min-w-[100px] ${
+                  subscription.free 
+                    ? "bg-green-500 hover:bg-green-600 text-white" 
+                    : "border-green-200 hover:bg-green-50"
+                }`}
+              >
+                {updatingFree ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  subscription.free ? "Gratuit" : "Payant"
                 )}
-              </div>
+              </Button>
             </div>
             
             <Button 

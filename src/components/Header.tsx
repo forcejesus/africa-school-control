@@ -1,9 +1,6 @@
 
-import { Bell, Search, User, LogOut, FileText, Menu } from "lucide-react";
+import { LogOut, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import ThemeSwitcher from "@/components/ThemeSwitcher";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,8 +10,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useI18n } from "@/contexts/I18nContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -62,49 +57,11 @@ export function Header({ onMobileMenuToggle }: HeaderProps) {
           )}
           
           <h1 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent">
-            {t('auth.title')}
+            Administration centrale | AKILI
           </h1>
         </div>
         
-        <div className="flex items-center space-x-2 sm:space-x-3">
-          {!isMobile && (
-            <div className="relative hidden sm:block">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-orange-400" />
-              <Input
-                type="search"
-                placeholder={t('common.search')}
-                className="w-48 lg:w-64 pl-9 bg-orange-50/50 border-orange-200 focus:border-orange-300 focus:bg-white transition-all duration-200 h-10" 
-              />
-            </div>
-          )}
-          
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Link to="/notifications">
-              <Button variant="ghost" size="icon" className="relative hover:bg-orange-100 h-10 w-10">
-                <Bell className="h-4 w-4 sm:h-5 sm:w-5" />
-                <Badge 
-                  variant="destructive" 
-                  className="absolute -top-1 -right-1 h-4 w-4 sm:h-5 sm:w-5 p-0 flex items-center justify-center text-xs bg-red-500 hover:bg-red-600"
-                >
-                  3
-                </Badge>
-              </Button>
-            </Link>
-          </motion.div>
-          
-          {!isMobile && (
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Link to="/subscriptions">
-                <Button variant="ghost" size="icon" className="hover:bg-orange-100 h-10 w-10">
-                  <FileText className="h-4 w-4 sm:h-5 sm:w-5" />
-                </Button>
-              </Link>
-            </motion.div>
-          )}
-          
-          <LanguageSwitcher />
-          <ThemeSwitcher />
-          
+        <div className="flex items-center">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
@@ -136,24 +93,6 @@ export function Header({ onMobileMenuToggle }: HeaderProps) {
                   </p>
                 </div>
               </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem className="hover:bg-orange-50">
-                <User className="mr-2 h-4 w-4" />
-                <span>Profil</span>
-              </DropdownMenuItem>
-              <Link to="/settings">
-                <DropdownMenuItem className="hover:bg-orange-50">
-                  <span>{t('nav.settings')}</span>
-                </DropdownMenuItem>
-              </Link>
-              {isMobile && (
-                <Link to="/subscriptions">
-                  <DropdownMenuItem className="hover:bg-orange-50">
-                    <FileText className="mr-2 h-4 w-4" />
-                    <span>{t('nav.subscriptions')}</span>
-                  </DropdownMenuItem>
-                </Link>
-              )}
               <DropdownMenuSeparator />
               <DropdownMenuItem 
                 className="text-red-600 hover:bg-red-50"

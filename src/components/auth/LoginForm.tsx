@@ -72,20 +72,20 @@ export function LoginForm() {
           transition={{ duration: 0.5 }}
           className="w-full max-w-md"
         >
-          <Card className="border-0 shadow-2xl bg-white/95 backdrop-blur-sm modern-card border-red-200">
-            <CardHeader className="text-center space-y-6 pb-8 bg-gradient-to-r from-red-50 to-orange-50 border-b border-red-200">
+          <Card className="border-0 shadow-2xl bg-white backdrop-blur-sm modern-card border-orange-200">
+            <CardHeader className="text-center space-y-6 pb-8 bg-white border-b border-orange-200">
               <motion.div 
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-                className="mx-auto w-20 h-20 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl flex items-center justify-center shadow-lg"
+                className="mx-auto w-20 h-20 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center shadow-lg"
               >
                 <ShieldCheck className="w-10 h-10 text-white" />
               </motion.div>
               
               <div className="space-y-3">
                 <CardTitle className="text-3xl font-bold text-slate-900 flex items-center justify-center gap-2">
-                  <Shield className="w-8 h-8 text-red-500" />
+                  <Shield className="w-8 h-8 text-orange-500" />
                   Administration | AKILI
                 </CardTitle>
                 <CardDescription className="text-lg text-slate-600 leading-relaxed">

@@ -100,7 +100,7 @@ export function Sidebar() {
                   <div className="text-lg font-bold text-white flex items-center">
                     <Award className="h-6 w-6 mr-2 text-white" />
                     <span className="font-bold text-sm">
-                      {t('auth.title')}
+                      AKILI
                     </span>
                   </div>
                   <Button
@@ -156,7 +156,7 @@ export function Sidebar() {
                   </Button>
                   
                   <div className="text-xs text-slate-500 mt-3 text-center">
-                    {t('auth.title')} v1.0
+                    AKILI v1.0
                   </div>
                 </div>
               </motion.div>
@@ -186,7 +186,7 @@ export function Sidebar() {
             >
               <Award className="h-6 w-6 mr-2 text-white" />
               <span className="font-bold">
-                {t('auth.title')}
+                AKILI
               </span>
             </motion.div>
           )}
@@ -282,7 +282,7 @@ export function Sidebar() {
               exit={{ opacity: 0 }}
               className="text-xs text-slate-500 mt-3 text-center"
             >
-              {t('auth.title')} v1.0
+              AKILI v1.0
             </motion.div>
           )}
         </AnimatePresence>
