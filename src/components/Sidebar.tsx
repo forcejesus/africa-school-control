@@ -8,9 +8,7 @@ import {
   LayoutDashboard, 
   School, 
   FileText, 
-  BarChart, 
   Settings, 
-  Users,
   Award,
   LogOut,
   X
@@ -43,16 +41,6 @@ export function Sidebar() {
       title: t('nav.subscriptions'),
       href: "/abonnements",
       icon: FileText,
-    },
-    {
-      title: t('nav.analytics'),
-      href: "/analytique",
-      icon: BarChart,
-    },
-    {
-      title: t('nav.users'),
-      href: "/utilisateurs",
-      icon: Users,
     },
     {
       title: t('nav.settings'),

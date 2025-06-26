@@ -2,12 +2,11 @@
 import Header from "@/components/Header";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { GeneralSettings } from "@/components/settings/GeneralSettings";
-import { NotificationSettings } from "@/components/settings/NotificationSettings";
 import { SubscriptionSettings } from "@/components/settings/SubscriptionSettings";
 import { FAQSettings } from "@/components/settings/FAQSettings";
 import { CountryManagement } from "@/components/settings/CountryManagement";
 import { useI18n } from "@/contexts/I18nContext";
-import { Settings as SettingsIcon, Globe, CreditCard, Bell, HelpCircle } from "lucide-react";
+import { Settings as SettingsIcon, Globe, CreditCard, HelpCircle } from "lucide-react";
 
 const Settings = () => {
   const { t } = useI18n();
@@ -29,7 +28,7 @@ const Settings = () => {
           </div>
           
           <Tabs defaultValue="general" className="w-full">
-            <TabsList className="grid w-full grid-cols-5 h-14 bg-white/80 backdrop-blur-sm border border-violet-200 rounded-xl p-1">
+            <TabsList className="grid w-full grid-cols-4 h-14 bg-white/80 backdrop-blur-sm border border-violet-200 rounded-xl p-1">
               <TabsTrigger 
                 value="general" 
                 className="flex items-center gap-2 text-sm font-medium data-[state=active]:bg-violet-100 data-[state=active]:text-violet-700 data-[state=active]:shadow-sm transition-all duration-200"
@@ -52,13 +51,6 @@ const Settings = () => {
                 {t('settings.subscriptions')}
               </TabsTrigger>
               <TabsTrigger 
-                value="notifications" 
-                className="flex items-center gap-2 text-sm font-medium data-[state=active]:bg-violet-100 data-[state=active]:text-violet-700 data-[state=active]:shadow-sm transition-all duration-200"
-              >
-                <Bell className="h-4 w-4" />
-                {t('settings.notifications')}
-              </TabsTrigger>
-              <TabsTrigger 
                 value="faq" 
                 className="flex items-center gap-2 text-sm font-medium data-[state=active]:bg-violet-100 data-[state=active]:text-violet-700 data-[state=active]:shadow-sm transition-all duration-200"
               >
@@ -78,10 +70,6 @@ const Settings = () => {
               
               <TabsContent value="subscriptions" className="space-y-6">
                 <SubscriptionSettings />
-              </TabsContent>
-              
-              <TabsContent value="notifications" className="space-y-6">
-                <NotificationSettings />
               </TabsContent>
 
               <TabsContent value="faq" className="space-y-6">

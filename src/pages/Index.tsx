@@ -1,5 +1,5 @@
 
-import { Users, GraduationCap, Gamepad, Calendar, School, Plus } from "lucide-react";
+import { Users, GraduationCap, Gamepad, Calendar, School } from "lucide-react";
 import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import { DashboardHeader } from "@/components/DashboardHeader";
@@ -131,13 +131,6 @@ const Dashboard = () => {
       icon: School,
       href: "/schools/add",
       iconColor: "bg-gradient-to-r from-orange-500 to-orange-600"
-    },
-    {
-      title: "Nouveau Jeu",
-      description: "Développer un nouveau jeu éducatif interactif",
-      icon: Plus,
-      href: "/games/add",
-      iconColor: "bg-gradient-to-r from-purple-500 to-purple-600"
     }
   ];
   
