@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { Switch } from "@/components/ui/switch";
 import { 
   Select, 
   SelectContent, 
@@ -12,7 +13,7 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
-import { Settings, Bell, Loader2 } from "lucide-react";
+import { Settings, Bell, Loader2, Crown, Users, Calendar, Trophy, Gift } from "lucide-react";
 import { useI18n } from "@/contexts/I18nContext";
 import { motion } from "framer-motion";
 import { SubscriptionService, ApiSubscription, UpdateSubscriptionData } from "@/services/subscriptionService";
@@ -23,6 +24,7 @@ export function SubscriptionSettings() {
   const [selectedSubscription, setSelectedSubscription] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [updatingFree, setUpdatingFree] = useState<string | null>(null);
   const { t } = useI18n();
   const { toast } = useToast();
   
@@ -74,6 +76,29 @@ export function SubscriptionSettings() {
     }));
   };
 
+  const handleFreeToggle = async (subscriptionId: string) => {
+    try {
+      setUpdatingFree(subscriptionId);
+      await SubscriptionService.setFreeSubscription(subscriptionId);
+      
+      toast({
+        title: "Succès",
+        description: "Statut gratuit mis à jour avec succès",
+      });
+      
+      await loadSubscriptions();
+    } catch (error) {
+      console.error('Erreur lors de la modification du statut gratuit:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de modifier le statut gratuit",
+        variant: "destructive",
+      });
+    } finally {
+      setUpdatingFree(null);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -96,10 +121,8 @@ export function SubscriptionSettings() {
         description: "Abonnement mis à jour avec succès",
       });
       
-      // Recharger la liste des abonnements
       await loadSubscriptions();
       
-      // Réinitialiser la sélection
       setSelectedSubscription("");
       setFormData({
         nom: "",
@@ -155,48 +178,98 @@ export function SubscriptionSettings() {
             <div className="flex items-center space-x-2 mb-4">
               <Bell className="h-5 w-5 text-orange-500" />
               <h3 className="text-lg font-semibold text-slate-900">Liste des abonnements disponibles</h3>
+              <span className="text-sm text-slate-500">({subscriptions.length} abonnements)</span>
             </div>
             <div className="grid gap-4">
               {subscriptions.map((subscription, index) => (
                 <motion.div 
                   key={subscription._id} 
-                  className="border border-orange-200 rounded-xl p-4 space-y-3 hover:shadow-card transition-all duration-300"
+                  className={`border-2 rounded-xl p-6 space-y-4 transition-all duration-300 ${
+                    subscription.free 
+                      ? 'border-green-300 bg-gradient-to-br from-green-50 to-emerald-50 shadow-md' 
+                      : subscription.actif 
+                        ? 'border-orange-200 hover:shadow-card bg-white' 
+                        : 'border-gray-200 bg-gray-50 opacity-75'
+                  }`}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.3, delay: index * 0.1 }}
                 >
                   <div className="flex justify-between items-start">
-                    <div className="space-y-2">
-                      <h4 className="font-semibold text-lg text-slate-900">{subscription.nom}</h4>
-                      <p className="text-sm text-slate-600">{subscription.description}</p>
-                      <div className="grid grid-cols-2 gap-4 text-sm">
-                        <div>
-                          <span className="text-slate-500">Prix: </span>
-                          <span className="font-semibold text-lg text-orange-600">{subscription.prix.toLocaleString()} FCFA</span>
+                    <div className="space-y-3 flex-1">
+                      <div className="flex items-center gap-3">
+                        <h4 className="font-bold text-xl text-slate-900">{subscription.nom}</h4>
+                        {subscription.free && (
+                          <div className="flex items-center gap-2 px-3 py-1 bg-green-100 text-green-700 rounded-full border border-green-200">
+                            <Gift className="h-4 w-4" />
+                            <span className="text-sm font-semibold">GRATUIT</span>
+                          </div>
+                        )}
+                        {!subscription.actif && (
+                          <div className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full border border-gray-200">
+                            <span className="text-sm font-medium">Inactif</span>
+                          </div>
+                        )}
+                      </div>
+                      <p className="text-slate-600">{subscription.description}</p>
+                      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div className="flex items-center gap-2">
+                          <Crown className="h-4 w-4 text-orange-500" />
+                          <div>
+                            <span className="text-slate-500 text-sm block">Prix</span>
+                            <span className="font-bold text-lg text-orange-600">{subscription.prix.toLocaleString()} FCFA</span>
+                          </div>
                         </div>
-                        <div>
-                          <span className="text-slate-500">Durée: </span>
-                          <span className="font-medium text-slate-900">{subscription.dureeEnJours} jours</span>
+                        <div className="flex items-center gap-2">
+                          <Calendar className="h-4 w-4 text-blue-500" />
+                          <div>
+                            <span className="text-slate-500 text-sm block">Durée</span>
+                            <span className="font-semibold text-slate-900">{subscription.dureeEnJours} jours</span>
+                          </div>
                         </div>
-                        <div>
-                          <span className="text-slate-500">Jeux max: </span>
-                          <span className="font-medium text-slate-900">{subscription.nombreJeuxMax}</span>
+                        <div className="flex items-center gap-2">
+                          <Trophy className="h-4 w-4 text-purple-500" />
+                          <div>
+                            <span className="text-slate-500 text-sm block">Jeux max</span>
+                            <span className="font-semibold text-slate-900">{subscription.nombreJeuxMax}</span>
+                          </div>
                         </div>
-                        <div>
-                          <span className="text-slate-500">Apprenants max: </span>
-                          <span className="font-medium text-slate-900">{subscription.nombreApprenantsMax}</span>
+                        <div className="flex items-center gap-2">
+                          <Users className="h-4 w-4 text-green-500" />
+                          <div>
+                            <span className="text-slate-500 text-sm block">Apprenants max</span>
+                            <span className="font-semibold text-slate-900">{subscription.nombreApprenantsMax}</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div className="flex space-x-2">
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="border-orange-200 hover:bg-orange-50"
-                        onClick={() => handleSubscriptionSelect(subscription._id)}
-                      >
-                        <Settings className="h-4 w-4" />
-                      </Button>
+                      
+                      <div className="flex items-center justify-between pt-3 border-t border-slate-200">
+                        <div className="flex items-center gap-3">
+                          <Label htmlFor={`free-${subscription._id}`} className="font-medium text-slate-700">
+                            Abonnement gratuit par défaut
+                          </Label>
+                          <Switch
+                            id={`free-${subscription._id}`}
+                            checked={subscription.free}
+                            onCheckedChange={() => handleFreeToggle(subscription._id)}
+                            disabled={updatingFree === subscription._id}
+                            className="data-[state=checked]:bg-green-500"
+                          />
+                          {updatingFree === subscription._id && (
+                            <Loader2 className="h-4 w-4 animate-spin text-orange-500" />
+                          )}
+                        </div>
+                        
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="border-orange-200 hover:bg-orange-50"
+                          onClick={() => handleSubscriptionSelect(subscription._id)}
+                        >
+                          <Settings className="h-4 w-4 mr-2" />
+                          Modifier
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </motion.div>
@@ -225,7 +298,7 @@ export function SubscriptionSettings() {
                     value={subscription._id}
                     className="text-base"
                   >
-                    {subscription.nom}
+                    {subscription.nom} {subscription.free && "(Gratuit)"}
                   </SelectItem>
                 ))}
               </SelectContent>

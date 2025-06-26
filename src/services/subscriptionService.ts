@@ -1,3 +1,4 @@
+
 import { AuthService } from './authService';
 import { buildApiUrl, API_ENDPOINTS } from '@/config/hosts';
 
@@ -11,12 +12,17 @@ export interface ApiSubscription {
   nombreApprenantsMax: number;
   nombreEnseignantsMax: number;
   dateCreation: string;
+  actif: boolean;
+  free: boolean;
+  accesStatistiques: boolean;
 }
 
 export interface SubscriptionsResponse {
   success: boolean;
   data: ApiSubscription[];
   message: string;
+  total?: number;
+  type?: string;
 }
 
 export interface UpdateSubscriptionData {
@@ -56,7 +62,7 @@ export class SubscriptionService {
         ...AuthService.getAuthHeaders(),
       };
 
-      const response = await fetch(buildApiUrl('/api/abonnements'), {
+      const response = await fetch(buildApiUrl('/api/abonnements/admin/all'), {
         method: 'GET',
         headers,
       });
@@ -97,6 +103,33 @@ export class SubscriptionService {
       }
     } catch (error) {
       console.error('Erreur lors de la mise à jour de l\'abonnement:', error);
+      throw error;
+    }
+  }
+
+  static async setFreeSubscription(id: string): Promise<void> {
+    try {
+      const headers = {
+        'Content-Type': 'application/json',
+        ...AuthService.getAuthHeaders(),
+      };
+
+      const response = await fetch(buildApiUrl(`/api/abonnements/admin/set-free/${id}`), {
+        method: 'POST',
+        headers,
+      });
+
+      if (!response.ok) {
+        throw new Error(`Erreur HTTP: ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      if (!data.success) {
+        throw new Error(data.message || 'Erreur lors de la modification du statut gratuit');
+      }
+    } catch (error) {
+      console.error('Erreur lors de la modification du statut gratuit:', error);
       throw error;
     }
   }
