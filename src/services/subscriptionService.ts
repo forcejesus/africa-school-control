@@ -1,4 +1,3 @@
-
 import { AuthService } from './authService';
 import { buildApiUrl, API_ENDPOINTS } from '@/config/hosts';
 
@@ -18,6 +17,13 @@ export interface SubscriptionsResponse {
   success: boolean;
   data: ApiSubscription[];
   message: string;
+}
+
+export interface UpdateSubscriptionData {
+  nom: string;
+  prix: number;
+  dureeEnJours: number;
+  nombreJeuxMax: number;
 }
 
 export interface ApiCountry {
@@ -63,6 +69,34 @@ export class SubscriptionService {
       return data;
     } catch (error) {
       console.error('Erreur lors de la récupération des abonnements:', error);
+      throw error;
+    }
+  }
+
+  static async updateSubscription(id: string, subscriptionData: UpdateSubscriptionData): Promise<void> {
+    try {
+      const headers = {
+        'Content-Type': 'application/json',
+        ...AuthService.getAuthHeaders(),
+      };
+
+      const response = await fetch(buildApiUrl(`/api/abonnements/${id}/update/`), {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(subscriptionData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Erreur HTTP: ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      if (!data.success) {
+        throw new Error(data.message || 'Erreur lors de la mise à jour de l\'abonnement');
+      }
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour de l\'abonnement:', error);
       throw error;
     }
   }
